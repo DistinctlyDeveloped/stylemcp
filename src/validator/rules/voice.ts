@@ -86,7 +86,7 @@ function checkVocabularyRules(
         violations.push(
           createViolation(
             'vocabulary.preferred',
-            'warning',
+            'error',
             `Use "${rule.preferred}" instead of "${avoid}"`,
             match[0],
             { start: match.index, end: match.index + match[0].length },

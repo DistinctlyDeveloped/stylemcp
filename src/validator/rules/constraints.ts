@@ -1,6 +1,5 @@
 import { Voice, Violation } from '../../schema/index.js';
-
-let violationId = 2000;
+import { randomUUID } from 'crypto';
 
 function createViolation(
   rule: string,
@@ -11,7 +10,7 @@ function createViolation(
   suggestion?: string
 ): Violation {
   return {
-    id: `v-${++violationId}`,
+    id: `v-${randomUUID().slice(0, 8)}`,
     rule,
     severity,
     message,
@@ -74,7 +73,7 @@ function checkSentenceLength(text: string, maxWords: number): Violation[] {
       violations.push(
         createViolation(
           'constraints.maxSentenceLength',
-          'warning',
+          'error',
           `Sentence has ${words.length} words, max is ${maxWords}`,
           sentence.trim(),
           { start, end },

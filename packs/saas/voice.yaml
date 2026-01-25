@@ -27,7 +27,7 @@ vocabulary:
       avoid: ["utilize", "leverage", "employ"]
       context: "General usage"
     - preferred: "help"
-      avoid: ["assist", "aid", "facilitate"]
+      avoid: ["assist", "assists", "assisted", "assisting", "aid", "aids", "aided", "aiding", "facilitate", "facilitates", "facilitated", "facilitating"]
       context: "When offering support"
     - preferred: "start"
       avoid: ["commence", "initiate", "begin"]
@@ -57,8 +57,8 @@ vocabulary:
       avoid: ["modify", "alter", "adjust"]
       context: "Making changes"
     - preferred: "set up"
-      avoid: ["configure", "establish"]
-      context: "Initial setup"
+      avoid: ["establish"]
+      context: "Initial setup - Note: 'configure' is acceptable for technical settings"
     - preferred: "fix"
       avoid: ["rectify", "resolve", "remediate"]
       context: "Correcting problems"
@@ -110,76 +110,146 @@ vocabulary:
     - "team"
 
 doNot:
+  # Vague errors - must be specific about what went wrong
+  - pattern: "^(An error occurred\\.?|Error occurred\\.?)$"
+    isRegex: true
+    reason: "Vague error tells users nothing useful"
+    severity: error
+    suggestion: "Be specific: what failed and what can they do about it"
+
+  - pattern: "^Something went wrong\\.?$"
+    isRegex: true
+    reason: "Vague error without actionable information"
+    severity: error
+    suggestion: "Explain what happened and what to do next"
+
+  # Vague validation messages
+  - pattern: "^Invalid (input|value|data|format)\\.?$"
+    isRegex: true
+    reason: "Doesn't tell users what's wrong or how to fix it"
+    severity: error
+    suggestion: "Be specific: 'Email needs an @ symbol' not 'Invalid input'"
+
+  # Vague confirmation dialogs
+  - pattern: "^Are you sure\\??$"
+    isRegex: true
+    reason: "Vague confirmation without context about consequences"
+    severity: error
+    suggestion: "Show what will happen: 'Delete 47 files? This can't be undone.'"
+
+  # Informal error language
+  - pattern: "\\b(oops|uh oh|whoops|yikes)\\b"
+    isRegex: true
+    reason: "Too informal for error messages - undermines trust"
+    severity: error
+    suggestion: "Use neutral, professional language for errors"
+
+  # Unhelpful empty states
+  - pattern: "\\bnothing (to see|here)\\b"
+    isRegex: true
+    reason: "Unhelpful empty state with no guidance"
+    severity: error
+    suggestion: "Tell users what to do: 'No projects yet. Create one to get started.'"
+
+  # Marketing fluff
+  - pattern: "\\bwe're excited to announce\\b"
+    isRegex: true
+    reason: "Marketing fluff - lead with the value instead"
+    severity: error
+    suggestion: "Just announce what's new and why it matters"
+
+  - pattern: "\\bamazing\\b"
+    isRegex: true
+    reason: "Hyperbolic adjective that says nothing"
+    severity: error
+    suggestion: "Be specific about what makes it good"
+
+  # Double please
   - pattern: "\\bplease\\b.*\\bplease\\b"
     isRegex: true
     reason: "Double 'please' sounds desperate"
     severity: warning
     suggestion: "Use 'please' once or not at all"
 
+  # Starting with sorry
   - pattern: "^sorry"
     isRegex: true
     reason: "Don't start with apology unless actually apologizing for a mistake"
-    severity: info
+    severity: warning
     suggestion: "Lead with solution or action"
 
-  - pattern: "\\b(obviously|clearly|simply|just|easily)\\b"
+  # Dismissive words - these make users feel stupid
+  - pattern: "\\b(obviously|clearly)\\b"
     isRegex: true
-    reason: "These words can make users feel stupid if something isn't obvious to them"
-    severity: warning
+    reason: "If it were obvious, you wouldn't need to say it"
+    severity: error
     suggestion: "Remove the word entirely"
 
+  - pattern: "\\b(simply|just|easily)\\b"
+    isRegex: true
+    reason: "These words can make users feel stupid if it's not simple for them"
+    severity: error
+    suggestion: "Give specific steps instead"
+
+  # Corporate non-apology
   - pattern: "\\bwe're sorry for any inconvenience\\b"
     isRegex: true
     reason: "Corporate non-apology"
     severity: error
     suggestion: "Be specific about what went wrong and what you're doing about it"
 
+  # Click here - accessibility issue
   - pattern: "\\bclick here\\b"
     isRegex: true
     reason: "Poor accessibility and unclear destination"
     severity: error
     suggestion: "Describe the destination: 'View your dashboard' or 'Read the documentation'"
 
+  # Hesitation phrases
   - pattern: "\\b(please do not hesitate|don't hesitate|feel free)\\b"
     isRegex: true
     reason: "Implies hesitation is expected"
-    severity: info
+    severity: error
     suggestion: "Just tell them what to do"
 
+  # Exclamation marks
   - pattern: "!"
     isRegex: false
     reason: "Exclamation marks feel unprofessional in most SaaS contexts"
-    severity: info
+    severity: error
     suggestion: "Use periods. Let the content convey enthusiasm."
 
+  # Weak intensifiers
   - pattern: "\\b(very|really|extremely|incredibly|absolutely)\\b"
     isRegex: true
     reason: "Intensifiers weaken writing"
-    severity: info
+    severity: error
     suggestion: "Use stronger verbs or nouns instead"
 
+  # Unsubstantiated superlatives
   - pattern: "\\bours? is the (best|only|first|most)\\b"
     isRegex: true
     reason: "Unsubstantiated superlatives hurt credibility"
-    severity: warning
+    severity: error
     suggestion: "Be specific about what makes you different"
 
+  # Informal abbreviations
   - pattern: "\\bfyi\\b"
     isRegex: true
     reason: "Informal abbreviation"
-    severity: info
+    severity: warning
     suggestion: "Spell it out or rephrase"
 
   - pattern: "\\betc\\.?\\b"
     isRegex: true
     reason: "Lazy writing that doesn't help the reader"
-    severity: info
+    severity: warning
     suggestion: "Be specific or use 'and more'"
 
   - pattern: "\\bASAP\\b"
     isRegex: true
     reason: "Vague and pressure-inducing"
-    severity: warning
+    severity: error
     suggestion: "Give a specific timeframe"
 
 examples:
