@@ -6,10 +6,10 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import * as yaml from 'js-yaml';
 
-// Import from main package (will be bundled)
-import { validate, ValidationResult, Violation } from '../../src/validator/index.js';
-import { loadPack, getPacksDirectory } from '../../src/utils/pack-loader.js';
-import { Pack } from '../../src/schema/index.js';
+// Import from built dist (these get bundled by ncc)
+import { validate } from '../../dist/validator/index.js';
+import { ValidationResult, Violation, Pack } from '../../dist/schema/index.js';
+import { loadPack, getPacksDirectory } from '../../dist/utils/pack-loader.js';
 
 interface FileResult {
   file: string;

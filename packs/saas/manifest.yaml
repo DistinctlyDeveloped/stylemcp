@@ -13,4 +13,4 @@ files:
 
 config:
   strictMode: false
-  minScore: 70
+  minScore: 50

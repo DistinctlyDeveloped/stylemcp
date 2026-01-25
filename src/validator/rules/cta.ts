@@ -1,6 +1,5 @@
 import { CTARules, Violation } from '../../schema/index.js';
-
-let violationId = 1000;
+import { randomUUID } from 'crypto';
 
 function createViolation(
   rule: string,
@@ -11,7 +10,7 @@ function createViolation(
   suggestion?: string
 ): Violation {
   return {
-    id: `v-${++violationId}`,
+    id: `v-${randomUUID().slice(0, 8)}`,
     rule,
     severity,
     message,
@@ -122,7 +121,7 @@ function checkCtaGuidelines(
     );
   }
 
-  // Check for avoided words
+  // Check for avoided words (these are errors, not just warnings)
   for (const avoidWord of guidelines.avoidWords) {
     const regex = new RegExp(`\\b${escapeRegex(avoidWord)}\\b`, 'gi');
     const match = regex.exec(text);
@@ -130,7 +129,7 @@ function checkCtaGuidelines(
       violations.push(
         createViolation(
           'cta.avoidWord',
-          'warning',
+          'error',
           `Avoid "${avoidWord}" in CTAs`,
           match[0],
           { start: match.index, end: match.index + match[0].length },

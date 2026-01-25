@@ -1,6 +1,7 @@
 {
   "name": "stylemcp",
-  "version": "0.1.0",
+  "version": "0.1.3",
+  "mcpName": "io.github.3DUNLMTD/stylemcp",
   "description": "Executable brand rules for models and agents. Brand CI for AI output.",
   "type": "module",
   "main": "dist/index.js",

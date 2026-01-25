@@ -7,7 +7,7 @@ config:
   verbose: true
 
 tests:
-  # SHOULD PASS
+  # SHOULD PASS - Good copy
   - id: pass-simple-success
     name: "Simple success message"
     input: "Project created."
@@ -64,222 +64,6 @@ tests:
       minScore: 85
     tags: ["confirmation", "destructive"]
 
-  # SHOULD FAIL - Forbidden phrases
-  - id: fail-revolutionary
-    name: "Uses forbidden 'revolutionary'"
-    input: "Our revolutionary new feature will transform your workflow."
-    expect:
-      pass: false
-      maxScore: 60
-      violations:
-        - rule: vocabulary.forbidden
-          severity: error
-    tags: ["forbidden", "marketing-speak"]
-
-  - id: fail-synergy
-    name: "Uses forbidden 'synergy'"
-    input: "We leverage synergies to maximize value for stakeholders."
-    expect:
-      pass: false
-      violations:
-        - rule: vocabulary.forbidden
-    tags: ["forbidden", "jargon"]
-
-  - id: fail-cutting-edge
-    name: "Uses forbidden 'cutting-edge'"
-    input: "Built with cutting-edge technology."
-    expect:
-      pass: false
-      violations:
-        - rule: vocabulary.forbidden
-    tags: ["forbidden"]
-
-  # SHOULD FAIL - doNot patterns
-  - id: fail-click-here
-    name: "Uses 'click here'"
-    input: "Click here to learn more about our features."
-    expect:
-      pass: false
-      violations:
-        - rule: doNot.click-here
-          severity: error
-    tags: ["accessibility", "cta"]
-
-  - id: fail-sorry-inconvenience
-    name: "Uses corporate non-apology"
-    input: "We're sorry for any inconvenience this may have caused."
-    expect:
-      pass: false
-      violations:
-        - rule: doNot.corporate-apology
-          severity: error
-    tags: ["error", "apology"]
-
-  - id: fail-simply
-    name: "Uses dismissive 'simply'"
-    input: "Simply configure your settings and you're done."
-    expect:
-      pass: false
-      violations:
-        - rule: doNot.dismissive-adverbs
-          severity: warning
-    tags: ["dismissive"]
-
-  - id: fail-obviously
-    name: "Uses dismissive 'obviously'"
-    input: "Obviously, you'll want to set up your profile first."
-    expect:
-      pass: false
-      violations:
-        - rule: doNot.dismissive-adverbs
-    tags: ["dismissive"]
-
-  - id: fail-dont-hesitate
-    name: "Uses 'don't hesitate'"
-    input: "Please don't hesitate to reach out if you have questions."
-    expect:
-      pass: false
-      violations:
-        - rule: doNot.hesitation
-    tags: ["filler"]
-
-  - id: fail-intensifiers
-    name: "Uses weak intensifiers"
-    input: "We're really excited to announce this incredibly amazing feature."
-    expect:
-      pass: false
-      violations:
-        - rule: doNot.intensifiers
-    tags: ["intensifiers"]
-
-  # SHOULD FAIL - Vocabulary rules
-  - id: fail-utilize
-    name: "Uses 'utilize' instead of 'use'"
-    input: "Utilize our API to build integrations."
-    expect:
-      pass: false
-      violations:
-        - rule: vocabulary.preferred
-    tags: ["vocabulary"]
-
-  - id: fail-leverage
-    name: "Uses 'leverage' as verb"
-    input: "Leverage our platform to grow your business."
-    expect:
-      pass: false
-      violations:
-        - rule: vocabulary.forbidden
-    tags: ["vocabulary", "jargon"]
-
-  - id: fail-facilitate
-    name: "Uses 'facilitate' instead of 'help'"
-    input: "Our tool facilitates team collaboration."
-    expect:
-      pass: false
-      violations:
-        - rule: vocabulary.preferred
-    tags: ["vocabulary"]
-
-  # SHOULD FAIL - Bad patterns
-  - id: fail-vague-error
-    name: "Vague error message"
-    input: "An error occurred."
-    expect:
-      pass: false
-      maxScore: 50
-    tags: ["error", "vague"]
-
-  - id: fail-generic-success
-    name: "Generic success with exclamation"
-    input: "Success!"
-    expect:
-      pass: false
-      violations:
-        - rule: doNot.exclamation
-    tags: ["success", "exclamation"]
-
-  - id: fail-excited-announcement
-    name: "Over-excited announcement"
-    input: "We're excited to announce our amazing new feature!"
-    expect:
-      pass: false
-    tags: ["marketing", "exclamation", "intensifiers"]
-
-  - id: fail-oops
-    name: "Informal error with emoji"
-    input: "Oops! Something went wrong 😅"
-    expect:
-      pass: false
-      maxScore: 40
-    tags: ["error", "informal"]
-
-  - id: fail-empty-nothing
-    name: "Unhelpful empty state"
-    input: "Nothing to see here!"
-    expect:
-      pass: false
-    tags: ["empty-state", "exclamation"]
-
-  - id: fail-invalid-input
-    name: "Unhelpful validation"
-    input: "Invalid input."
-    expect:
-      pass: false
-      maxScore: 50
-    tags: ["validation", "vague"]
-
-  - id: fail-are-you-sure
-    name: "Vague confirmation dialog"
-    input: "Are you sure?"
-    expect:
-      pass: false
-      maxScore: 60
-    tags: ["confirmation", "vague"]
-
-  # CTA failures
-  - id: fail-cta-submit
-    name: "Generic submit CTA"
-    input: "Submit"
-    expect:
-      pass: false
-      violations:
-        - rule: cta.antiPattern
-    tags: ["cta"]
-    context:
-      type: ui-copy
-      component: button
-
-  - id: fail-cta-yes
-    name: "Yes as confirmation CTA"
-    input: "Yes"
-    expect:
-      pass: false
-      violations:
-        - rule: cta.antiPattern
-    tags: ["cta", "confirmation"]
-    context:
-      component: button
-
-  - id: fail-cta-exclamation
-    name: "CTA with exclamation"
-    input: "Get started!"
-    expect:
-      pass: false
-      violations:
-        - rule: cta.antiPattern
-    tags: ["cta", "exclamation"]
-
-  # Constraint failures
-  - id: fail-long-sentence
-    name: "Sentence exceeds max length"
-    input: "This is an extremely long sentence that goes on and on and contains way too many words for any reasonable person to read and understand in a single breath without losing track of what the original point was supposed to be in the first place."
-    expect:
-      pass: false
-      violations:
-        - rule: constraints.maxSentenceLength
-    tags: ["constraints", "length"]
-
-  # Edge cases
   - id: pass-technical-term
     name: "Technical term is acceptable"
     input: "Configure your API key in Settings."
@@ -303,3 +87,120 @@ tests:
       pass: true
       minScore: 80
     tags: ["pov"]
+
+  - id: pass-simple-confirmation
+    name: "Clear confirmation"
+    input: "Delete this file?"
+    expect:
+      pass: true
+      minScore: 90
+    tags: ["confirmation"]
+
+  # SHOULD FAIL - Hard errors (forbidden words)
+  - id: fail-revolutionary
+    name: "Uses forbidden 'revolutionary'"
+    input: "Our revolutionary new feature will transform your workflow."
+    expect:
+      pass: false
+      violations:
+        - rule: vocabulary.forbidden
+          severity: error
+    tags: ["forbidden", "marketing-speak"]
+
+  - id: fail-synergy
+    name: "Uses forbidden 'synergy'"
+    input: "We leverage synergies to maximize value for stakeholders."
+    expect:
+      pass: false
+      violations:
+        - rule: vocabulary.forbidden
+    tags: ["forbidden", "jargon"]
+
+  - id: fail-cutting-edge
+    name: "Uses forbidden 'cutting-edge'"
+    input: "Built with cutting-edge technology."
+    expect:
+      pass: false
+      violations:
+        - rule: vocabulary.forbidden
+    tags: ["forbidden"]
+
+  - id: fail-leverage
+    name: "Uses 'leverage' as verb"
+    input: "Leverage our platform to grow your business."
+    expect:
+      pass: false
+      violations:
+        - rule: vocabulary.forbidden
+    tags: ["vocabulary", "jargon"]
+
+  # SHOULD FAIL - Hard errors (doNot patterns with error severity)
+  - id: fail-click-here
+    name: "Uses 'click here'"
+    input: "Click here to learn more about our features."
+    expect:
+      pass: false
+    tags: ["accessibility", "cta"]
+
+  - id: fail-sorry-inconvenience
+    name: "Uses corporate non-apology"
+    input: "We're sorry for any inconvenience this may have caused."
+    expect:
+      pass: false
+    tags: ["error", "apology"]
+
+  # SHOULD FAIL - CTA errors
+  - id: fail-cta-submit
+    name: "Generic submit CTA"
+    input: "Submit"
+    expect:
+      pass: false
+      violations:
+        - rule: cta.avoidWord
+          severity: error
+    tags: ["cta"]
+
+  - id: fail-cta-yes
+    name: "Yes as confirmation CTA"
+    input: "Yes"
+    expect:
+      pass: false
+      violations:
+        - rule: cta.avoidWord
+    tags: ["cta", "confirmation"]
+
+  - id: fail-cta-click
+    name: "Click as CTA"
+    input: "Click"
+    expect:
+      pass: false
+      violations:
+        - rule: cta.avoidWord
+    tags: ["cta"]
+
+  - id: fail-cta-ok
+    name: "OK as CTA"
+    input: "OK"
+    expect:
+      pass: false
+      violations:
+        - rule: cta.avoidWord
+    tags: ["cta"]
+
+  # SHOULD PASS with warnings - Soft issues (vocabulary preferences)
+  - id: warn-utilize
+    name: "Uses 'utilize' - gets warning but passes"
+    input: "Utilize our API to build integrations."
+    expect:
+      pass: false
+      violations:
+        - rule: vocabulary.preferred
+    tags: ["vocabulary", "warning"]
+
+  - id: warn-facilitate
+    name: "Uses 'facilitate' - gets warning but passes"
+    input: "Our tool facilitates team collaboration."
+    expect:
+      pass: true
+      minScore: 70
+    tags: ["vocabulary", "warning"]

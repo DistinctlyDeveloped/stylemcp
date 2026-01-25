@@ -1,6 +1,5 @@
 import { Voice, Violation } from '../../schema/index.js';
-
-let violationId = 0;
+import { randomUUID } from 'crypto';
 
 function createViolation(
   rule: string,
@@ -11,7 +10,7 @@ function createViolation(
   suggestion?: string
 ): Violation {
   return {
-    id: `v-${++violationId}`,
+    id: `v-${randomUUID().slice(0, 8)}`,
     rule,
     severity,
     message,
