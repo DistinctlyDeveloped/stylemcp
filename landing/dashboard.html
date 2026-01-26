@@ -84,6 +84,54 @@
       .main{margin-left:0;padding:24px}
       .stats-grid{grid-template-columns:1fr}
     }
+
+    /* Welcome Modal */
+    .modal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:24px}
+    .modal.hidden{display:none}
+    .modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px)}
+    .modal-content{position:relative;background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:40px;max-width:480px;width:100%;text-align:center;animation:modalIn 0.3s ease}
+    @keyframes modalIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+    .modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text-muted);font-size:24px;cursor:pointer;padding:8px;line-height:1}
+    .modal-close:hover{color:var(--text)}
+    .modal-icon{font-size:48px;margin-bottom:16px}
+    .modal-content h2{font-size:1.5rem;margin-bottom:8px}
+    .modal-content p{color:var(--text-muted);margin-bottom:32px}
+    .goal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .goal-btn{background:var(--bg-elevated);border:2px solid var(--border);border-radius:12px;padding:16px;text-align:left;cursor:pointer;transition:all 0.2s}
+    .goal-btn:hover{border-color:var(--accent);background:rgba(99,102,241,0.05)}
+    .goal-btn.selected{border-color:var(--accent);background:rgba(99,102,241,0.1)}
+    .goal-emoji{font-size:24px;display:block;margin-bottom:8px}
+    .goal-title{display:block;font-weight:600;color:var(--text);font-size:0.9rem}
+    .goal-desc{display:block;font-size:0.75rem;color:var(--text-muted);margin-top:4px}
+
+    /* Onboarding Checklist */
+    .onboarding-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;margin-bottom:24px;overflow:hidden;position:relative}
+    .onboarding-card.hidden{display:none}
+    .onboarding-progress{height:3px;background:var(--bg-elevated)}
+    .onboarding-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),#a855f7);transition:width 0.5s ease}
+    .onboarding-dismiss{position:absolute;top:12px;right:12px;background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;padding:4px 8px;line-height:1}
+    .onboarding-dismiss:hover{color:var(--text)}
+    .onboarding-header{padding:20px 24px 12px}
+    .onboarding-header h3{font-size:1rem;display:flex;align-items:center;gap:8px}
+    .onboarding-header span{font-weight:normal;color:var(--text-muted);font-size:0.85rem}
+    .onboarding-steps{padding:0 16px}
+    .onboarding-step{display:flex;align-items:center;gap:12px;padding:12px;border-radius:8px;cursor:pointer;transition:background 0.2s}
+    .onboarding-step:hover{background:var(--bg-elevated)}
+    .onboarding-step.completed{opacity:0.6}
+    .onboarding-step.completed .step-indicator{background:var(--green);color:white}
+    .onboarding-step.completed .step-indicator::after{content:"✓";position:absolute;font-size:12px}
+    .onboarding-step.completed .step-indicator span{visibility:hidden}
+    .step-indicator{width:28px;height:28px;border-radius:50%;background:var(--bg-elevated);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:600;color:var(--text-muted);flex-shrink:0;position:relative}
+    .step-content{flex-grow:1}
+    .step-title{font-weight:500;font-size:0.9rem}
+    .step-desc{font-size:0.75rem;color:var(--text-muted)}
+    .step-arrow{color:var(--text-muted);opacity:0;transition:opacity 0.2s}
+    .onboarding-step:hover .step-arrow{opacity:1}
+    .onboarding-step.completed .step-arrow{display:none}
+    .onboarding-cta{display:block;width:calc(100% - 32px);margin:16px;padding:12px;background:var(--accent);color:white;border:none;border-radius:8px;font-weight:500;cursor:pointer;transition:background 0.2s}
+    .onboarding-cta:hover{background:var(--accent-hover)}
+    .onboarding-complete{text-align:center;padding:24px}
+    .onboarding-complete h3{color:var(--green);margin-bottom:8px}
   </style>
 </head>
 <body>
@@ -118,7 +166,86 @@
         <div class="spinner"></div>
       </div>
 
+      <!-- Welcome Modal -->
+      <div id="welcomeModal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+          <button class="modal-close" onclick="dismissWelcome()">&times;</button>
+          <div class="modal-icon">✨</div>
+          <h2>Welcome to StyleMCP! 👋</h2>
+          <p>Let's personalize your experience. What brings you here?</p>
+          <div class="goal-grid">
+            <button class="goal-btn" onclick="selectGoal('ai-agents')">
+              <span class="goal-emoji">🤖</span>
+              <span class="goal-title">AI Agents</span>
+              <span class="goal-desc">Keep agent outputs on-brand</span>
+            </button>
+            <button class="goal-btn" onclick="selectGoal('content-team')">
+              <span class="goal-emoji">✍️</span>
+              <span class="goal-title">Content Team</span>
+              <span class="goal-desc">Enforce style guide rules</span>
+            </button>
+            <button class="goal-btn" onclick="selectGoal('developer')">
+              <span class="goal-emoji">💻</span>
+              <span class="goal-title">Developer</span>
+              <span class="goal-desc">Integrate brand validation</span>
+            </button>
+            <button class="goal-btn" onclick="selectGoal('explore')">
+              <span class="goal-emoji">🔍</span>
+              <span class="goal-title">Just Exploring</span>
+              <span class="goal-desc">See what StyleMCP can do</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div id="dashboard" style="display:none">
+        <!-- Onboarding Checklist -->
+        <div id="onboardingChecklist" class="onboarding-card">
+          <div class="onboarding-progress">
+            <div class="onboarding-progress-fill" id="progressFill" style="width:0%"></div>
+          </div>
+          <button class="onboarding-dismiss" onclick="dismissChecklist()">&times;</button>
+          <div class="onboarding-header">
+            <h3>Getting Started <span id="checklistProgress">0/4</span></h3>
+          </div>
+          <div class="onboarding-steps">
+            <div class="onboarding-step" id="step1" onclick="goToStep(1)">
+              <div class="step-indicator">1</div>
+              <div class="step-content">
+                <div class="step-title">Copy your API key</div>
+                <div class="step-desc">You'll need this to make requests</div>
+              </div>
+              <div class="step-arrow">→</div>
+            </div>
+            <div class="onboarding-step" id="step2" onclick="goToStep(2)">
+              <div class="step-indicator">2</div>
+              <div class="step-content">
+                <div class="step-title">Make your first API call</div>
+                <div class="step-desc">Try the validation endpoint</div>
+              </div>
+              <div class="step-arrow">→</div>
+            </div>
+            <div class="onboarding-step" id="step3" onclick="goToStep(3)">
+              <div class="step-indicator">3</div>
+              <div class="step-content">
+                <div class="step-title">Explore style packs</div>
+                <div class="step-desc">See available brand rules</div>
+              </div>
+              <div class="step-arrow">→</div>
+            </div>
+            <div class="onboarding-step" id="step4" onclick="goToStep(4)">
+              <div class="step-indicator">4</div>
+              <div class="step-content">
+                <div class="step-title">Read the docs</div>
+                <div class="step-desc">Learn all the features</div>
+              </div>
+              <div class="step-arrow">→</div>
+            </div>
+          </div>
+          <button class="onboarding-cta" id="nextStepBtn" onclick="goToNextStep()">Copy API Key →</button>
+        </div>
+
         <div class="page-header">
           <h1>Dashboard</h1>
           <p>Monitor your API usage and manage your account</p>
@@ -381,6 +508,151 @@
     checkCheckoutStatus();
     init().then(() => {
       updatePlanActions();
+      initOnboarding();
+    });
+
+    // ===== ONBOARDING =====
+    const STORAGE_PREFIX = 'stylemcp_';
+    let selectedGoal = null;
+    let completedSteps = [];
+
+    function initOnboarding() {
+      const userId = currentUser?.id || 'guest';
+      
+      // Check if welcome was shown
+      const welcomeShown = localStorage.getItem(`${STORAGE_PREFIX}welcome_${userId}`);
+      if (!welcomeShown) {
+        document.getElementById('welcomeModal').classList.remove('hidden');
+      }
+      
+      // Check completed steps
+      const saved = localStorage.getItem(`${STORAGE_PREFIX}steps_${userId}`);
+      completedSteps = saved ? JSON.parse(saved) : [];
+      
+      // Check if checklist was dismissed
+      const dismissed = localStorage.getItem(`${STORAGE_PREFIX}checklist_dismissed_${userId}`);
+      if (dismissed || completedSteps.length === 4) {
+        document.getElementById('onboardingChecklist').classList.add('hidden');
+      } else {
+        updateChecklistUI();
+      }
+    }
+
+    function selectGoal(goal) {
+      selectedGoal = goal;
+      document.querySelectorAll('.goal-btn').forEach(btn => btn.classList.remove('selected'));
+      event.target.closest('.goal-btn').classList.add('selected');
+      
+      // Auto-dismiss after selection
+      setTimeout(() => {
+        dismissWelcome();
+      }, 300);
+    }
+
+    function dismissWelcome() {
+      const userId = currentUser?.id || 'guest';
+      localStorage.setItem(`${STORAGE_PREFIX}welcome_${userId}`, 'true');
+      if (selectedGoal) {
+        localStorage.setItem(`${STORAGE_PREFIX}goal_${userId}`, selectedGoal);
+      }
+      document.getElementById('welcomeModal').classList.add('hidden');
+    }
+
+    function completeStep(stepNum) {
+      if (!completedSteps.includes(stepNum)) {
+        completedSteps.push(stepNum);
+        const userId = currentUser?.id || 'guest';
+        localStorage.setItem(`${STORAGE_PREFIX}steps_${userId}`, JSON.stringify(completedSteps));
+        updateChecklistUI();
+      }
+    }
+
+    function updateChecklistUI() {
+      const total = 4;
+      const completed = completedSteps.length;
+      const progress = (completed / total) * 100;
+      
+      document.getElementById('progressFill').style.width = `${progress}%`;
+      document.getElementById('checklistProgress').textContent = `${completed}/${total}`;
+      
+      // Update step states
+      for (let i = 1; i <= 4; i++) {
+        const step = document.getElementById(`step${i}`);
+        if (completedSteps.includes(i)) {
+          step.classList.add('completed');
+        } else {
+          step.classList.remove('completed');
+        }
+      }
+      
+      // Update CTA button
+      const nextBtn = document.getElementById('nextStepBtn');
+      const nextStep = [1, 2, 3, 4].find(s => !completedSteps.includes(s));
+      if (nextStep) {
+        const labels = {
+          1: 'Copy API Key →',
+          2: 'Try API Call →',
+          3: 'View Style Packs →',
+          4: 'Read Docs →'
+        };
+        nextBtn.textContent = labels[nextStep];
+        nextBtn.style.display = 'block';
+      } else {
+        // All complete!
+        document.getElementById('onboardingChecklist').innerHTML = `
+          <div class="onboarding-complete">
+            <h3>🎉 You're all set!</h3>
+            <p style="color:var(--text-muted)">You've completed the getting started guide. Happy validating!</p>
+          </div>
+        `;
+        setTimeout(() => {
+          document.getElementById('onboardingChecklist').classList.add('hidden');
+        }, 3000);
+      }
+    }
+
+    function goToStep(stepNum) {
+      switch (stepNum) {
+        case 1:
+          // Copy API key
+          document.getElementById('copyKeyBtn').click();
+          completeStep(1);
+          break;
+        case 2:
+          // Scroll to quick start
+          document.querySelector('.card:last-of-type').scrollIntoView({ behavior: 'smooth' });
+          completeStep(2);
+          break;
+        case 3:
+          // Open packs endpoint
+          window.open('/api/packs', '_blank');
+          completeStep(3);
+          break;
+        case 4:
+          // Go to docs
+          window.location.href = '/docs.html';
+          completeStep(4);
+          break;
+      }
+    }
+
+    function goToNextStep() {
+      const nextStep = [1, 2, 3, 4].find(s => !completedSteps.includes(s));
+      if (nextStep) {
+        goToStep(nextStep);
+      }
+    }
+
+    function dismissChecklist() {
+      const userId = currentUser?.id || 'guest';
+      localStorage.setItem(`${STORAGE_PREFIX}checklist_dismissed_${userId}`, 'true');
+      document.getElementById('onboardingChecklist').classList.add('hidden');
+    }
+
+    // Track API key copy as step 1
+    const originalCopyHandler = document.getElementById('copyKeyBtn').onclick;
+    document.getElementById('copyKeyBtn').addEventListener('click', () => {
+      completeStep(1);
     });
   </script>
 </body>
