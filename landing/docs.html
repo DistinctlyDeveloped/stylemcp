@@ -148,7 +148,7 @@
 <pre>{
   <span class="key">"valid"</span>: <span class="boolean">false</span>,
   <span class="key">"score"</span>: <span class="number">65</span>,
-  <span class="key">"issues"</span>: [
+  <span class="key">"violations"</span>: [
     {
       <span class="key">"rule"</span>: <span class="string">"no-click-here"</span>,
       <span class="key">"severity"</span>: <span class="string">"error"</span>,
@@ -203,7 +203,7 @@
           <tbody>
             <tr><td><code>valid</code></td><td>boolean</td><td>Whether text passes all rules</td></tr>
             <tr><td><code>score</code></td><td>number</td><td>Quality score (0-100)</td></tr>
-            <tr><td><code>issues</code></td><td>array</td><td>List of rule violations</td></tr>
+            <tr><td><code>violations</code></td><td>array</td><td>List of rule violations</td></tr>
             <tr><td><code>suggestions</code></td><td>array</td><td>Improvement suggestions</td></tr>
           </tbody>
         </table>
@@ -236,7 +236,7 @@
           </thead>
           <tbody>
             <tr><td><code>minimal</code></td><td>Only fix rule violations</td></tr>
-            <tr><td><code>normal</code></td><td>Fix violations + improve clarity</td></tr>
+            <tr><td><code>normal</code></td><td>Fix rule violations + improve clarity</td></tr>
             <tr><td><code>aggressive</code></td><td>Complete rewrite in brand voice</td></tr>
           </tbody>
         </table>

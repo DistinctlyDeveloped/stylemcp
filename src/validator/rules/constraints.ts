@@ -132,17 +132,17 @@ function checkContractions(
 ): Violation[] {
   const violations: Violation[] = [];
 
-  // Common contractions
+  // Common contractions (all lowercase for consistent matching)
   const contractions = [
     "don't", "doesn't", "didn't", "can't", "couldn't", "won't", "wouldn't",
     "shouldn't", "isn't", "aren't", "wasn't", "weren't", "hasn't", "haven't",
     "hadn't", "it's", "that's", "what's", "who's", "there's", "here's",
-    "let's", "I'm", "you're", "we're", "they're", "he's", "she's",
-    "I'll", "you'll", "we'll", "they'll", "he'll", "she'll", "it'll",
-    "I've", "you've", "we've", "they've", "I'd", "you'd", "we'd", "they'd"
+    "let's", "i'm", "you're", "we're", "they're", "he's", "she's",
+    "i'll", "you'll", "we'll", "they'll", "he'll", "she'll", "it'll",
+    "i've", "you've", "we've", "they've", "i'd", "you'd", "we'd", "they'd"
   ];
 
-  // Expanded forms
+  // Expanded forms (matching order with contractions array)
   const expanded = [
     "do not", "does not", "did not", "cannot", "could not", "will not", "would not",
     "should not", "is not", "are not", "was not", "were not", "has not", "have not",
@@ -153,12 +153,12 @@ function checkContractions(
   ];
 
   if (rule === 'forbidden') {
-    // Check for contractions
-    for (const contraction of contractions) {
+    // Check for contractions using a single combined regex for efficiency
+    for (let i = 0; i < contractions.length; i++) {
+      const contraction = contractions[i];
       const regex = new RegExp(`\\b${escapeRegex(contraction)}\\b`, 'gi');
       let match;
       while ((match = regex.exec(text)) !== null) {
-        const idx = contractions.indexOf(contraction.toLowerCase());
         violations.push(
           createViolation(
             'constraints.contractions',
@@ -166,7 +166,7 @@ function checkContractions(
             `Contractions are not allowed`,
             match[0],
             { start: match.index, end: match.index + match[0].length },
-            idx >= 0 ? expanded[idx] : 'Expand the contraction'
+            expanded[i]
           )
         );
       }

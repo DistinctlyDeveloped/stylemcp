@@ -27,9 +27,10 @@ Response:
 {
   "valid": false,
   "score": 65,
-  "issues": [
+  "violations": [
     {
       "rule": "no-click-here",
+      "severity": "error",
       "message": "Avoid 'click here' - describe the destination instead",
       "suggestion": "Learn more about our features"
     }

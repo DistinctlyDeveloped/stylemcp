@@ -14,7 +14,7 @@ const program = new Command();
 program
   .name('stylemcp')
   .description('Executable brand rules for models and agents')
-  .version('0.1.0');
+  .version('0.1.4');
 
 /**
  * Validate command

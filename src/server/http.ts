@@ -21,7 +21,72 @@ const PORT = process.env.PORT || 3000;
 const API_KEY = process.env.STYLEMCP_API_KEY || '';
 const GITHUB_WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET || '';
 
-// Middleware
+// IMPORTANT: Webhook routes with raw body parsing must be registered BEFORE express.json()
+// Otherwise the JSON middleware will consume the raw body needed for signature verification
+
+// Stripe webhook endpoint (needs raw body for signature verification)
+app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), async (req: Request, res: Response) => {
+  try {
+    const signature = req.headers['stripe-signature'] as string;
+    if (!signature) {
+      res.status(400).json({ error: 'Missing stripe-signature header' });
+      return;
+    }
+
+    const result = await handleStripeWebhook(req.body, signature);
+
+    if (!result.success) {
+      res.status(400).json({ error: result.error });
+      return;
+    }
+
+    res.json({ received: true });
+  } catch (error) {
+    console.error('Stripe webhook error:', error);
+    res.status(500).json({ error: 'Webhook processing failed' });
+  }
+});
+
+// GitHub webhook endpoint (needs raw body for signature verification)
+app.post('/api/webhook/github', express.raw({ type: 'application/json' }), async (req: Request, res: Response) => {
+  try {
+    // Verify webhook signature if secret is configured
+    if (GITHUB_WEBHOOK_SECRET) {
+      const signature = req.headers['x-hub-signature-256'] as string;
+      if (!signature) {
+        res.status(401).json({ error: 'Missing signature' });
+        return;
+      }
+
+      const body = req.body;
+      const hmac = crypto.createHmac('sha256', GITHUB_WEBHOOK_SECRET);
+      const digest = 'sha256=' + hmac.update(body).digest('hex');
+
+      if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest))) {
+        res.status(401).json({ error: 'Invalid signature' });
+        return;
+      }
+    }
+
+    const event = req.headers['x-github-event'] as string;
+    const payload = JSON.parse(req.body.toString());
+
+    console.log(`Received GitHub webhook: ${event}`);
+
+    // Handle PR events
+    if (event === 'pull_request' && ['opened', 'synchronize'].includes(payload.action)) {
+      // TODO: Trigger validation on PR files
+      console.log(`PR ${payload.action}: ${payload.pull_request.html_url}`);
+    }
+
+    res.json({ received: true, event });
+  } catch (error) {
+    console.error('Webhook error:', error);
+    res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+  }
+});
+
+// Now apply JSON middleware for remaining routes
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 
@@ -57,7 +122,7 @@ function authMiddleware(req: Request, res: Response, next: NextFunction): void {
 
 // Health check (no auth required)
 app.get('/health', (_req: Request, res: Response) => {
-  res.json({ status: 'ok', version: '0.1.0' });
+  res.json({ status: 'ok', version: '0.1.4' });
 });
 
 // List available packs
@@ -112,6 +177,16 @@ app.post('/api/validate/batch', authMiddleware, async (req: Request, res: Respon
 
     if (!Array.isArray(items)) {
       res.status(400).json({ error: 'Missing or invalid "items" array' });
+      return;
+    }
+
+    if (items.length === 0) {
+      res.json({
+        averageScore: 100,
+        totalItems: 0,
+        passedItems: 0,
+        results: [],
+      });
       return;
     }
 
@@ -270,31 +345,10 @@ app.post('/api/suggest-ctas', authMiddleware, async (req: Request, res: Response
   }
 });
 
-// Stripe webhook endpoint (needs raw body for signature verification)
-app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), async (req: Request, res: Response) => {
-  try {
-    const signature = req.headers['stripe-signature'] as string;
-    if (!signature) {
-      res.status(400).json({ error: 'Missing stripe-signature header' });
-      return;
-    }
-
-    const result = await handleStripeWebhook(req.body, signature);
-
-    if (!result.success) {
-      res.status(400).json({ error: result.error });
-      return;
-    }
-
-    res.json({ received: true });
-  } catch (error) {
-    console.error('Stripe webhook error:', error);
-    res.status(500).json({ error: 'Webhook processing failed' });
-  }
-});
-
 // Create Stripe checkout session
-app.post('/api/checkout', async (req: Request, res: Response) => {
+// NOTE: This endpoint requires authMiddleware to prevent unauthorized access.
+// The userId should be validated against the authenticated session in production.
+app.post('/api/checkout', authMiddleware, async (req: Request, res: Response) => {
   try {
     if (!isBillingEnabled()) {
       res.status(503).json({ error: 'Billing not configured' });
@@ -305,6 +359,13 @@ app.post('/api/checkout', async (req: Request, res: Response) => {
 
     if (!userId || !tier) {
       res.status(400).json({ error: 'Missing userId or tier' });
+      return;
+    }
+
+    // Validate userId format (UUID)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(userId)) {
+      res.status(400).json({ error: 'Invalid userId format' });
       return;
     }
 
@@ -331,7 +392,9 @@ app.post('/api/checkout', async (req: Request, res: Response) => {
 });
 
 // Create Stripe customer portal session
-app.post('/api/billing/portal', async (req: Request, res: Response) => {
+// NOTE: This endpoint requires authMiddleware to prevent unauthorized access.
+// The userId should be validated against the authenticated session in production.
+app.post('/api/billing/portal', authMiddleware, async (req: Request, res: Response) => {
   try {
     if (!isBillingEnabled()) {
       res.status(503).json({ error: 'Billing not configured' });
@@ -342,6 +405,13 @@ app.post('/api/billing/portal', async (req: Request, res: Response) => {
 
     if (!userId) {
       res.status(400).json({ error: 'Missing userId' });
+      return;
+    }
+
+    // Validate userId format (UUID)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(userId)) {
+      res.status(400).json({ error: 'Invalid userId format' });
       return;
     }
 
@@ -360,45 +430,6 @@ app.post('/api/billing/portal', async (req: Request, res: Response) => {
   }
 });
 
-// GitHub webhook endpoint
-app.post('/api/webhook/github', express.raw({ type: 'application/json' }), async (req: Request, res: Response) => {
-  try {
-    // Verify webhook signature if secret is configured
-    if (GITHUB_WEBHOOK_SECRET) {
-      const signature = req.headers['x-hub-signature-256'] as string;
-      if (!signature) {
-        res.status(401).json({ error: 'Missing signature' });
-        return;
-      }
-
-      const body = req.body;
-      const hmac = crypto.createHmac('sha256', GITHUB_WEBHOOK_SECRET);
-      const digest = 'sha256=' + hmac.update(body).digest('hex');
-
-      if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest))) {
-        res.status(401).json({ error: 'Invalid signature' });
-        return;
-      }
-    }
-
-    const event = req.headers['x-github-event'] as string;
-    const payload = JSON.parse(req.body.toString());
-
-    console.log(`Received GitHub webhook: ${event}`);
-
-    // Handle PR events
-    if (event === 'pull_request' && ['opened', 'synchronize'].includes(payload.action)) {
-      // TODO: Trigger validation on PR files
-      console.log(`PR ${payload.action}: ${payload.pull_request.html_url}`);
-    }
-
-    res.json({ received: true, event });
-  } catch (error) {
-    console.error('Webhook error:', error);
-    res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
-  }
-});
-
 // SSE endpoint for MCP over HTTP
 app.get('/api/mcp/sse', authMiddleware, (req: Request, res: Response) => {
   res.setHeader('Content-Type', 'text/event-stream');
@@ -406,7 +437,7 @@ app.get('/api/mcp/sse', authMiddleware, (req: Request, res: Response) => {
   res.setHeader('Connection', 'keep-alive');
 
   // Send initial connection event
-  res.write(`data: ${JSON.stringify({ type: 'connected', version: '0.1.0' })}\n\n`);
+  res.write(`data: ${JSON.stringify({ type: 'connected', version: '0.1.4' })}\n\n`);
 
   // Keep connection alive
   const keepAlive = setInterval(() => {
