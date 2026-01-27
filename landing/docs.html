@@ -276,10 +276,21 @@
         </div>
         <div class="code-body">
 <pre>{
-  <span class="key">"packs"</span>: [<span class="string">"saas"</span>]
+  <span class="key">"packs"</span>: [<span class="string">"saas"</span>, <span class="string">"ecommerce"</span>, <span class="string">"healthcare"</span>, <span class="string">"finance"</span>]
 }</pre>
         </div>
       </div>
+
+      <h3>Available Packs</h3>
+      <table class="param-table">
+        <thead><tr><th>Pack</th><th>Best For</th><th>Key Features</th></tr></thead>
+        <tbody>
+          <tr><td><code>saas</code></td><td>B2B SaaS products</td><td>Professional, clear, helpful tone</td></tr>
+          <tr><td><code>ecommerce</code></td><td>DTC & retail brands</td><td>Friendly, conversion-focused, no pushy CTAs</td></tr>
+          <tr><td><code>healthcare</code></td><td>Medical & wellness</td><td>Compliant language, no cure claims, person-first</td></tr>
+          <tr><td><code>finance</code></td><td>Fintech & banking</td><td>Precise, risk-aware, no guaranteed returns</td></tr>
+        </tbody>
+      </table>
 
       <p>Get pack details:</p>
       <p class="endpoint"><span class="method get">GET</span> /api/packs/{pack}</p>

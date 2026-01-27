@@ -88,9 +88,16 @@ Now Claude can validate and rewrite text using your brand rules.
 
 StyleMCP uses **style packs** - YAML files that define your brand rules.
 
-### Default Pack: `saas`
+### Available Packs
 
-The included `saas` pack is designed for B2B SaaS products:
+| Pack | Best For | Key Features |
+|------|----------|--------------|
+| `saas` | B2B SaaS products | Professional, clear, helpful tone |
+| `ecommerce` | DTC & retail brands | Friendly, conversion-focused, no pushy CTAs |
+| `healthcare` | Medical & wellness | Compliant language, no cure claims, person-first |
+| `finance` | Fintech & banking | Precise, risk-aware, no guaranteed returns |
+
+### Example: `saas` Pack
 
 - **Vocabulary**: Prefer "use" over "utilize", "help" over "assist"
 - **Forbidden words**: "synergy", "leverage", "cutting-edge", "game-changing"
