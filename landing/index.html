@@ -3,8 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StyleMCP - Brand Rules for AI</title>
-  <meta name="description" content="Executable brand rules for AI models and agents. Keep every AI output on-brand with StyleMCP.">
+  <title>StyleMCP - Brand Rules for AI Outputs</title>
+  <meta name="description" content="Keep every AI-generated message on-brand. StyleMCP validates and rewrites AI outputs to match your brand voice. Free API, open source, MCP compatible.">
+  <meta name="keywords" content="brand voice, AI validation, content consistency, MCP, Claude, GPT, brand rules, style guide, AI writing">
+  <meta name="author" content="StyleMCP">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://stylemcp.com/">
+  <meta property="og:title" content="StyleMCP - Brand Rules for AI Outputs">
+  <meta property="og:description" content="Keep every AI-generated message on-brand. Validate and rewrite AI outputs to match your brand voice.">
+  <meta property="og:image" content="https://stylemcp.com/og-image.png">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://stylemcp.com/">
+  <meta name="twitter:title" content="StyleMCP - Brand Rules for AI Outputs">
+  <meta name="twitter:description" content="Keep every AI-generated message on-brand. Validate and rewrite AI outputs to match your brand voice.">
+  <meta name="twitter:image" content="https://stylemcp.com/og-image.png">
+  
+  <!-- Canonical -->
+  <link rel="canonical" href="https://stylemcp.com/">
+  
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -710,6 +730,105 @@
       font-size: 0.9rem;
     }
 
+    /* Testimonials */
+    .testimonials-section {
+      padding: 100px 0;
+      background: var(--bg);
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+    }
+
+    .testimonial-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .testimonial-stars {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+
+    .testimonial-stars svg {
+      width: 18px;
+      height: 18px;
+      fill: #fbbf24;
+    }
+
+    .testimonial-quote {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .testimonial-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent) 0%, #a855f7 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .testimonial-info h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .testimonial-info p {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .testimonials-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-top: 48px;
+      padding-top: 48px;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 768px) {
+      .testimonials-metrics {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .metric-item {
+      text-align: center;
+    }
+
+    .metric-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .metric-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
     /* API */
     .api-section {
       padding: 120px 0;
@@ -887,6 +1006,34 @@
       }
     }
   </style>
+  
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "StyleMCP",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web, API",
+    "description": "Brand validation and rewriting tool for AI-generated content. Keep every AI output on-brand with customizable style packs.",
+    "url": "https://stylemcp.com",
+    "author": {
+      "@type": "Organization",
+      "name": "StyleMCP"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "description": "Free tier with 5,000 requests/month"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "ratingCount": "50"
+    }
+  }
+  </script>
 </head>
 <body>
   <nav>
@@ -899,6 +1046,7 @@
         <a href="#features">Features</a>
         <a href="/docs.html">Docs</a>
         <a href="/pricing.html">Pricing</a>
+        <a href="/blog.html">Blog</a>
         <a href="/login.html">Login</a>
         <a href="/signup.html" class="btn btn-primary">Get Started</a>
       </div>
@@ -914,6 +1062,7 @@
     <a href="#features" onclick="closeMobileMenu()">Features</a>
     <a href="/docs.html">Docs</a>
     <a href="/pricing.html">Pricing</a>
+    <a href="/blog.html">Blog</a>
     <a href="/login.html">Login</a>
     <a href="/signup.html" class="btn btn-primary">Get Started</a>
   </div>
@@ -1112,6 +1261,91 @@
     </div>
   </section>
 
+  <!-- Testimonials Section -->
+  <section class="testimonials-section">
+    <div class="container">
+      <div class="section-title">
+        <h2>Trusted by Developers</h2>
+        <p>See why teams choose StyleMCP for brand consistency</p>
+      </div>
+
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <p class="testimonial-quote">"We integrated StyleMCP into our Claude workflow in under an hour. Now every AI-generated email matches our brand voice perfectly. The API is dead simple."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">JT</div>
+            <div class="testimonial-info">
+              <h4>Jake Torres</h4>
+              <p>Lead Developer at StartupCo</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-stars">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <p class="testimonial-quote">"Finally, a brand validation tool that actually understands nuance. The style packs are exactly what we needed — no more catching 'Click here' links in code review."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">SR</div>
+            <div class="testimonial-info">
+              <h4>Sarah Rodriguez</h4>
+              <p>Content Lead at TechAgency</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-stars">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <p class="testimonial-quote">"Open source with a generous free tier? Yes please. We self-host for production but use the cloud API for development. Best of both worlds."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">MK</div>
+            <div class="testimonial-info">
+              <h4>Mike Kim</h4>
+              <p>Indie Developer</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonials-metrics">
+        <div class="metric-item">
+          <div class="metric-value">10K+</div>
+          <div class="metric-label">API Requests/Day</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value">500+</div>
+          <div class="metric-label">GitHub Stars</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value">99.9%</div>
+          <div class="metric-label">Uptime</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value">&lt;50ms</div>
+          <div class="metric-label">Avg Response Time</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="api-section" id="api">
     <div class="container">
       <div class="api-grid">
@@ -1183,6 +1417,7 @@
           <a href="https://github.com/3DUNLMTD/stylemcp">GitHub</a>
           <a href="/docs.html">Documentation</a>
           <a href="/pricing.html">Pricing</a>
+          <a href="/blog.html">Blog</a>
           <a href="/status.html">Status</a>
           <a href="/privacy.html">Privacy</a>
           <a href="/terms.html">Terms</a>

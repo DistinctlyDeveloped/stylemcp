@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog - StyleMCP</title>
+  <meta name="description" content="Articles about brand consistency, AI content validation, and building better AI-powered workflows.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#0a0a0b;--bg-elevated:#141416;--bg-card:#1a1a1e;--border:#2a2a2e;--text:#fafafa;--text-muted:#a1a1aa;--accent:#6366f1;--accent-hover:#818cf8}
+    body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased}
+    .container{max-width:1000px;margin:0 auto;padding:0 24px}
+    nav{position:fixed;top:0;left:0;right:0;background:rgba(10,10,11,0.8);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:100}
+    nav .container{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1200px}
+    .logo{font-weight:700;font-size:1.25rem;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px}
+    .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--accent) 0%,#a855f7 100%);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700}
+    .nav-links{display:flex;align-items:center;gap:32px}
+    .nav-links a{color:var(--text-muted);text-decoration:none;font-size:0.9rem;font-weight:500;transition:color 0.2s}
+    .nav-links a:hover{color:var(--text)}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;font-weight:500;font-size:0.9rem;text-decoration:none;transition:all 0.2s;cursor:pointer;border:none}
+    .btn-primary{background:var(--accent);color:white}
+    .btn-primary:hover{background:var(--accent-hover)}
+    main{padding:120px 0 80px}
+    .page-header{text-align:center;margin-bottom:60px}
+    h1{font-size:3rem;font-weight:700;margin-bottom:16px}
+    h1 span{background:linear-gradient(135deg,var(--accent) 0%,#a855f7 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .page-header p{color:var(--text-muted);font-size:1.1rem;max-width:600px;margin:0 auto}
+    .posts-grid{display:grid;gap:24px}
+    .post-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:32px;transition:border-color 0.2s}
+    .post-card:hover{border-color:var(--accent)}
+    .post-card a{text-decoration:none;color:inherit}
+    .post-meta{display:flex;gap:16px;margin-bottom:16px;font-size:0.85rem;color:var(--text-muted)}
+    .post-tag{padding:4px 10px;background:rgba(99,102,241,0.1);border-radius:4px;color:var(--accent);font-size:0.75rem;font-weight:500}
+    .post-card h2{font-size:1.5rem;margin-bottom:12px}
+    .post-card h2:hover{color:var(--accent)}
+    .post-card p{color:var(--text-muted)}
+    .read-more{display:inline-flex;align-items:center;gap:6px;margin-top:16px;color:var(--accent);font-weight:500;font-size:0.9rem}
+    .read-more svg{width:16px;height:16px;transition:transform 0.2s}
+    .post-card:hover .read-more svg{transform:translateX(4px)}
+    footer{padding:60px 0;border-top:1px solid var(--border)}
+    .footer-content{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;max-width:1200px;margin:0 auto;padding:0 24px}
+    .footer-links{display:flex;gap:32px}
+    .footer-links a{color:var(--text-muted);text-decoration:none;font-size:0.9rem}
+    .footer-links a:hover{color:var(--text)}
+    .footer-copy{color:var(--text-muted);font-size:0.9rem}
+    @media(max-width:768px){.nav-links{display:none}h1{font-size:2rem}.post-card{padding:24px}}
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="logo"><div class="logo-icon">S</div>StyleMCP</a>
+      <div class="nav-links">
+        <a href="/#features">Features</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="/login.html">Login</a>
+        <a href="/signup.html" class="btn btn-primary">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container">
+      <div class="page-header">
+        <h1>The StyleMCP <span>Blog</span></h1>
+        <p>Articles about brand consistency, AI content validation, and building better AI-powered workflows.</p>
+      </div>
+
+      <div class="posts-grid">
+        <article class="post-card">
+          <a href="#">
+            <div class="post-meta">
+              <span class="post-tag">Guide</span>
+              <span>January 27, 2026</span>
+              <span>5 min read</span>
+            </div>
+            <h2>Why Your AI Outputs Need Brand Rules</h2>
+            <p>AI models are great at generating content, but they don't understand your brand. Here's why brand validation matters and how to implement it in your workflow.</p>
+            <span class="read-more">Read more <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></span>
+          </a>
+        </article>
+
+        <article class="post-card">
+          <a href="#">
+            <div class="post-meta">
+              <span class="post-tag">Tutorial</span>
+              <span>January 25, 2026</span>
+              <span>8 min read</span>
+            </div>
+            <h2>Building Custom Style Packs: A Complete Guide</h2>
+            <p>Learn how to create custom style packs that capture your brand's unique voice, from vocabulary rules to CTA patterns.</p>
+            <span class="read-more">Read more <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></span>
+          </a>
+        </article>
+
+        <article class="post-card">
+          <a href="#">
+            <div class="post-meta">
+              <span class="post-tag">Integration</span>
+              <span>January 22, 2026</span>
+              <span>4 min read</span>
+            </div>
+            <h2>Integrating StyleMCP with Claude via MCP</h2>
+            <p>A step-by-step guide to connecting StyleMCP to Claude using the Model Context Protocol for real-time brand validation.</p>
+            <span class="read-more">Read more <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></span>
+          </a>
+        </article>
+
+        <article class="post-card">
+          <a href="#">
+            <div class="post-meta">
+              <span class="post-tag">Best Practices</span>
+              <span>January 18, 2026</span>
+              <span>6 min read</span>
+            </div>
+            <h2>10 Common Brand Voice Mistakes in AI Content</h2>
+            <p>From "Click here" to exclamation point overuse — the most common brand consistency issues we see and how to fix them.</p>
+            <span class="read-more">Read more <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></span>
+          </a>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="https://github.com/3DUNLMTD/stylemcp">GitHub</a>
+        <a href="/docs.html">Documentation</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="/status.html">Status</a>
+        <a href="/privacy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+      </div>
+      <div class="footer-copy">
+        &copy; 2026 StyleMCP. Open source under MIT license.
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
