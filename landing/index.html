@@ -666,6 +666,46 @@
       content: '💡 ';
     }
 
+    .demo-rewrite {
+      padding: 20px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .demo-rewrite-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .demo-rewrite-header svg {
+      color: #22c55e;
+    }
+
+    .demo-rewrite-content {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .demo-rewrite-changes {
+      margin-top: 12px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .demo-rewrite-changes span {
+      color: #22c55e;
+      font-weight: 500;
+    }
+
     .demo-cta {
       padding: 20px 24px;
       background: var(--bg-elevated);
@@ -1192,9 +1232,9 @@
       <div class="demo-container">
         <div class="demo-input-area">
           <label class="demo-label">Your Content</label>
-          <textarea id="demoInput" class="demo-textarea" placeholder="Click here to learn more about our amazing product features!">Click here to learn more about our amazing product features!</textarea>
+          <textarea id="demoInput" class="demo-textarea" placeholder="We leverage AI to facilitate amazing outcomes!">We leverage AI to facilitate amazing outcomes. Click here to learn more!</textarea>
           <div class="demo-input-footer">
-            <span id="charCount">62</span>/500 characters
+            <span id="charCount">72</span>/500 characters
           </div>
         </div>
         <button id="validateBtn" class="btn btn-primary demo-btn" onclick="validateDemo()">
@@ -1211,6 +1251,14 @@
             <div class="demo-summary" id="summaryBadges"></div>
           </div>
           <div class="demo-violations" id="violationsList"></div>
+          <div class="demo-rewrite" id="rewriteSection" style="display: none;">
+            <div class="demo-rewrite-header">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              Suggested Rewrite
+            </div>
+            <div class="demo-rewrite-content" id="rewriteText"></div>
+            <div class="demo-rewrite-changes" id="rewriteChanges"></div>
+          </div>
           <div class="demo-cta">
             <p>Like what you see? Get unlimited validations with a free account.</p>
             <a href="/signup.html" class="btn btn-primary">Get Started Free →</a>
@@ -1477,16 +1525,26 @@
       btn.disabled = true;
 
       try {
-        const response = await fetch('/api/validate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text })
-        });
+        // Call both validate and rewrite in parallel
+        const [validateRes, rewriteRes] = await Promise.all([
+          fetch('/api/validate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text })
+          }),
+          fetch('/api/rewrite', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text, mode: 'normal' })
+          })
+        ]);
 
-        if (!response.ok) throw new Error('Validation failed');
+        if (!validateRes.ok) throw new Error('Validation failed');
 
-        const data = await response.json();
-        displayResults(data);
+        const validateData = await validateRes.json();
+        const rewriteData = rewriteRes.ok ? await rewriteRes.json() : null;
+
+        displayResults(validateData, rewriteData, text);
       } catch (error) {
         errorDiv.textContent = 'Something went wrong. Please try again.';
         errorDiv.style.display = 'block';
@@ -1496,11 +1554,14 @@
       }
     }
 
-    function displayResults(data) {
+    function displayResults(data, rewriteData, originalText) {
       const resultsDiv = document.getElementById('demoResults');
       const scoreEl = document.getElementById('scoreValue');
       const summaryEl = document.getElementById('summaryBadges');
       const violationsEl = document.getElementById('violationsList');
+      const rewriteSection = document.getElementById('rewriteSection');
+      const rewriteTextEl = document.getElementById('rewriteText');
+      const rewriteChangesEl = document.getElementById('rewriteChanges');
 
       // Score
       const score = data.score || 0;
@@ -1524,6 +1585,7 @@
             <p>Your content passes all brand validation checks.</p>
           </div>
         `;
+        rewriteSection.style.display = 'none';
       } else {
         violationsEl.innerHTML = violations.slice(0, 5).map(v => `
           <div class="violation-item">
@@ -1538,6 +1600,20 @@
 
         if (violations.length > 5) {
           violationsEl.innerHTML += `<p style="text-align:center;color:var(--text-muted);margin-top:12px;">+ ${violations.length - 5} more issues</p>`;
+        }
+
+        // Show rewrite preview if available and different from original
+        if (rewriteData && rewriteData.rewritten && rewriteData.rewritten !== originalText) {
+          rewriteTextEl.textContent = rewriteData.rewritten;
+          const changeCount = rewriteData.changes?.length || 0;
+          if (changeCount > 0) {
+            rewriteChangesEl.innerHTML = `<span>${changeCount}</span> ${changeCount === 1 ? 'change' : 'changes'} applied automatically`;
+          } else {
+            rewriteChangesEl.innerHTML = 'Auto-corrected to match brand voice';
+          }
+          rewriteSection.style.display = 'block';
+        } else {
+          rewriteSection.style.display = 'none';
         }
       }
 
