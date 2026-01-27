@@ -1,0 +1,180 @@
+version: "1.0"
+name: "E-commerce Pack Tests"
+description: "Test cases for the e-commerce style pack"
+
+config:
+  stopOnFirstFailure: false
+  verbose: true
+
+tests:
+  # SHOULD PASS - Good copy
+  - id: pass-add-to-cart
+    name: "Simple add to cart CTA"
+    input: "Add to cart"
+    expect:
+      pass: true
+      minScore: 90
+    tags: ["cta", "cart"]
+
+  - id: pass-friendly-empty-cart
+    name: "Friendly empty cart message"
+    input: "Your cart is empty. Start shopping to find something you'll love."
+    expect:
+      pass: true
+      minScore: 85
+    tags: ["cart", "empty-state"]
+
+  - id: pass-order-confirmation
+    name: "Order confirmation"
+    input: "Order confirmed! We'll email you when it ships."
+    expect:
+      pass: true
+      minScore: 90
+    tags: ["order", "success"]
+
+  - id: pass-low-stock-honest
+    name: "Honest low stock message"
+    input: "Only 3 left in stock"
+    expect:
+      pass: true
+      minScore: 90
+    tags: ["product", "inventory"]
+
+  - id: pass-free-shipping
+    name: "Clear shipping offer"
+    input: "Free shipping on orders over $50"
+    expect:
+      pass: true
+      minScore: 95
+    tags: ["shipping", "promotional"]
+
+  - id: pass-return-instructions
+    name: "Clear return instructions"
+    input: "Return started. Print your label and drop off by December 15."
+    expect:
+      pass: true
+      minScore: 85
+    tags: ["returns", "instructions"]
+
+  - id: pass-product-benefit
+    name: "Product benefit focused"
+    input: "Made from 100% organic cotton. Soft, breathable, and built to last."
+    expect:
+      pass: true
+      minScore: 90
+    tags: ["product", "description"]
+
+  - id: pass-size-help
+    name: "Helpful size guidance"
+    input: "Not sure about sizing? Check our size guide or chat with us."
+    expect:
+      pass: true
+      minScore: 85
+    tags: ["product", "support"]
+
+  # SHOULD FAIL - Bad patterns
+  - id: fail-buy-now
+    name: "Aggressive buy now CTA"
+    input: "BUY NOW!"
+    expect:
+      pass: false
+      maxScore: 60
+      hasViolation: true
+    tags: ["cta", "aggressive"]
+
+  - id: fail-hurry
+    name: "False urgency"
+    input: "Hurry! Only a few left! Act now before it's gone!"
+    expect:
+      pass: false
+      maxScore: 40
+      hasViolation: true
+    tags: ["urgency", "manipulative"]
+
+  - id: fail-click-here
+    name: "Click here anti-pattern"
+    input: "Click here to see our new arrivals"
+    expect:
+      pass: false
+      maxScore: 50
+      hasViolation: true
+    tags: ["cta", "accessibility"]
+
+  - id: fail-fomo
+    name: "FOMO language"
+    input: "Don't miss out on this amazing deal!"
+    expect:
+      pass: false
+      maxScore: 50
+      hasViolation: true
+    tags: ["marketing", "manipulative"]
+
+  - id: fail-cheap
+    name: "Using cheap instead of affordable"
+    input: "Check out our cheap products"
+    expect:
+      pass: false
+      maxScore: 60
+      hasViolation: true
+    tags: ["vocabulary", "tone"]
+
+  - id: fail-exclamation-spam
+    name: "Too many exclamation points"
+    input: "Amazing sale!!! Everything must go!!!"
+    expect:
+      pass: false
+      maxScore: 40
+      hasViolation: true
+    tags: ["punctuation", "tone"]
+
+  - id: fail-corporate-jargon
+    name: "Corporate jargon in product copy"
+    input: "Leverage our innovative solutions to facilitate your lifestyle needs."
+    expect:
+      pass: false
+      maxScore: 30
+      hasViolation: true
+    tags: ["vocabulary", "jargon"]
+
+  - id: fail-vague-cta
+    name: "Vague submit button"
+    input: "Submit"
+    expect:
+      pass: false
+      maxScore: 50
+      hasViolation: true
+    tags: ["cta", "vague"]
+
+  - id: fail-generic-error
+    name: "Generic unhelpful error"
+    input: "Error occurred."
+    expect:
+      pass: false
+      maxScore: 40
+      hasViolation: true
+    tags: ["error", "unhelpful"]
+
+  # EDGE CASES
+  - id: edge-sale-price
+    name: "Sale price display"
+    input: "Was $80, now $60"
+    expect:
+      pass: true
+      minScore: 80
+    tags: ["pricing", "sale"]
+
+  - id: edge-review-prompt
+    name: "Review request timing"
+    input: "Enjoying your purchase? Leave a review."
+    expect:
+      pass: true
+      minScore: 75
+    tags: ["review", "engagement"]
+
+  - id: edge-back-in-stock
+    name: "Back in stock notification"
+    input: "Good news — your saved item is back in stock"
+    expect:
+      pass: true
+      minScore: 85
+    tags: ["notification", "inventory"]

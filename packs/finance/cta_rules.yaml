@@ -1,0 +1,233 @@
+version: "1.0"
+name: "Finance CTA Rules"
+description: "Call-to-action patterns for financial services and fintech"
+
+guidelines:
+  verbStyle: imperative
+  maxWords: 4
+  capitalization: sentence
+  avoidWords:
+    - "Buy now"
+    - "Act fast"
+    - "Don't miss"
+    - "Invest today"
+    - "Get rich"
+    - "Guaranteed"
+    - "Risk-free"
+    - "Click here"
+    - "Submit"
+    - "Limited time"
+    - "Secret"
+    - "Insider"
+  preferWords:
+    - "Learn more"
+    - "Get started"
+    - "Explore"
+    - "Compare"
+    - "Calculate"
+    - "View"
+    - "Open account"
+    - "Transfer"
+    - "Schedule"
+    - "Contact"
+
+categories:
+  - name: "Account Actions"
+    description: "Account management CTAs"
+    ctas:
+      - id: cta-open-account
+        text: "Open account"
+        context: ["onboarding", "product page"]
+        priority: primary
+      - id: cta-apply-now
+        text: "Apply now"
+        context: ["credit card", "loan"]
+        priority: primary
+      - id: cta-get-started
+        text: "Get started"
+        context: ["onboarding", "new feature"]
+        priority: primary
+      - id: cta-sign-in
+        text: "Sign in"
+        context: ["login"]
+        priority: primary
+      - id: cta-view-account
+        text: "View account"
+        context: ["dashboard", "summary"]
+        priority: secondary
+      - id: cta-manage-account
+        text: "Manage account"
+        context: ["settings"]
+        priority: secondary
+
+  - name: "Transactions"
+    description: "Money movement CTAs"
+    ctas:
+      - id: cta-transfer
+        text: "Transfer"
+        context: ["money movement"]
+        priority: primary
+      - id: cta-send-money
+        text: "Send money"
+        context: ["P2P", "transfers"]
+        priority: primary
+      - id: cta-pay
+        text: "Pay"
+        context: ["bills", "payments"]
+        priority: primary
+      - id: cta-pay-bill
+        text: "Pay bill"
+        context: ["bill pay"]
+        priority: primary
+      - id: cta-deposit
+        text: "Deposit"
+        context: ["mobile deposit", "add funds"]
+        priority: primary
+      - id: cta-withdraw
+        text: "Withdraw"
+        context: ["cash out"]
+        priority: secondary
+
+  - name: "Investments"
+    description: "Investment-related CTAs"
+    ctas:
+      - id: cta-invest
+        text: "Invest"
+        context: ["trading", "portfolio"]
+        priority: primary
+      - id: cta-explore-investments
+        text: "Explore investments"
+        context: ["research", "discovery"]
+        priority: secondary
+      - id: cta-view-portfolio
+        text: "View portfolio"
+        context: ["dashboard"]
+        priority: secondary
+      - id: cta-set-up-auto
+        text: "Set up automatic investing"
+        context: ["recurring investments"]
+        priority: secondary
+      - id: cta-compare-options
+        text: "Compare options"
+        context: ["fund selection"]
+        priority: secondary
+
+  - name: "Research & Tools"
+    description: "Information and calculator CTAs"
+    ctas:
+      - id: cta-learn-more
+        text: "Learn more"
+        context: ["educational content"]
+        priority: secondary
+      - id: cta-calculate
+        text: "Calculate"
+        context: ["loan calculator", "projections"]
+        priority: secondary
+      - id: cta-compare
+        text: "Compare"
+        context: ["product comparison"]
+        priority: secondary
+      - id: cta-see-rates
+        text: "See rates"
+        context: ["loan", "savings rates"]
+        priority: secondary
+      - id: cta-check-eligibility
+        text: "Check eligibility"
+        context: ["loan", "credit card"]
+        priority: secondary
+
+  - name: "Support"
+    description: "Help and support CTAs"
+    ctas:
+      - id: cta-contact-us
+        text: "Contact us"
+        context: ["support", "footer"]
+        priority: secondary
+      - id: cta-schedule-call
+        text: "Schedule a call"
+        context: ["advisor", "support"]
+        priority: secondary
+      - id: cta-chat
+        text: "Chat with us"
+        context: ["support widget"]
+        priority: secondary
+      - id: cta-find-branch
+        text: "Find a branch"
+        context: ["locations"]
+        priority: secondary
+      - id: cta-get-help
+        text: "Get help"
+        context: ["support", "FAQ"]
+        priority: secondary
+
+  - name: "Security"
+    description: "Security-related CTAs"
+    ctas:
+      - id: cta-secure-account
+        text: "Secure account"
+        context: ["security alert"]
+        priority: urgent
+      - id: cta-verify-identity
+        text: "Verify identity"
+        context: ["KYC", "security"]
+        priority: primary
+      - id: cta-report-fraud
+        text: "Report fraud"
+        context: ["security", "support"]
+        priority: urgent
+      - id: cta-lock-card
+        text: "Lock card"
+        context: ["card management"]
+        priority: urgent
+
+antiPatterns:
+  - id: anti-guaranteed-returns
+    pattern: "guaranteed.*(return|profit|gain)"
+    severity: error
+    message: "No investment returns can be guaranteed"
+    suggestion: "Use 'potential' or 'historical returns' with disclaimers"
+  - id: anti-risk-free
+    pattern: "risk.free"
+    severity: error
+    message: "All investments carry some risk"
+    suggestion: "Be transparent about risks involved"
+  - id: anti-get-rich
+    pattern: "get rich"
+    severity: error
+    message: "Unrealistic promises damage trust and may violate regulations"
+    suggestion: "Focus on realistic financial planning"
+  - id: anti-double-money
+    pattern: "double your money"
+    severity: error
+    message: "Sounds like a scam"
+    suggestion: "Remove entirely"
+  - id: anti-secret
+    pattern: "secret"
+    severity: warning
+    message: "Implies hidden information, reduces trust"
+    suggestion: "Be transparent and direct"
+  - id: anti-insider
+    pattern: "insider"
+    severity: error
+    message: "Potential securities law implications"
+    suggestion: "Remove entirely"
+  - id: anti-cant-lose
+    pattern: "can't lose"
+    severity: error
+    message: "All investments can lose value"
+    suggestion: "Include appropriate risk disclosures"
+  - id: anti-act-now
+    pattern: "act now"
+    severity: error
+    message: "High-pressure tactics inappropriate for financial decisions"
+    suggestion: "Allow time for informed decision-making"
+  - id: anti-exclamation
+    pattern: "!!!+"
+    severity: error
+    message: "Multiple exclamation points unprofessional for financial content"
+    suggestion: "Use measured, professional language"
+  - id: anti-click-here
+    pattern: "click here"
+    severity: error
+    message: "Poor accessibility and vague"
+    suggestion: "Describe the action: 'View account details'"

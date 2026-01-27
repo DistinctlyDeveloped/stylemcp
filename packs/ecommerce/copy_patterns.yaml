@@ -1,0 +1,189 @@
+version: "1.0"
+name: "E-commerce Copy Patterns"
+description: "Reusable patterns for online retail and DTC brands"
+
+patterns:
+  # CART & CHECKOUT
+  - id: cart-empty
+    name: "Empty Cart"
+    category: cart
+    description: "When the shopping cart is empty"
+    variants:
+      - template: "Your cart is empty. Start shopping to find something you'll love."
+        tone: friendly
+      - template: "Nothing in your cart yet. Browse our collection to get started."
+        tone: neutral
+    guidelines:
+      - "Be encouraging, not guilt-tripping"
+      - "Suggest a next action"
+      - "Never say 'Your cart is lonely'"
+
+  - id: cart-added
+    name: "Item Added to Cart"
+    category: cart
+    description: "Confirmation when item is added"
+    variants:
+      - template: "Added to your cart"
+        tone: minimal
+      - template: "{{product}} is in your cart"
+        tone: friendly
+    guidelines:
+      - "Keep it brief"
+      - "Don't be overly excited"
+
+  - id: checkout-shipping
+    name: "Shipping Options"
+    category: checkout
+    description: "Shipping method descriptions"
+    variants:
+      - template: "Free shipping on orders over {{amount}}"
+        tone: promotional
+      - template: "Arrives by {{date}}"
+        tone: informative
+    guidelines:
+      - "Be specific about delivery dates when possible"
+      - "Clearly state free shipping thresholds"
+
+  - id: checkout-payment-error
+    name: "Payment Failed"
+    category: checkout
+    description: "When payment doesn't go through"
+    variants:
+      - template: "Payment didn't go through. Check your card details and try again."
+        tone: neutral
+      - template: "We couldn't process your payment. Try a different card or payment method."
+        tone: helpful
+    guidelines:
+      - "Don't blame the customer"
+      - "Offer alternatives"
+      - "Never expose specific error codes"
+
+  # ORDER STATUS
+  - id: order-confirmed
+    name: "Order Confirmation"
+    category: order
+    description: "After successful purchase"
+    variants:
+      - template: "Order confirmed! We'll email you when it ships."
+        tone: friendly
+      - template: "Thanks for your order. Confirmation #{{order_id}}"
+        tone: neutral
+    guidelines:
+      - "Express gratitude simply"
+      - "Set expectations for next steps"
+
+  - id: order-shipped
+    name: "Order Shipped"
+    category: order
+    description: "When order leaves warehouse"
+    variants:
+      - template: "Your order is on its way! Track it here."
+        tone: friendly
+      - template: "Shipped. Expected delivery: {{date}}"
+        tone: minimal
+    guidelines:
+      - "Include tracking when available"
+      - "Give estimated delivery"
+
+  - id: order-delivered
+    name: "Order Delivered"
+    category: order
+    description: "Delivery confirmation"
+    variants:
+      - template: "Delivered! We hope you love it."
+        tone: friendly
+      - template: "Your order has been delivered."
+        tone: neutral
+    guidelines:
+      - "Keep it simple"
+      - "Don't immediately ask for reviews"
+
+  # PRODUCT
+  - id: product-out-of-stock
+    name: "Out of Stock"
+    category: product
+    description: "When item is unavailable"
+    variants:
+      - template: "Sold out. Get notified when it's back."
+        tone: neutral
+      - template: "This item is currently unavailable. Sign up to be notified."
+        tone: formal
+    guidelines:
+      - "Offer email notification"
+      - "Don't say 'Sorry' excessively"
+
+  - id: product-low-stock
+    name: "Low Stock"
+    category: product
+    description: "When inventory is limited"
+    variants:
+      - template: "Only {{count}} left"
+        tone: minimal
+      - template: "Low stock — {{count}} remaining"
+        tone: neutral
+    guidelines:
+      - "Be honest about quantities"
+      - "Don't create false urgency"
+      - "Avoid 'Hurry!' or 'Almost gone!'"
+
+  - id: product-back-in-stock
+    name: "Back in Stock"
+    category: product
+    description: "When item becomes available again"
+    variants:
+      - template: "Good news — {{product}} is back in stock"
+        tone: friendly
+      - template: "Back in stock: {{product}}"
+        tone: minimal
+
+  # RETURNS & SUPPORT
+  - id: return-initiated
+    name: "Return Started"
+    category: returns
+    description: "When customer starts a return"
+    variants:
+      - template: "Return started. Print your label and drop off by {{date}}."
+        tone: neutral
+      - template: "We've got your return request. Here's your shipping label."
+        tone: friendly
+    guidelines:
+      - "Provide clear next steps"
+      - "Include deadline if applicable"
+
+  - id: refund-processed
+    name: "Refund Issued"
+    category: returns
+    description: "When refund is complete"
+    variants:
+      - template: "Refund of {{amount}} issued. It may take 5-10 days to appear."
+        tone: neutral
+      - template: "Your refund is on its way. Check your account in 5-10 business days."
+        tone: friendly
+    guidelines:
+      - "Be specific about amount"
+      - "Set timeline expectations"
+
+  # ACCOUNT
+  - id: wishlist-added
+    name: "Added to Wishlist"
+    category: account
+    description: "When item is saved"
+    variants:
+      - template: "Saved to your wishlist"
+        tone: minimal
+      - template: "Added to wishlist. We'll let you know if it goes on sale."
+        tone: friendly
+
+  - id: newsletter-signup
+    name: "Newsletter Confirmation"
+    category: account
+    description: "After email signup"
+    variants:
+      - template: "You're in! Check your inbox for a welcome offer."
+        tone: friendly
+      - template: "Thanks for subscribing. You'll hear from us soon."
+        tone: neutral
+    guidelines:
+      - "Mention any welcome discount"
+      - "Set expectations for frequency"
+      - "Don't overpromise"

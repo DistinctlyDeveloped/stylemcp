@@ -1,0 +1,218 @@
+version: "1.0"
+name: "Finance Copy Patterns"
+description: "Reusable patterns for financial services and fintech"
+
+patterns:
+  # ACCOUNTS & ONBOARDING
+  - id: account-opened
+    name: "Account Opened"
+    category: accounts
+    description: "New account confirmation"
+    variants:
+      - template: "Account opened. Your account number is {{account_number}}."
+        tone: neutral
+      - template: "Welcome! Your new account is ready. Here's what you can do next."
+        tone: friendly
+    guidelines:
+      - "Confirm account details"
+      - "Provide clear next steps"
+      - "Include security reminders"
+
+  - id: kyc-required
+    name: "KYC Verification Required"
+    category: accounts
+    description: "Identity verification request"
+    variants:
+      - template: "To complete your account setup, we need to verify your identity. This usually takes 2-3 business days."
+        tone: neutral
+      - template: "One more step: verify your identity to unlock full account access."
+        tone: friendly
+    guidelines:
+      - "Explain why verification is needed"
+      - "Set clear timeline expectations"
+      - "List required documents"
+
+  - id: account-locked
+    name: "Account Locked"
+    category: accounts
+    description: "Security lock notification"
+    variants:
+      - template: "Your account has been temporarily locked for your protection. Contact us to restore access."
+        tone: neutral
+      - template: "We've secured your account due to unusual activity. Call us to verify and unlock."
+        tone: concerned
+    guidelines:
+      - "Explain it's for protection"
+      - "Provide clear unlock steps"
+      - "Include contact information"
+
+  # TRANSACTIONS
+  - id: transaction-success
+    name: "Transaction Successful"
+    category: transactions
+    description: "Payment or transfer completed"
+    variants:
+      - template: "Transfer complete. {{amount}} sent to {{recipient}}."
+        tone: minimal
+      - template: "Done! {{amount}} has been transferred to {{recipient}}. Confirmation #{{ref}}"
+        tone: friendly
+    guidelines:
+      - "Confirm amount and recipient"
+      - "Include confirmation number"
+      - "Show estimated arrival if applicable"
+
+  - id: transaction-pending
+    name: "Transaction Pending"
+    category: transactions
+    description: "Payment being processed"
+    variants:
+      - template: "Transfer pending. Expected to complete by {{date}}."
+        tone: neutral
+      - template: "Your transfer is being processed. It should arrive by {{date}}."
+        tone: friendly
+    guidelines:
+      - "Set clear timeline"
+      - "Explain any holds"
+
+  - id: transaction-failed
+    name: "Transaction Failed"
+    category: transactions
+    description: "Payment or transfer didn't go through"
+    variants:
+      - template: "Transfer couldn't be completed. {{reason}}. No money was moved from your account."
+        tone: neutral
+      - template: "This transfer didn't go through: {{reason}}. Your balance is unchanged."
+        tone: reassuring
+    guidelines:
+      - "Be clear about the reason"
+      - "Confirm no money was lost"
+      - "Suggest next steps"
+
+  - id: low-balance
+    name: "Low Balance Alert"
+    category: transactions
+    description: "Balance warning notification"
+    variants:
+      - template: "Your {{account}} balance is {{amount}}. Consider transferring funds to avoid overdraft fees."
+        tone: neutral
+      - template: "Heads up: Your balance is low ({{amount}}). Add funds to avoid fees."
+        tone: friendly
+    guidelines:
+      - "Be helpful, not alarming"
+      - "Suggest action"
+      - "Don't use scare tactics"
+
+  # INVESTMENTS
+  - id: investment-disclaimer
+    name: "Investment Disclaimer"
+    category: investments
+    description: "Standard investment risk disclosure"
+    variants:
+      - template: "Past performance does not guarantee future results. Investments can lose value."
+        tone: formal
+      - template: "All investments carry risk, including potential loss of principal. Past returns don't guarantee future results."
+        tone: neutral
+    guidelines:
+      - "Always include with performance data"
+      - "Keep visible and clear"
+      - "Don't minimize or hide"
+
+  - id: portfolio-update
+    name: "Portfolio Update"
+    category: investments
+    description: "Investment performance summary"
+    variants:
+      - template: "Your portfolio {{direction}} {{percent}}% this month. View details in your account."
+        tone: neutral
+    guidelines:
+      - "Be factual, not emotional"
+      - "Include time period"
+      - "Link to more details"
+
+  - id: dividend-received
+    name: "Dividend Received"
+    category: investments
+    description: "Dividend payment notification"
+    variants:
+      - template: "Dividend received: {{amount}} from {{holding}}. Deposited to your account."
+        tone: neutral
+    guidelines:
+      - "Specify source and amount"
+      - "Confirm where it was deposited"
+
+  # FEES & BILLING
+  - id: fee-charged
+    name: "Fee Charged"
+    category: billing
+    description: "Fee notification"
+    variants:
+      - template: "{{fee_type}} of {{amount}} was charged to your account on {{date}}."
+        tone: neutral
+      - template: "A {{amount}} {{fee_type}} has been applied to your account."
+        tone: neutral
+    guidelines:
+      - "Be transparent about fees"
+      - "Explain what fee is for"
+      - "Mention how to avoid if possible"
+
+  - id: fee-waived
+    name: "Fee Waived"
+    category: billing
+    description: "Fee waiver notification"
+    variants:
+      - template: "Good news: Your {{fee_type}} has been waived this month."
+        tone: friendly
+      - template: "{{fee_type}} waived. No charge this period."
+        tone: minimal
+    guidelines:
+      - "Explain why it was waived if applicable"
+      - "Note conditions to continue waiver"
+
+  # SECURITY
+  - id: login-alert
+    name: "New Login Alert"
+    category: security
+    description: "Unrecognized login notification"
+    variants:
+      - template: "New login to your account from {{device}} in {{location}}. If this wasn't you, secure your account now."
+        tone: urgent
+    guidelines:
+      - "Provide device/location details"
+      - "Make action clear and easy"
+      - "Include secure link"
+
+  - id: password-changed
+    name: "Password Changed"
+    category: security
+    description: "Password change confirmation"
+    variants:
+      - template: "Your password was changed on {{date}}. If you didn't make this change, contact us immediately."
+        tone: neutral
+    guidelines:
+      - "Include timestamp"
+      - "Provide contact info for issues"
+
+  # SUPPORT
+  - id: dispute-received
+    name: "Dispute Received"
+    category: support
+    description: "Transaction dispute acknowledgment"
+    variants:
+      - template: "We've received your dispute for {{amount}} on {{date}}. We'll review and respond within 10 business days."
+        tone: neutral
+    guidelines:
+      - "Confirm dispute details"
+      - "Set timeline expectations"
+      - "Explain next steps"
+
+  - id: dispute-resolved
+    name: "Dispute Resolved"
+    category: support
+    description: "Dispute resolution notification"
+    variants:
+      - template: "Your dispute has been resolved. {{outcome}}. {{amount}} has been {{action}} your account."
+        tone: neutral
+    guidelines:
+      - "Clearly state outcome"
+      - "Confirm any credits/debits"
+      - "Explain reasoning if denied"

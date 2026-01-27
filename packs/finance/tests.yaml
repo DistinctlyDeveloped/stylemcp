@@ -1,0 +1,189 @@
+version: "1.0"
+name: "Finance Pack Tests"
+description: "Test cases for the finance style pack"
+
+config:
+  stopOnFirstFailure: false
+  verbose: true
+
+tests:
+  # SHOULD PASS - Good finance copy
+  - id: pass-historical-returns
+    name: "Proper historical returns disclosure"
+    input: "This fund returned 8.5% last year. Past performance does not guarantee future results."
+    expect:
+      pass: true
+      minScore: 90
+    tags: ["investments", "compliant"]
+
+  - id: pass-risk-disclosure
+    name: "Clear risk disclosure"
+    input: "All investments carry risk, including potential loss of principal."
+    expect:
+      pass: true
+      minScore: 95
+    tags: ["disclosure", "compliant"]
+
+  - id: pass-transfer-confirm
+    name: "Clear transfer confirmation"
+    input: "Transfer complete. $500.00 sent to John Smith. Confirmation #TRX-12345."
+    expect:
+      pass: true
+      minScore: 95
+    tags: ["transaction", "clear"]
+
+  - id: pass-low-balance-helpful
+    name: "Helpful low balance alert"
+    input: "Your checking balance is $45.00. Consider transferring funds to avoid overdraft fees."
+    expect:
+      pass: true
+      minScore: 85
+    tags: ["alert", "helpful"]
+
+  - id: pass-fee-transparent
+    name: "Transparent fee disclosure"
+    input: "Monthly maintenance fee of $12.00 was charged to your account on January 1."
+    expect:
+      pass: true
+      minScore: 90
+    tags: ["fees", "transparent"]
+
+  - id: pass-security-alert
+    name: "Clear security alert"
+    input: "New login detected from Chrome on Windows in Chicago, IL. If this wasn't you, secure your account now."
+    expect:
+      pass: true
+      minScore: 90
+    tags: ["security", "actionable"]
+
+  - id: pass-potential-returns
+    name: "Using potential instead of guaranteed"
+    input: "Based on historical data, this portfolio has the potential to grow over time."
+    expect:
+      pass: true
+      minScore: 85
+    tags: ["investments", "appropriate"]
+
+  - id: pass-account-locked
+    name: "Account locked with clear next steps"
+    input: "Your account has been temporarily locked for your protection. Contact us at 1-800-XXX-XXXX to restore access."
+    expect:
+      pass: true
+      minScore: 85
+    tags: ["security", "actionable"]
+
+  # SHOULD FAIL - Non-compliant finance copy
+  - id: fail-guaranteed-returns
+    name: "Guaranteed returns claim"
+    input: "Guaranteed 10% returns on your investment!"
+    expect:
+      pass: false
+      maxScore: 20
+      hasViolation: true
+    tags: ["guarantee", "non-compliant"]
+
+  - id: fail-risk-free
+    name: "Risk-free investment claim"
+    input: "Invest in our risk-free portfolio today."
+    expect:
+      pass: false
+      maxScore: 30
+      hasViolation: true
+    tags: ["risk", "misleading"]
+
+  - id: fail-get-rich
+    name: "Get rich quick language"
+    input: "Get rich quick with our investment strategy!"
+    expect:
+      pass: false
+      maxScore: 20
+      hasViolation: true
+    tags: ["scam", "inappropriate"]
+
+  - id: fail-double-money
+    name: "Double your money claim"
+    input: "Double your money in just 6 months!"
+    expect:
+      pass: false
+      maxScore: 20
+      hasViolation: true
+    tags: ["scam", "misleading"]
+
+  - id: fail-secret-strategy
+    name: "Secret strategy language"
+    input: "Discover the secret strategy Wall Street doesn't want you to know."
+    expect:
+      pass: false
+      maxScore: 40
+      hasViolation: true
+    tags: ["secret", "inappropriate"]
+
+  - id: fail-insider
+    name: "Insider information language"
+    input: "Get insider tips on the best stocks to buy."
+    expect:
+      pass: false
+      maxScore: 30
+      hasViolation: true
+    tags: ["insider", "illegal"]
+
+  - id: fail-cant-lose
+    name: "Can't lose claim"
+    input: "With this strategy, you can't lose!"
+    expect:
+      pass: false
+      maxScore: 30
+      hasViolation: true
+    tags: ["misleading", "non-compliant"]
+
+  - id: fail-act-now
+    name: "High-pressure tactics"
+    input: "Act now! This investment opportunity won't last!"
+    expect:
+      pass: false
+      maxScore: 40
+      hasViolation: true
+    tags: ["pressure", "inappropriate"]
+
+  - id: fail-exclamation-spam
+    name: "Unprofessional exclamation use"
+    input: "Your balance grew 5%!!! Amazing gains!!!"
+    expect:
+      pass: false
+      maxScore: 50
+      hasViolation: true
+    tags: ["tone", "unprofessional"]
+
+  - id: fail-click-here
+    name: "Click here anti-pattern"
+    input: "Click here to view your account"
+    expect:
+      pass: false
+      maxScore: 60
+      hasViolation: true
+    tags: ["accessibility", "vague"]
+
+  # EDGE CASES
+  - id: edge-market-volatility
+    name: "Appropriate volatility warning"
+    input: "Markets are volatile. Your investment value may fluctuate significantly in the short term."
+    expect:
+      pass: true
+      minScore: 85
+    tags: ["warning", "appropriate"]
+
+  - id: edge-projection-disclaimer
+    name: "Projection with disclaimer"
+    input: "Based on current contributions, you could have $500,000 by retirement. This is a projection, not a guarantee."
+    expect:
+      pass: true
+      minScore: 80
+    tags: ["projection", "disclaimed"]
+
+  - id: edge-rate-change
+    name: "Interest rate change notice"
+    input: "Your savings APY will change from 4.5% to 4.25% effective February 1."
+    expect:
+      pass: true
+      minScore: 90
+    tags: ["rates", "transparent"]

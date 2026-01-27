@@ -1,0 +1,199 @@
+version: "1.0"
+name: "Healthcare CTA Rules"
+description: "Call-to-action patterns for healthcare and wellness brands"
+
+guidelines:
+  verbStyle: imperative
+  maxWords: 5
+  capitalization: sentence
+  avoidWords:
+    - "Buy now"
+    - "Act fast"
+    - "Don't wait"
+    - "Order today"
+    - "Limited time"
+    - "Guaranteed"
+    - "Miracle"
+    - "Cure"
+    - "Click here"
+    - "Submit"
+  preferWords:
+    - "Learn more"
+    - "Talk to your doctor"
+    - "Find a provider"
+    - "Schedule"
+    - "Get started"
+    - "Explore options"
+    - "View"
+    - "Contact"
+    - "Request"
+    - "Sign up"
+
+categories:
+  - name: "Primary Actions"
+    description: "Main healthcare CTAs"
+    ctas:
+      - id: cta-schedule
+        text: "Schedule appointment"
+        context: ["provider page", "services"]
+        priority: primary
+        action: "book appointment"
+      - id: cta-schedule-now
+        text: "Schedule now"
+        context: ["urgent care", "availability shown"]
+        priority: primary
+      - id: cta-find-provider
+        text: "Find a provider"
+        context: ["directory", "homepage"]
+        priority: primary
+      - id: cta-find-doctor
+        text: "Find a doctor"
+        context: ["directory", "search"]
+        priority: primary
+      - id: cta-get-care
+        text: "Get care"
+        context: ["telehealth", "urgent care"]
+        priority: primary
+      - id: cta-start-visit
+        text: "Start virtual visit"
+        context: ["telehealth"]
+        priority: primary
+
+  - name: "Information Seeking"
+    description: "Learning and research CTAs"
+    ctas:
+      - id: cta-learn-more
+        text: "Learn more"
+        context: ["condition info", "treatment options"]
+        priority: secondary
+      - id: cta-read-more
+        text: "Read more"
+        context: ["articles", "health library"]
+        priority: secondary
+      - id: cta-explore-options
+        text: "Explore treatment options"
+        context: ["condition pages"]
+        priority: secondary
+      - id: cta-view-services
+        text: "View services"
+        context: ["department pages"]
+        priority: secondary
+      - id: cta-check-symptoms
+        text: "Check symptoms"
+        context: ["symptom checker tool"]
+        priority: secondary
+
+  - name: "Patient Portal"
+    description: "Portal and account CTAs"
+    ctas:
+      - id: cta-sign-in
+        text: "Sign in"
+        context: ["patient portal"]
+        priority: primary
+      - id: cta-view-results
+        text: "View results"
+        context: ["test results notification"]
+        priority: primary
+      - id: cta-message-provider
+        text: "Message your provider"
+        context: ["patient portal"]
+        priority: secondary
+      - id: cta-request-refill
+        text: "Request refill"
+        context: ["prescriptions"]
+        priority: secondary
+      - id: cta-pay-bill
+        text: "Pay bill"
+        context: ["billing"]
+        priority: secondary
+      - id: cta-view-records
+        text: "View health records"
+        context: ["patient portal"]
+        priority: secondary
+
+  - name: "Support & Contact"
+    description: "Help and contact CTAs"
+    ctas:
+      - id: cta-contact-us
+        text: "Contact us"
+        context: ["footer", "support"]
+        priority: secondary
+      - id: cta-call-now
+        text: "Call now"
+        context: ["urgent contact"]
+        priority: primary
+      - id: cta-chat
+        text: "Chat with us"
+        context: ["support widget"]
+        priority: secondary
+      - id: cta-get-directions
+        text: "Get directions"
+        context: ["location pages"]
+        priority: secondary
+      - id: cta-talk-to-doctor
+        text: "Talk to your doctor"
+        context: ["health content", "treatment info"]
+        priority: secondary
+
+  - name: "Emergency"
+    description: "Emergency and urgent CTAs"
+    ctas:
+      - id: cta-call-911
+        text: "Call 911"
+        context: ["emergency warning"]
+        priority: urgent
+      - id: cta-emergency-room
+        text: "Find emergency room"
+        context: ["emergency info"]
+        priority: urgent
+      - id: cta-urgent-care
+        text: "Find urgent care"
+        context: ["after-hours"]
+        priority: primary
+
+antiPatterns:
+  - id: anti-cure
+    pattern: "cure"
+    severity: error
+    message: "Avoid cure claims unless FDA-approved"
+    suggestion: "Use 'may help manage' or 'supports'"
+  - id: anti-guaranteed
+    pattern: "guaranteed"
+    severity: error
+    message: "No medical outcome can be guaranteed"
+    suggestion: "Remove guarantee language"
+  - id: anti-miracle
+    pattern: "miracle"
+    severity: error
+    message: "Unsubstantiated claim"
+    suggestion: "Focus on evidence-based benefits"
+  - id: anti-act-fast
+    pattern: "act fast"
+    severity: error
+    message: "Pressure tactics are inappropriate for health decisions"
+    suggestion: "Allow patients time to make informed decisions"
+  - id: anti-risk-free
+    pattern: "risk.free"
+    severity: error
+    message: "All treatments have potential risks"
+    suggestion: "Be transparent about risks and side effects"
+  - id: anti-no-side-effects
+    pattern: "no side effects"
+    severity: error
+    message: "All treatments may have side effects"
+    suggestion: "List common side effects transparently"
+  - id: anti-clinically-proven
+    pattern: "clinically proven"
+    severity: warning
+    message: "Requires specific clinical trial data"
+    suggestion: "Cite specific studies or remove claim"
+  - id: anti-click-here
+    pattern: "click here"
+    severity: error
+    message: "Poor accessibility and vague"
+    suggestion: "Describe the action: 'Learn about treatment options'"
+  - id: anti-buy-now
+    pattern: "buy now"
+    severity: error
+    message: "Inappropriate sales language for healthcare"
+    suggestion: "Use 'Get started' or 'Learn more'"

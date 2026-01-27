@@ -6,6 +6,10 @@ license: MIT
 
 files:
   voice: voice.yaml
+  copyPatterns: copy_patterns.yaml
+  ctaRules: cta_rules.yaml
+  tokens: tokens.json
+  tests: tests.yaml
 
 config:
   strictMode: true

@@ -1,0 +1,218 @@
+version: "1.0"
+name: "E-commerce CTA Rules"
+description: "Call-to-action patterns for online retail and DTC brands"
+
+guidelines:
+  verbStyle: imperative
+  maxWords: 4
+  capitalization: sentence
+  avoidWords:
+    - "Buy now"
+    - "Purchase"
+    - "Click here"
+    - "Submit"
+    - "Act now"
+    - "Don't miss"
+    - "Limited time"
+    - "Hurry"
+    - "Order now"
+    - "Buy it"
+    - "Get it now"
+  preferWords:
+    - "Add to cart"
+    - "Shop"
+    - "Get"
+    - "View"
+    - "Explore"
+    - "Discover"
+    - "Find"
+    - "See"
+    - "Save"
+    - "Continue"
+    - "Checkout"
+
+categories:
+  - name: "Shopping Actions"
+    description: "Main shopping CTAs"
+    ctas:
+      - id: cta-add-cart
+        text: "Add to cart"
+        context: ["product page", "quick add"]
+        priority: primary
+        action: "add item to cart"
+      - id: cta-add-bag
+        text: "Add to bag"
+        context: ["fashion", "apparel"]
+        priority: primary
+      - id: cta-shop-now
+        text: "Shop now"
+        context: ["promotional banner", "category"]
+        priority: primary
+      - id: cta-shop-collection
+        text: "Shop the collection"
+        context: ["curated set", "lookbook"]
+        priority: primary
+      - id: cta-view-product
+        text: "View details"
+        context: ["product card", "grid"]
+        priority: secondary
+      - id: cta-quick-view
+        text: "Quick view"
+        context: ["product grid"]
+        priority: secondary
+
+  - name: "Checkout Flow"
+    description: "Cart and checkout CTAs"
+    ctas:
+      - id: cta-checkout
+        text: "Checkout"
+        context: ["cart page"]
+        priority: primary
+      - id: cta-continue-checkout
+        text: "Continue to checkout"
+        context: ["cart drawer", "mini cart"]
+        priority: primary
+      - id: cta-view-cart
+        text: "View cart"
+        context: ["add to cart confirmation"]
+        priority: secondary
+      - id: cta-continue-shopping
+        text: "Continue shopping"
+        context: ["cart page", "order confirmation"]
+        priority: secondary
+      - id: cta-place-order
+        text: "Place order"
+        context: ["checkout final step"]
+        priority: primary
+      - id: cta-complete-purchase
+        text: "Complete purchase"
+        context: ["checkout final step"]
+        priority: primary
+      - id: cta-pay-now
+        text: "Pay now"
+        context: ["express checkout"]
+        priority: primary
+
+  - name: "Discovery"
+    description: "Browsing and exploration CTAs"
+    ctas:
+      - id: cta-explore
+        text: "Explore"
+        context: ["homepage", "category landing"]
+        priority: secondary
+      - id: cta-discover
+        text: "Discover more"
+        context: ["recommendations"]
+        priority: secondary
+      - id: cta-see-all
+        text: "See all"
+        context: ["product grid", "collection preview"]
+        priority: secondary
+      - id: cta-browse
+        text: "Browse {{category}}"
+        context: ["navigation", "homepage"]
+        priority: secondary
+      - id: cta-find-size
+        text: "Find your size"
+        context: ["size guide"]
+        priority: secondary
+
+  - name: "Account & Wishlist"
+    description: "Account-related CTAs"
+    ctas:
+      - id: cta-save
+        text: "Save for later"
+        context: ["product page", "cart"]
+        priority: secondary
+      - id: cta-wishlist
+        text: "Add to wishlist"
+        context: ["product page"]
+        priority: secondary
+      - id: cta-heart
+        text: "♡"
+        context: ["product card icon"]
+        priority: secondary
+      - id: cta-notify
+        text: "Notify me"
+        context: ["out of stock"]
+        priority: secondary
+      - id: cta-sign-in
+        text: "Sign in"
+        context: ["header", "checkout"]
+        priority: secondary
+      - id: cta-create-account
+        text: "Create account"
+        context: ["checkout", "signup page"]
+        priority: secondary
+
+  - name: "Support"
+    description: "Help and support CTAs"
+    ctas:
+      - id: cta-track-order
+        text: "Track order"
+        context: ["account", "email"]
+        priority: secondary
+      - id: cta-start-return
+        text: "Start a return"
+        context: ["order details", "help center"]
+        priority: secondary
+      - id: cta-contact-us
+        text: "Contact us"
+        context: ["footer", "help"]
+        priority: secondary
+      - id: cta-chat
+        text: "Chat with us"
+        context: ["support widget"]
+        priority: secondary
+
+  - name: "Marketing"
+    description: "Promotional and marketing CTAs"
+    ctas:
+      - id: cta-get-discount
+        text: "Get {{percent}} off"
+        context: ["popup", "email signup"]
+        priority: primary
+      - id: cta-claim-offer
+        text: "Claim offer"
+        context: ["promotional banner"]
+        priority: primary
+      - id: cta-subscribe
+        text: "Subscribe"
+        context: ["newsletter"]
+        priority: secondary
+      - id: cta-join
+        text: "Join"
+        context: ["loyalty program", "newsletter"]
+        priority: secondary
+
+antiPatterns:
+  - id: anti-buy-now
+    pattern: "Buy now"
+    severity: warning
+    message: "Too aggressive. Consider 'Add to cart' or 'Shop now'"
+    suggestion: "Add to cart"
+  - id: anti-purchase
+    pattern: "Purchase"
+    severity: warning
+    message: "Formal and transactional. Use friendlier language"
+    suggestion: "Get"
+  - id: anti-hurry
+    pattern: "Hurry"
+    severity: error
+    message: "Creates false urgency and can feel manipulative"
+    suggestion: "Remove urgency language"
+  - id: anti-dont-miss
+    pattern: "Don't miss"
+    severity: warning
+    message: "FOMO tactics can reduce trust"
+    suggestion: "Focus on product benefits instead"
+  - id: anti-act-now
+    pattern: "Act now"
+    severity: error
+    message: "High-pressure sales tactic"
+    suggestion: "Remove or replace with product benefit"
+  - id: anti-click-here
+    pattern: "Click here"
+    severity: error
+    message: "Poor accessibility and vague"
+    suggestion: "Describe the action: 'View details' or 'Shop now'"

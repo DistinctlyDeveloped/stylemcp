@@ -1,0 +1,175 @@
+version: "1.0"
+name: "Healthcare Copy Patterns"
+description: "Reusable patterns for healthcare, medical, and wellness brands"
+
+patterns:
+  # APPOINTMENTS & SCHEDULING
+  - id: appointment-confirmed
+    name: "Appointment Confirmation"
+    category: appointments
+    description: "After booking an appointment"
+    variants:
+      - template: "Appointment confirmed for {{date}} at {{time}} with {{provider}}."
+        tone: neutral
+      - template: "You're all set. See you on {{date}} at {{time}}."
+        tone: friendly
+    guidelines:
+      - "Include all relevant details"
+      - "Mention any preparation needed"
+      - "Provide cancellation/reschedule info"
+
+  - id: appointment-reminder
+    name: "Appointment Reminder"
+    category: appointments
+    description: "Reminders before appointments"
+    variants:
+      - template: "Reminder: You have an appointment on {{date}} at {{time}}."
+        tone: neutral
+      - template: "Just a reminder — your appointment is coming up on {{date}}."
+        tone: friendly
+    guidelines:
+      - "Send with enough notice"
+      - "Include location or video link"
+      - "Mention what to bring"
+
+  - id: appointment-cancelled
+    name: "Appointment Cancelled"
+    category: appointments
+    description: "When appointment is cancelled"
+    variants:
+      - template: "Your appointment on {{date}} has been cancelled. Please reschedule at your convenience."
+        tone: neutral
+      - template: "We've cancelled your {{date}} appointment. Let us know when you'd like to reschedule."
+        tone: friendly
+    guidelines:
+      - "Be clear about what was cancelled"
+      - "Make rescheduling easy"
+
+  # HEALTH INFORMATION
+  - id: treatment-info
+    name: "Treatment Information"
+    category: health-info
+    description: "Explaining treatments or procedures"
+    variants:
+      - template: "{{treatment}} may help with {{condition}}. Talk to your doctor to see if it's right for you."
+        tone: neutral
+    guidelines:
+      - "Never promise outcomes"
+      - "Always suggest consulting a healthcare provider"
+      - "Use 'may help' not 'will cure'"
+      - "Be clear about limitations"
+
+  - id: side-effects
+    name: "Side Effects Information"
+    category: health-info
+    description: "Discussing potential side effects"
+    variants:
+      - template: "Common side effects may include {{effects}}. Contact your healthcare provider if you experience severe symptoms."
+        tone: neutral
+    guidelines:
+      - "Be transparent about risks"
+      - "Distinguish common from serious"
+      - "Provide clear action steps"
+
+  - id: disclaimer
+    name: "Medical Disclaimer"
+    category: health-info
+    description: "Standard health information disclaimer"
+    variants:
+      - template: "This information is for educational purposes only and is not a substitute for professional medical advice. Always consult your healthcare provider."
+        tone: formal
+      - template: "Not medical advice. Talk to your doctor before making health decisions."
+        tone: minimal
+    guidelines:
+      - "Include on all health content"
+      - "Keep visible and readable"
+
+  # PATIENT COMMUNICATION
+  - id: test-results-ready
+    name: "Test Results Available"
+    category: patient-comm
+    description: "Notifying patients of available results"
+    variants:
+      - template: "Your test results are ready. Log in to view them or schedule a follow-up with your provider."
+        tone: neutral
+      - template: "Your results from {{date}} are now available in your patient portal."
+        tone: formal
+    guidelines:
+      - "Don't include results in notification"
+      - "Provide clear access instructions"
+      - "Suggest follow-up if appropriate"
+
+  - id: prescription-ready
+    name: "Prescription Ready"
+    category: patient-comm
+    description: "Pharmacy pickup notification"
+    variants:
+      - template: "Your prescription is ready for pickup at {{pharmacy}}."
+        tone: neutral
+      - template: "{{medication}} is ready at {{pharmacy}}. Pick up by {{date}}."
+        tone: minimal
+    guidelines:
+      - "Include pharmacy location"
+      - "Mention any time constraints"
+
+  - id: refill-reminder
+    name: "Refill Reminder"
+    category: patient-comm
+    description: "Medication refill reminders"
+    variants:
+      - template: "Time to refill your {{medication}}. Request a refill through your patient portal or call your pharmacy."
+        tone: neutral
+    guidelines:
+      - "Give enough advance notice"
+      - "Provide refill instructions"
+
+  # ACCOUNT & ACCESS
+  - id: patient-portal-welcome
+    name: "Patient Portal Welcome"
+    category: account
+    description: "New patient portal user"
+    variants:
+      - template: "Welcome to your patient portal. Here you can view appointments, message your care team, and access your health records."
+        tone: friendly
+    guidelines:
+      - "Explain key features"
+      - "Provide help resources"
+
+  - id: hipaa-consent
+    name: "HIPAA Consent"
+    category: account
+    description: "Privacy consent explanation"
+    variants:
+      - template: "Your privacy matters. We protect your health information according to HIPAA regulations. Read our privacy practices."
+        tone: neutral
+    guidelines:
+      - "Be clear about data use"
+      - "Link to full policy"
+
+  # SUPPORT
+  - id: emergency-redirect
+    name: "Emergency Redirect"
+    category: support
+    description: "When user may need emergency care"
+    variants:
+      - template: "If this is a medical emergency, call 911 or go to your nearest emergency room."
+        tone: urgent
+      - template: "For emergencies, call 911. For urgent but non-emergency concerns, contact your provider."
+        tone: neutral
+    guidelines:
+      - "Always include for symptom checkers"
+      - "Make 911 prominent"
+      - "Don't delay display"
+
+  - id: contact-provider
+    name: "Contact Your Provider"
+    category: support
+    description: "Encouraging professional consultation"
+    variants:
+      - template: "Have questions? Contact your healthcare provider for personalized guidance."
+        tone: friendly
+      - template: "Talk to your doctor or care team if you have concerns."
+        tone: neutral
+    guidelines:
+      - "Use frequently throughout health content"
+      - "Make contact info easy to find"

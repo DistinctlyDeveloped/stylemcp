@@ -1,0 +1,189 @@
+version: "1.0"
+name: "Healthcare Pack Tests"
+description: "Test cases for the healthcare style pack"
+
+config:
+  stopOnFirstFailure: false
+  verbose: true
+
+tests:
+  # SHOULD PASS - Good healthcare copy
+  - id: pass-may-help
+    name: "Appropriate treatment language"
+    input: "This treatment may help manage symptoms. Talk to your doctor to see if it's right for you."
+    expect:
+      pass: true
+      minScore: 90
+    tags: ["treatment", "compliant"]
+
+  - id: pass-person-first
+    name: "Person-first language"
+    input: "People with diabetes can benefit from regular monitoring."
+    expect:
+      pass: true
+      minScore: 90
+    tags: ["language", "inclusive"]
+
+  - id: pass-clear-disclaimer
+    name: "Clear medical disclaimer"
+    input: "This information is for educational purposes only and is not a substitute for professional medical advice."
+    expect:
+      pass: true
+      minScore: 95
+    tags: ["disclaimer", "compliant"]
+
+  - id: pass-side-effects
+    name: "Transparent side effects"
+    input: "Common side effects may include headache and nausea. Contact your healthcare provider if symptoms persist."
+    expect:
+      pass: true
+      minScore: 85
+    tags: ["side-effects", "transparent"]
+
+  - id: pass-appointment-confirm
+    name: "Clear appointment confirmation"
+    input: "Appointment confirmed for January 15 at 2:00 PM with Dr. Smith."
+    expect:
+      pass: true
+      minScore: 95
+    tags: ["appointment", "clear"]
+
+  - id: pass-emergency-warning
+    name: "Proper emergency redirect"
+    input: "If this is a medical emergency, call 911 or go to your nearest emergency room."
+    expect:
+      pass: true
+      minScore: 95
+    tags: ["emergency", "safety"]
+
+  - id: pass-consult-doctor
+    name: "Encouraging professional consultation"
+    input: "Talk to your doctor about whether this medication is right for you."
+    expect:
+      pass: true
+      minScore: 90
+    tags: ["consultation", "appropriate"]
+
+  - id: pass-results-available
+    name: "Test results notification"
+    input: "Your test results are ready. Log in to view them or schedule a follow-up with your provider."
+    expect:
+      pass: true
+      minScore: 90
+    tags: ["results", "portal"]
+
+  # SHOULD FAIL - Non-compliant healthcare copy
+  - id: fail-cure-claim
+    name: "Unsubstantiated cure claim"
+    input: "This supplement cures diabetes naturally."
+    expect:
+      pass: false
+      maxScore: 30
+      hasViolation: true
+    tags: ["cure", "non-compliant"]
+
+  - id: fail-guaranteed
+    name: "Guaranteed results claim"
+    input: "Guaranteed to lower your blood pressure in 30 days."
+    expect:
+      pass: false
+      maxScore: 40
+      hasViolation: true
+    tags: ["guarantee", "non-compliant"]
+
+  - id: fail-miracle
+    name: "Miracle claim"
+    input: "This miracle treatment will change your life."
+    expect:
+      pass: false
+      maxScore: 30
+      hasViolation: true
+    tags: ["miracle", "non-compliant"]
+
+  - id: fail-no-side-effects
+    name: "No side effects claim"
+    input: "100% natural with no side effects."
+    expect:
+      pass: false
+      maxScore: 40
+      hasViolation: true
+    tags: ["side-effects", "misleading"]
+
+  - id: fail-risk-free
+    name: "Risk-free claim"
+    input: "Try our risk-free treatment today."
+    expect:
+      pass: false
+      maxScore: 40
+      hasViolation: true
+    tags: ["risk", "misleading"]
+
+  - id: fail-victim-language
+    name: "Non-person-first language"
+    input: "Diabetes sufferers often struggle with daily management."
+    expect:
+      pass: false
+      maxScore: 60
+      hasViolation: true
+    tags: ["language", "stigmatizing"]
+
+  - id: fail-buy-now
+    name: "Inappropriate sales language"
+    input: "Buy now and start feeling better today!"
+    expect:
+      pass: false
+      maxScore: 50
+      hasViolation: true
+    tags: ["sales", "inappropriate"]
+
+  - id: fail-act-fast
+    name: "Pressure tactics"
+    input: "Act fast! Limited spots available for this clinical trial."
+    expect:
+      pass: false
+      maxScore: 40
+      hasViolation: true
+    tags: ["pressure", "inappropriate"]
+
+  - id: fail-clinically-proven-vague
+    name: "Vague clinical claims"
+    input: "Clinically proven to work better than competitors."
+    expect:
+      pass: false
+      maxScore: 50
+      hasViolation: true
+    tags: ["claims", "unsubstantiated"]
+
+  - id: fail-click-here
+    name: "Click here anti-pattern"
+    input: "Click here to learn about your treatment options."
+    expect:
+      pass: false
+      maxScore: 60
+      hasViolation: true
+    tags: ["accessibility", "vague"]
+
+  # EDGE CASES
+  - id: edge-success-rate
+    name: "Success rate with context"
+    input: "In clinical trials, 70% of participants saw improvement after 12 weeks. Individual results may vary."
+    expect:
+      pass: true
+      minScore: 80
+    tags: ["statistics", "contextualized"]
+
+  - id: edge-wellness-general
+    name: "General wellness advice"
+    input: "Regular exercise and a balanced diet may support overall health."
+    expect:
+      pass: true
+      minScore: 85
+    tags: ["wellness", "general"]
+
+  - id: edge-appointment-prep
+    name: "Appointment preparation"
+    input: "Please arrive 15 minutes early and bring your insurance card and a list of current medications."
+    expect:
+      pass: true
+      minScore: 90
+    tags: ["appointment", "instructions"]
