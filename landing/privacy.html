@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Privacy Policy - StyleMCP</title>
-  <meta name="description" content="Privacy policy for StyleMCP - Brand rules for AI">
+  <meta name="description" content="Privacy policy for StyleMCP - How we collect, use, and protect your data">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
-    :root{--bg:#0a0a0b;--bg-elevated:#141416;--bg-card:#1a1a1e;--border:#2a2a2e;--text:#fafafa;--text-muted:#a1a1aa;--accent:#6366f1;--accent-hover:#818cf8}
+    :root{--bg:#0a0a0b;--bg-elevated:#141416;--bg-card:#1a1a1e;--border:#2a2a2e;--text:#fafafa;--text-muted:#a1a1aa;--accent:#6366f1;--accent-hover:#818cf8;--green:#22c55e;--blue:#3b82f6;--amber:#f59e0b}
     body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased}
     .container{max-width:800px;margin:0 auto;padding:0 24px}
 
@@ -22,27 +22,89 @@
     .nav-links{display:flex;align-items:center;gap:32px}
     .nav-links a{color:var(--text-muted);text-decoration:none;font-size:0.9rem;font-weight:500;transition:color 0.2s}
     .nav-links a:hover{color:var(--text)}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;font-weight:500;font-size:0.9rem;text-decoration:none;transition:all 0.2s;cursor:pointer;border:none}
+    .btn-primary{background:var(--accent);color:white}
+    .btn-primary:hover{background:var(--accent-hover)}
     .mobile-menu-btn{display:none;flex-direction:column;gap:5px;padding:8px;background:none;border:none;cursor:pointer}
     .mobile-menu-btn span{display:block;width:24px;height:2px;background:var(--text);border-radius:2px;transition:all 0.3s}
-    .mobile-menu-btn.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
-    .mobile-menu-btn.active span:nth-child(2){opacity:0}
-    .mobile-menu-btn.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
     .mobile-menu{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--bg);padding:24px;z-index:99;flex-direction:column;gap:8px}
     .mobile-menu.active{display:flex}
     .mobile-menu a{display:block;padding:16px;color:var(--text);text-decoration:none;font-size:1.1rem;font-weight:500;border-radius:8px;transition:background 0.2s}
     .mobile-menu a:hover{background:var(--bg-card)}
-    .mobile-menu .btn{margin-top:16px;text-align:center;justify-content:center}
     @media(max-width:768px){.nav-links{display:none}.mobile-menu-btn{display:flex}}
 
     main{padding:120px 0 80px}
+    
+    .page-header{margin-bottom:48px}
+    .page-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);border-radius:50px;font-size:0.85rem;color:var(--green);margin-bottom:16px}
+    .page-badge svg{width:16px;height:16px}
     h1{font-size:2.5rem;font-weight:700;margin-bottom:8px;letter-spacing:-0.02em}
-    .updated{color:var(--text-muted);margin-bottom:48px;font-size:0.95rem}
-    h2{font-size:1.5rem;font-weight:600;margin-top:48px;margin-bottom:16px}
+    .updated{color:var(--text-muted);font-size:0.95rem}
+    
+    .toc{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:48px}
+    .toc-title{font-size:0.85rem;font-weight:600;color:var(--text-muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.05em}
+    .toc-links{display:flex;flex-wrap:wrap;gap:8px}
+    .toc-links a{padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;font-size:0.8rem;color:var(--text-muted);text-decoration:none;transition:all 0.2s}
+    .toc-links a:hover{border-color:var(--accent);color:var(--text)}
+    
+    .callout{display:flex;gap:12px;padding:16px;border-radius:10px;margin:24px 0}
+    .callout-success{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2)}
+    .callout-success .callout-icon{color:var(--green)}
+    .callout-info{background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2)}
+    .callout-info .callout-icon{color:var(--blue)}
+    .callout-icon{flex-shrink:0;width:20px;height:20px;margin-top:2px}
+    .callout-content{font-size:0.9rem;color:var(--text-muted)}
+    .callout-content strong{color:var(--text)}
+    
+    .section{margin-bottom:48px;scroll-margin-top:100px}
+    .section-header{display:flex;align-items:center;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--border);margin-bottom:20px}
+    .section-number{width:32px;height:32px;background:rgba(99,102,241,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:600;color:var(--accent);flex-shrink:0}
+    .section-header h2{font-size:1.25rem;font-weight:600;margin:0}
+    
+    .subsection{margin-top:24px}
+    .subsection h3{font-size:1rem;font-weight:600;margin-bottom:12px;color:var(--text)}
+    .subsection h3 span{color:var(--text-muted);margin-right:8px}
+    
     p{color:var(--text-muted);margin-bottom:16px}
-    ul{color:var(--text-muted);margin-bottom:16px;padding-left:24px}
+    ul,ol{color:var(--text-muted);margin-bottom:16px;padding-left:24px}
     li{margin-bottom:8px}
+    li strong{color:var(--text)}
     a{color:var(--accent)}
     a:hover{color:var(--accent-hover)}
+    
+    .data-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;display:flex;gap:12px;align-items:flex-start}
+    .data-card-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .data-card-icon svg{width:20px;height:20px}
+    .data-card-icon.blue{background:rgba(59,130,246,0.1);color:var(--blue)}
+    .data-card-icon.purple{background:rgba(168,85,247,0.1);color:#a855f7}
+    .data-card-icon.green{background:rgba(34,197,94,0.1);color:var(--green)}
+    .data-card-icon.amber{background:rgba(245,158,11,0.1);color:var(--amber)}
+    .data-card-content h4{font-size:0.9rem;font-weight:600;margin-bottom:4px}
+    .data-card-content p{font-size:0.85rem;margin:0}
+    
+    .info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0}
+    .info-item{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:12px 16px}
+    .info-item-title{font-size:0.85rem;font-weight:600;color:var(--text);margin-bottom:4px}
+    .info-item-desc{font-size:0.75rem;color:var(--text-muted)}
+    
+    .security-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+    .security-item{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:12px;display:flex;align-items:flex-start;gap:10px}
+    .security-item svg{width:18px;height:18px;color:var(--accent);flex-shrink:0;margin-top:2px}
+    .security-item-content{font-size:0.85rem}
+    .security-item-content strong{display:block;color:var(--text);margin-bottom:2px}
+    .security-item-content span{color:var(--text-muted);font-size:0.75rem}
+    
+    .contact-card{display:flex;align-items:center;gap:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:16px 20px;text-decoration:none;transition:border-color 0.2s;margin-bottom:12px}
+    .contact-card:hover{border-color:var(--accent)}
+    .contact-card-icon{width:44px;height:44px;background:rgba(99,102,241,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center}
+    .contact-card-icon svg{width:22px;height:22px;color:var(--accent)}
+    .contact-card-content h4{font-size:0.95rem;font-weight:600;color:var(--text);margin-bottom:2px}
+    .contact-card-content p{font-size:0.85rem;color:var(--text-muted);margin:0}
+    
+    .provider-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:0.9rem}
+    .provider-table th,.provider-table td{padding:12px;text-align:left;border-bottom:1px solid var(--border)}
+    .provider-table th{color:var(--text);font-weight:600}
+    .provider-table td{color:var(--text-muted)}
 
     footer{padding:60px 0;border-top:1px solid var(--border)}
     .footer-content{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;max-width:1200px;margin:0 auto;padding:0 24px}
@@ -61,6 +123,7 @@
         <a href="/docs.html">Docs</a>
         <a href="/pricing.html">Pricing</a>
         <a href="/login.html">Login</a>
+        <a href="/signup.html" class="btn btn-primary">Get Started</a>
       </div>
       <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
     </div>
@@ -75,38 +138,348 @@
 
   <main>
     <div class="container">
-      <h1>Privacy Policy</h1>
-      <p class="updated">Last updated: January 26, 2026</p>
+      <div class="page-header">
+        <div class="page-badge">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          Your Privacy Matters
+        </div>
+        <h1>Privacy Policy</h1>
+        <p class="updated">Last updated: January 27, 2025</p>
+      </div>
 
-      <h2>Information We Collect</h2>
-      <p>When you use StyleMCP, we collect information you provide directly:</p>
-      <ul>
-        <li>Account information (email, name) when you sign up</li>
-        <li>Content you submit for brand validation</li>
-        <li>Style packs and brand rules you create</li>
-        <li>API usage data and preferences</li>
-      </ul>
+      <p>StyleMCP ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website, APIs, and services at stylemcp.com.</p>
 
-      <h2>How We Use Your Information</h2>
-      <p>We use your information to:</p>
-      <ul>
-        <li>Provide and improve our brand validation services</li>
-        <li>Process your content through our validation and rewrite APIs</li>
-        <li>Communicate with you about your account and usage</li>
-        <li>Ensure the security and reliability of our platform</li>
-      </ul>
+      <div class="callout callout-success">
+        <svg class="callout-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        <div class="callout-content">
+          <strong>We do not sell your personal data.</strong> Content you submit for validation is processed in real-time and not stored unless you explicitly save it. We never use your content to train AI models.
+        </div>
+      </div>
 
-      <h2>Data Processing</h2>
-      <p>Content submitted to StyleMCP for validation or rewriting is processed in real-time and is not stored after the request completes, unless you explicitly save it to your account. We do not use your content to train AI models.</p>
+      <div class="toc">
+        <div class="toc-title">Quick Navigation</div>
+        <div class="toc-links">
+          <a href="#collect">Information We Collect</a>
+          <a href="#use">How We Use It</a>
+          <a href="#share">How We Share</a>
+          <a href="#retention">Data Retention</a>
+          <a href="#rights">Your Rights</a>
+          <a href="#security">Security</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
 
-      <h2>Data Security</h2>
-      <p>We implement industry-standard security measures to protect your data. All API communications are encrypted via TLS. Your style packs and brand rules are stored securely and are only accessible to you.</p>
+      <section class="section" id="collect">
+        <div class="section-header">
+          <div class="section-number">1</div>
+          <h2>Information We Collect</h2>
+        </div>
 
-      <h2>Open Source</h2>
-      <p>The core StyleMCP validation engine is open source under the MIT license. You can review the code, self-host, or contribute at <a href="https://github.com/3DUNLMTD/stylemcp">github.com/3DUNLMTD/stylemcp</a>.</p>
+        <div class="subsection">
+          <h3><span>1.1</span> Information You Provide</h3>
+          <div class="data-card">
+            <div class="data-card-icon blue"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></div>
+            <div class="data-card-content">
+              <h4>Account Information</h4>
+              <p>Email address, name, and password when you create an account. OAuth data if you sign up via GitHub.</p>
+            </div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-icon purple"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
+            <div class="data-card-content">
+              <h4>Content for Validation</h4>
+              <p>Text you submit via API, MCP, or dashboard for brand validation. Processed in real-time and not persisted.</p>
+            </div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-icon green"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg></div>
+            <div class="data-card-content">
+              <h4>Style Packs & Brand Rules</h4>
+              <p>Custom style packs, voice definitions, and brand rules you create and store in your account.</p>
+            </div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-icon amber"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg></div>
+            <div class="data-card-content">
+              <h4>Payment Information</h4>
+              <p>When subscribing to paid plans, Stripe collects payment details. We never store your card number.</p>
+            </div>
+          </div>
+        </div>
 
-      <h2>Contact</h2>
-      <p>Questions about this policy? Contact us at <a href="mailto:hello@stylemcp.com">hello@stylemcp.com</a></p>
+        <div class="subsection">
+          <h3><span>1.2</span> Information Collected Automatically</h3>
+          <ul>
+            <li><strong>API Usage Data:</strong> Endpoints called, request counts, response times, error rates</li>
+            <li><strong>Device Information:</strong> Browser type, operating system, IP address</li>
+            <li><strong>Cookies:</strong> Session management and authentication tokens</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section" id="use">
+        <div class="section-header">
+          <div class="section-number">2</div>
+          <h2>How We Use Your Information</h2>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-item-title">Service Delivery</div>
+            <div class="info-item-desc">Process validation requests and manage your account</div>
+          </div>
+          <div class="info-item">
+            <div class="info-item-title">API Management</div>
+            <div class="info-item-desc">Track usage, enforce rate limits, prevent abuse</div>
+          </div>
+          <div class="info-item">
+            <div class="info-item-title">Billing</div>
+            <div class="info-item-desc">Process payments and manage subscriptions</div>
+          </div>
+          <div class="info-item">
+            <div class="info-item-title">Communications</div>
+            <div class="info-item-desc">Send transactional emails and service updates</div>
+          </div>
+          <div class="info-item">
+            <div class="info-item-title">Improvement</div>
+            <div class="info-item-desc">Analyze usage patterns to improve the service</div>
+          </div>
+          <div class="info-item">
+            <div class="info-item-title">Security</div>
+            <div class="info-item-desc">Detect and prevent fraud and abuse</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="share">
+        <div class="section-header">
+          <div class="section-number">3</div>
+          <h2>How We Share Your Information</h2>
+        </div>
+
+        <div class="callout callout-success">
+          <svg class="callout-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          <div class="callout-content">
+            <strong>We never sell your personal information.</strong> We only share data as necessary to provide our services.
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3><span>3.1</span> Service Providers</h3>
+          <table class="provider-table">
+            <thead>
+              <tr>
+                <th>Provider</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Supabase</td>
+                <td>Database hosting and authentication</td>
+              </tr>
+              <tr>
+                <td>Stripe</td>
+                <td>Payment processing</td>
+              </tr>
+              <tr>
+                <td>Vercel</td>
+                <td>Website and API hosting</td>
+              </tr>
+              <tr>
+                <td>OpenAI</td>
+                <td>AI-powered rewriting (content not used for training)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="subsection">
+          <h3><span>3.2</span> Other Circumstances</h3>
+          <ul>
+            <li><strong>Legal Requirements:</strong> When required by law, subpoena, or to protect rights and safety</li>
+            <li><strong>Business Transfers:</strong> In the event of a merger, acquisition, or sale of assets</li>
+            <li><strong>With Consent:</strong> For other purposes with your explicit consent</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section" id="retention">
+        <div class="section-header">
+          <div class="section-number">4</div>
+          <h2>Data Retention</h2>
+        </div>
+
+        <div class="data-card">
+          <div class="data-card-icon blue"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></div>
+          <div class="data-card-content">
+            <h4>Account Data</h4>
+            <p>Retained while your account is active. Deleted within 30 days of account deletion.</p>
+          </div>
+        </div>
+        <div class="data-card">
+          <div class="data-card-icon purple"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
+          <div class="data-card-content">
+            <h4>Validation Content</h4>
+            <p>Processed in real-time and immediately discarded. Not stored on our servers.</p>
+          </div>
+        </div>
+        <div class="data-card">
+          <div class="data-card-icon green"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>
+          <div class="data-card-content">
+            <h4>Usage Logs</h4>
+            <p>Aggregated analytics retained indefinitely. Individual logs retained for 90 days.</p>
+          </div>
+        </div>
+        <div class="data-card">
+          <div class="data-card-icon amber"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg></div>
+          <div class="data-card-content">
+            <h4>Billing Records</h4>
+            <p>Retained for 7 years for tax and accounting purposes.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="rights">
+        <div class="section-header">
+          <div class="section-number">5</div>
+          <h2>Your Rights and Choices</h2>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-item-title">Access & Export</div>
+            <div class="info-item-desc">Download your data from account settings</div>
+          </div>
+          <div class="info-item">
+            <div class="info-item-title">Correction</div>
+            <div class="info-item-desc">Update your information anytime</div>
+          </div>
+          <div class="info-item">
+            <div class="info-item-title">Deletion</div>
+            <div class="info-item-desc">Delete your account and all data</div>
+          </div>
+          <div class="info-item">
+            <div class="info-item-title">Opt-Out</div>
+            <div class="info-item-desc">Unsubscribe from marketing emails</div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3><span>5.1</span> GDPR Rights (EEA/UK)</h3>
+          <p>If you're in the EEA or UK, you have additional rights including objection to processing, restriction of processing, data portability, and the right to lodge a complaint with your local data protection authority.</p>
+        </div>
+
+        <div class="subsection">
+          <h3><span>5.2</span> CCPA Rights (California)</h3>
+          <p>California residents have the right to know what personal information we collect, request deletion, and opt out of sales (we do not sell your data).</p>
+        </div>
+      </section>
+
+      <section class="section" id="security">
+        <div class="section-header">
+          <div class="section-number">6</div>
+          <h2>Data Security</h2>
+        </div>
+
+        <div class="security-grid">
+          <div class="security-item">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            <div class="security-item-content">
+              <strong>Encryption</strong>
+              <span>TLS 1.2+ in transit, AES-256 at rest</span>
+            </div>
+          </div>
+          <div class="security-item">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+            <div class="security-item-content">
+              <strong>API Keys</strong>
+              <span>Hashed storage, never logged</span>
+            </div>
+          </div>
+          <div class="security-item">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <div class="security-item-content">
+              <strong>Infrastructure</strong>
+              <span>SOC 2 compliant hosting</span>
+            </div>
+          </div>
+          <div class="security-item">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            <div class="security-item-content">
+              <strong>Audits</strong>
+              <span>Regular security reviews</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-info">
+          <svg class="callout-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <div class="callout-content">
+            While we implement robust security measures, no method of transmission or storage is 100% secure. We cannot guarantee absolute security.
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div class="section-number">7</div>
+          <h2>Open Source</h2>
+        </div>
+        <p>The core StyleMCP validation engine is open source under the MIT license. You can review the code, self-host, or contribute at <a href="https://github.com/3DUNLMTD/stylemcp">github.com/3DUNLMTD/stylemcp</a>. This transparency allows you to verify exactly how your data is processed.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div class="section-number">8</div>
+          <h2>International Transfers</h2>
+        </div>
+        <p>Your information may be transferred to and processed in countries other than your own, including the United States. For EEA/UK users, we use Standard Contractual Clauses to ensure appropriate safeguards.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div class="section-number">9</div>
+          <h2>Children's Privacy</h2>
+        </div>
+        <p>Our Service is not intended for children under 16. We do not knowingly collect personal information from children under 16. If we learn we have collected such information, we will delete it promptly.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div class="section-number">10</div>
+          <h2>Changes to This Policy</h2>
+        </div>
+        <p>We may update this Privacy Policy from time to time. We'll notify you of material changes by posting the new policy here and updating the "Last updated" date. For significant changes, we'll also send email notification.</p>
+      </section>
+
+      <section class="section" id="contact">
+        <div class="section-header">
+          <div class="section-number">11</div>
+          <h2>Contact Us</h2>
+        </div>
+        <p>Questions about this Privacy Policy or our data practices?</p>
+        
+        <a href="mailto:privacy@stylemcp.com" class="contact-card">
+          <div class="contact-card-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          </div>
+          <div class="contact-card-content">
+            <h4>Privacy Inquiries</h4>
+            <p>privacy@stylemcp.com</p>
+          </div>
+        </a>
+        
+        <a href="mailto:hello@stylemcp.com" class="contact-card">
+          <div class="contact-card-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          </div>
+          <div class="contact-card-content">
+            <h4>General Inquiries</h4>
+            <p>hello@stylemcp.com</p>
+          </div>
+        </a>
+      </section>
     </div>
   </main>
 
@@ -120,9 +493,10 @@
         <a href="/privacy.html">Privacy</a>
         <a href="/terms.html">Terms</a>
       </div>
-      <div class="footer-copy">&copy; 2026 StyleMCP. Open source under MIT license.</div>
+      <div class="footer-copy">&copy; 2025 StyleMCP. Open source under MIT license.</div>
     </div>
   </footer>
+
   <script>
     function toggleMobileMenu(){const m=document.getElementById('mobileMenu'),b=document.querySelector('.mobile-menu-btn');m.classList.toggle('active');b.classList.toggle('active');document.body.style.overflow=m.classList.contains('active')?'hidden':''}
     window.addEventListener('resize',()=>{if(window.innerWidth>768){document.getElementById('mobileMenu').classList.remove('active');document.querySelector('.mobile-menu-btn').classList.remove('active');document.body.style.overflow=''}})
