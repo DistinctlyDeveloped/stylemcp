@@ -504,12 +504,17 @@
       align-items: center;
       gap: 48px;
       flex-wrap: wrap;
-      opacity: 0.6;
     }
 
-    .trust-logos svg {
+    .trust-logos img {
       height: 28px;
       width: auto;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .trust-logos img:hover {
+      opacity: 1;
     }
 
     /* Problem Section */
@@ -1537,11 +1542,11 @@
     <div class="container">
       <p>Trusted by teams building with AI</p>
       <div class="trust-logos">
-        <svg viewBox="0 0 120 30" fill="currentColor"><text x="0" y="22" font-family="system-ui" font-weight="600" font-size="16">Vercel</text></svg>
-        <svg viewBox="0 0 120 30" fill="currentColor"><text x="0" y="22" font-family="system-ui" font-weight="600" font-size="16">Supabase</text></svg>
-        <svg viewBox="0 0 100 30" fill="currentColor"><text x="0" y="22" font-family="system-ui" font-weight="600" font-size="16">Linear</text></svg>
-        <svg viewBox="0 0 120 30" fill="currentColor"><text x="0" y="22" font-family="system-ui" font-weight="600" font-size="16">Raycast</text></svg>
-        <svg viewBox="0 0 100 30" fill="currentColor"><text x="0" y="22" font-family="system-ui" font-weight="600" font-size="16">Stripe</text></svg>
+        <img src="/Claude.png" alt="Claude" />
+        <img src="/vercel.png" alt="Vercel" />
+        <img src="/supabase.png" alt="Supabase" />
+        <img src="/Linear.png" alt="Linear" />
+        <img src="/stripe.png" alt="Stripe" />
       </div>
     </div>
   </section>
