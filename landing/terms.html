@@ -3,170 +3,144 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Terms of Service - StyleMCP</title>
-  <meta name="description" content="Terms of service for StyleMCP - Rules and guidelines for using our service">
+  <title>Terms of Service – StyleMCP</title>
+  <meta name="description" content="Terms of Service for StyleMCP - The rules for using our brand validation service">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    :root{--bg:#0a0a0b;--bg-elevated:#141416;--bg-card:#1a1a1e;--border:#2a2a2e;--text:#fafafa;--text-muted:#a1a1aa;--accent:#6366f1;--accent-hover:#818cf8;--green:#22c55e;--red:#ef4444;--amber:#f59e0b;--blue:#3b82f6}
-    body{font-family:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
-    .container{max-width:800px;margin:0 auto;padding:0 24px}
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg-cream: #FAF8F5; --bg-paper: #FFFFFF; --bg-warm: #F5F2ED; --bg-dark: #1A1918;
+      --text-primary: #1A1918; --text-secondary: #5C5856; --text-tertiary: #8A8684; --text-inverse: #FAF8F5;
+      --accent: #E85D04; --accent-soft: #FFF0E6;
+      --success: #2D6A4F; --success-soft: #D8F3DC;
+      --info: #1D4ED8; --info-soft: #DBEAFE;
+      --warning: #CC8B00; --warning-soft: #FFF3CD;
+      --border: #E8E4DF; --border-strong: #D4CFC8;
+      --shadow-md: 0 4px 12px rgba(26, 25, 24, 0.08);
+      --radius-sm: 6px; --radius-md: 12px; --radius-lg: 20px;
+      --font-serif: 'Instrument Serif', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body { font-family: var(--font-sans); background: var(--bg-cream); color: var(--text-primary); line-height: 1.7; }
+    .container { max-width: 800px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); }
 
-    nav{position:fixed;top:0;left:0;right:0;background:rgba(10,10,11,0.8);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:100}
-    nav .container{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1200px}
-    .logo{font-weight:700;font-size:1.25rem;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px}
-    .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--accent) 0%,#a855f7 100%);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700}
-    .nav-links{display:flex;align-items:center;gap:32px}
-    .nav-links a{color:var(--text-muted);text-decoration:none;font-size:0.9rem;font-weight:500;transition:color 0.2s}
-    .nav-links a:hover{color:var(--text)}
-    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;font-weight:500;font-size:0.9rem;text-decoration:none;transition:all 0.2s;cursor:pointer;border:none}
-    .btn-primary{background:var(--accent);color:white}
-    .btn-primary:hover{background:var(--accent-hover)}
-    .mobile-menu-btn{display:none;flex-direction:column;gap:5px;padding:8px;background:none;border:none;cursor:pointer}
-    .mobile-menu-btn span{display:block;width:24px;height:2px;background:var(--text);border-radius:2px;transition:all 0.3s}
-    .mobile-menu{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--bg);padding:24px;z-index:99;flex-direction:column;gap:8px}
-    .mobile-menu.active{display:flex}
-    .mobile-menu a{display:block;padding:16px;color:var(--text);text-decoration:none;font-size:1.1rem;font-weight:500;border-radius:8px;transition:background 0.2s}
-    .mobile-menu a:hover{background:var(--bg-card)}
-    @media(max-width:768px){.nav-links{display:none}.mobile-menu-btn{display:flex}}
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(250, 248, 245, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; max-width: 1280px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
+    .logo-mark { width: 40px; height: 40px; background: var(--bg-dark); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: var(--font-serif); font-size: 24px; font-style: italic; color: var(--text-inverse); }
+    .logo-text { font-weight: 600; font-size: 18px; }
+    .nav-links { display: flex; align-items: center; gap: 8px; }
+    .nav-link { padding: 10px 16px; font-size: 14px; font-weight: 500; color: var(--text-secondary); text-decoration: none; border-radius: var(--radius-sm); transition: all 0.2s; }
+    .nav-link:hover { color: var(--text-primary); background: var(--bg-warm); }
+    .nav-cta { margin-left: 8px; padding: 10px 20px; background: var(--bg-dark); color: var(--text-inverse); font-size: 14px; font-weight: 600; text-decoration: none; border-radius: var(--radius-sm); }
+    .nav-cta:hover { background: var(--accent); }
+    @media (max-width: 768px) { .nav-links { display: none; } }
 
-    main{padding:120px 0 80px}
-    
-    .page-header{margin-bottom:48px}
-    .page-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:50px;font-size:0.85rem;color:var(--accent);margin-bottom:16px}
-    .page-badge svg{width:16px;height:16px}
-    h1{font-family:'Instrument Serif','Instrument Serif Fallback',serif;font-size:2.5rem;font-weight:400;margin-bottom:8px;letter-spacing:-0.02em}
-    .updated{color:var(--text-muted);font-size:0.95rem}
-    
-    .toc{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:48px}
-    .toc-title{font-size:0.85rem;font-weight:600;color:var(--text-muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.05em}
-    .toc-links{display:flex;flex-wrap:wrap;gap:8px}
-    .toc-links a{padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;font-size:0.8rem;color:var(--text-muted);text-decoration:none;transition:all 0.2s}
-    .toc-links a:hover{border-color:var(--accent);color:var(--text)}
-    
-    .callout{display:flex;gap:12px;padding:16px;border-radius:10px;margin:24px 0}
-    .callout-warning{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2)}
-    .callout-warning .callout-icon{color:var(--amber)}
-    .callout-info{background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2)}
-    .callout-info .callout-icon{color:var(--blue)}
-    .callout-legal{background:rgba(100,116,139,0.1);border:1px solid rgba(100,116,139,0.2)}
-    .callout-legal .callout-icon{color:#94a3b8}
-    .callout-icon{flex-shrink:0;width:20px;height:20px;margin-top:2px}
-    .callout-content{font-size:0.9rem;color:var(--text-muted)}
-    .callout-content strong{color:var(--text)}
-    
-    .section{margin-bottom:48px;scroll-margin-top:100px}
-    .section-header{display:flex;align-items:center;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--border);margin-bottom:20px}
-    .section-number{width:32px;height:32px;background:rgba(99,102,241,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:600;color:var(--accent);flex-shrink:0}
-    .section-header h2{font-family:'Instrument Serif','Instrument Serif Fallback',serif;font-size:1.25rem;font-weight:400;margin:0}
-    
-    .subsection{margin-top:24px}
-    .subsection h3{font-size:1rem;font-weight:600;margin-bottom:12px;color:var(--text)}
-    .subsection h3 span{color:var(--text-muted);margin-right:8px}
-    
-    p{color:var(--text-muted);margin-bottom:16px}
-    ul,ol{color:var(--text-muted);margin-bottom:16px;padding-left:24px}
-    li{margin-bottom:8px}
-    li strong{color:var(--text)}
-    a{color:var(--accent)}
-    a:hover{color:var(--accent-hover)}
-    
-    .plan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:16px 0}
-    .plan-card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center}
-    .plan-card.highlight{border-color:var(--accent);background:rgba(99,102,241,0.05)}
-    .plan-card h4{font-size:1rem;font-weight:600;margin-bottom:4px}
-    .plan-card p{font-size:0.8rem;margin:0}
-    
-    .restriction-list{display:flex;flex-direction:column;gap:8px;margin:16px 0}
-    .restriction-item{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;font-size:0.9rem}
-    .restriction-item .icon{color:var(--red);font-weight:700;width:20px;text-align:center;flex-shrink:0}
-    
-    .info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
-    .info-item{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:12px 16px}
-    .info-item-title{font-size:0.85rem;font-weight:600;color:var(--text);margin-bottom:4px}
-    .info-item-desc{font-size:0.75rem;color:var(--text-muted)}
-    
-    .legal-box{background:rgba(100,116,139,0.1);border:1px solid rgba(100,116,139,0.2);border-radius:10px;padding:20px;margin:16px 0}
-    .legal-box p{margin-bottom:12px}
-    .legal-box p:last-child{margin-bottom:0}
-    .legal-box strong{color:var(--text)}
-    
-    .contact-card{display:flex;align-items:center;gap:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:16px 20px;text-decoration:none;transition:border-color 0.2s;margin-bottom:12px}
-    .contact-card:hover{border-color:var(--accent)}
-    .contact-card-icon{width:44px;height:44px;background:rgba(99,102,241,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center}
-    .contact-card-icon svg{width:22px;height:22px;color:var(--accent)}
-    .contact-card-content h4{font-size:0.95rem;font-weight:600;color:var(--text);margin-bottom:2px}
-    .contact-card-content p{font-size:0.85rem;color:var(--text-muted);margin:0}
+    main { padding: 140px 0 80px; }
 
-    footer{padding:60px 0;border-top:1px solid var(--border)}
-    .footer-content{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;max-width:1200px;margin:0 auto;padding:0 24px}
-    .footer-links{display:flex;gap:32px}
-    .footer-links a{color:var(--text-muted);text-decoration:none;font-size:0.9rem}
-    .footer-links a:hover{color:var(--text)}
-    .footer-copy{color:var(--text-muted);font-size:0.9rem}
+    .page-header { margin-bottom: 48px; text-align: center; }
+    .page-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: var(--info-soft); border: 1px solid rgba(29, 78, 216, 0.2); border-radius: 50px; font-size: 13px; font-weight: 600; color: var(--info); margin-bottom: 20px; }
+    h1 { font-family: var(--font-serif); font-size: clamp(36px, 6vw, 48px); font-weight: 400; margin-bottom: 12px; }
+    .updated { color: var(--text-tertiary); font-size: 15px; }
+
+    .toc { background: var(--bg-paper); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px; margin-bottom: 48px; }
+    .toc-title { font-size: 11px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; }
+    .toc-links { display: flex; flex-wrap: wrap; gap: 10px; }
+    .toc-links a { padding: 8px 14px; background: var(--bg-cream); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; color: var(--text-secondary); text-decoration: none; transition: all 0.2s; }
+    .toc-links a:hover { border-color: var(--accent); color: var(--accent); }
+
+    .callout { display: flex; gap: 14px; padding: 20px; border-radius: var(--radius-md); margin: 28px 0; }
+    .callout-info { background: var(--info-soft); border: 1px solid rgba(29, 78, 216, 0.2); }
+    .callout-warning { background: var(--warning-soft); border: 1px solid rgba(204, 139, 0, 0.2); }
+    .callout-icon { flex-shrink: 0; width: 22px; height: 22px; margin-top: 2px; }
+    .callout-info .callout-icon { color: var(--info); }
+    .callout-warning .callout-icon { color: var(--warning); }
+    .callout-content { font-size: 15px; color: var(--text-secondary); }
+    .callout-content strong { color: var(--text-primary); }
+
+    .section { margin-bottom: 56px; scroll-margin-top: 100px; }
+    .section-header { display: flex; align-items: center; gap: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+    .section-number { width: 36px; height: 36px; background: var(--accent-soft); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+    h2 { font-family: var(--font-serif); font-size: 24px; font-weight: 400; }
+    h3 { font-size: 17px; font-weight: 600; margin: 28px 0 14px; display: flex; align-items: center; gap: 10px; }
+    h3 span { color: var(--text-tertiary); font-size: 14px; }
+    p { margin-bottom: 16px; color: var(--text-secondary); }
+    ul, ol { margin: 16px 0; padding-left: 24px; color: var(--text-secondary); }
+    li { margin-bottom: 10px; }
+    li strong { color: var(--text-primary); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .tier-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 24px 0; }
+    @media (max-width: 600px) { .tier-grid { grid-template-columns: 1fr; } }
+    .tier-card { background: var(--bg-paper); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 20px; }
+    .tier-card h4 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .tier-card p { font-size: 14px; color: var(--text-tertiary); margin: 0; }
+
+    .contact-card { display: flex; align-items: center; gap: 16px; padding: 20px; background: var(--bg-paper); border: 1px solid var(--border); border-radius: var(--radius-md); margin: 12px 0; text-decoration: none; color: inherit; transition: all 0.2s; }
+    .contact-card:hover { border-color: var(--accent); box-shadow: var(--shadow-md); }
+    .contact-card-icon { width: 48px; height: 48px; background: var(--accent-soft); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; }
+    .contact-card-icon svg { width: 24px; height: 24px; color: var(--accent); }
+    .contact-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+    .contact-card p { font-size: 14px; color: var(--accent); margin: 0; }
+
+    footer { padding: 48px 0; border-top: 1px solid var(--border); }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; max-width: 1280px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); }
+    .footer-links { display: flex; gap: 32px; flex-wrap: wrap; }
+    .footer-links a { font-size: 14px; color: var(--text-secondary); text-decoration: none; }
+    .footer-links a:hover { color: var(--text-primary); }
+    .footer-copy { font-size: 14px; color: var(--text-tertiary); }
   </style>
 </head>
 <body>
   <nav>
-    <div class="container">
-      <a href="/" class="logo"><div class="logo-icon">S</div>StyleMCP</a>
+    <div class="nav-inner">
+      <a href="/" class="logo"><div class="logo-mark">S</div><span class="logo-text">StyleMCP</span></a>
       <div class="nav-links">
-        <a href="/#features">Features</a>
-        <a href="/docs.html">Docs</a>
-        <a href="/pricing.html">Pricing</a>
-        <a href="/blog.html">Blog</a>
-        <a href="/login.html">Login</a>
-        <a href="/signup.html" class="btn btn-primary">Get Started</a>
+        <a href="/#features" class="nav-link">Features</a>
+        <a href="/docs.html" class="nav-link">Docs</a>
+        <a href="/pricing.html" class="nav-link">Pricing</a>
+        <a href="/blog.html" class="nav-link">Blog</a>
+        <a href="/login.html" class="nav-link">Login</a>
+        <a href="/signup.html" class="nav-cta">Get Started</a>
       </div>
-      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
     </div>
   </nav>
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="/#features" onclick="closeMobileMenu()">Features</a>
-    <a href="/docs.html">Docs</a>
-    <a href="/pricing.html">Pricing</a>
-    <a href="/blog.html">Blog</a>
-    <a href="/login.html">Login</a>
-    <a href="/signup.html" class="btn btn-primary">Get Started</a>
-  </div>
 
   <main>
     <div class="container">
-      <div class="page-header">
+      <header class="page-header">
         <div class="page-badge">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
           Legal Agreement
         </div>
         <h1>Terms of Service</h1>
-        <p class="updated">Last updated: January 27, 2025</p>
-      </div>
+        <p class="updated">Last updated: January 27, 2026</p>
+      </header>
 
-      <p>Welcome to StyleMCP. These Terms of Service ("Terms") govern your access to and use of the StyleMCP website, APIs, MCP server, CLI tools, and related services (collectively, the "Service") operated by StyleMCP ("we," "us," or "our").</p>
-
-      <div class="callout callout-warning">
-        <svg class="callout-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-        <div class="callout-content">
-          <strong>Please read these Terms carefully.</strong> By accessing or using the Service, you agree to be bound by these Terms. If you do not agree, you may not use the Service.
-        </div>
-      </div>
-
-      <div class="toc">
+      <nav class="toc">
         <div class="toc-title">Quick Navigation</div>
         <div class="toc-links">
           <a href="#acceptance">Acceptance</a>
-          <a href="#service">Service</a>
+          <a href="#service">The Service</a>
           <a href="#accounts">Accounts</a>
-          <a href="#api">API Usage</a>
+          <a href="#usage">Acceptable Use</a>
           <a href="#payment">Payment</a>
-          <a href="#content">Content</a>
-          <a href="#acceptable-use">Acceptable Use</a>
           <a href="#ip">Intellectual Property</a>
-          <a href="#disclaimers">Disclaimers</a>
           <a href="#liability">Liability</a>
-          <a href="#contact">Contact</a>
+          <a href="#termination">Termination</a>
+        </div>
+      </nav>
+
+      <div class="callout callout-info">
+        <svg class="callout-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="callout-content">
+          <strong>Plain English Summary:</strong> Use StyleMCP responsibly, pay for what you use, don't abuse the service, and we'll do our best to keep things running smoothly.
         </div>
       </div>
 
@@ -175,383 +149,182 @@
           <div class="section-number">1</div>
           <h2>Acceptance of Terms</h2>
         </div>
-        <p>By creating an account, accessing the API, or using the Service, you confirm that you:</p>
-        <ul>
-          <li>Are at least <strong>16 years of age</strong></li>
-          <li>Have the legal capacity to enter into a binding agreement</li>
-          <li>Are not prohibited from using the Service under applicable laws</li>
-          <li>If using on behalf of an organization, have authority to bind that organization</li>
-        </ul>
+        <p>By accessing or using StyleMCP ("Service"), you agree to be bound by these Terms of Service ("Terms"). If you disagree with any part of these terms, you may not access the Service.</p>
+        <p>These Terms apply to all visitors, users, and others who access or use the Service. By using the Service, you represent that you are at least 16 years old and have the legal capacity to enter into these Terms.</p>
       </section>
 
       <section class="section" id="service">
         <div class="section-header">
           <div class="section-number">2</div>
-          <h2>Description of Service</h2>
+          <h2>The Service</h2>
         </div>
-        <p>StyleMCP provides brand validation and content rewriting tools for AI-generated content:</p>
-        
-        <div class="info-grid">
-          <div class="info-item">
-            <div class="info-item-title">Validation API</div>
-            <div class="info-item-desc">Check content against brand rules</div>
+        <p>StyleMCP provides brand validation and content rewriting services for AI-generated text. The Service includes:</p>
+        <ul>
+          <li><strong>API Access:</strong> RESTful endpoints for validation and rewriting</li>
+          <li><strong>MCP Server:</strong> Model Context Protocol integration</li>
+          <li><strong>CLI Tool:</strong> Command-line interface for local use</li>
+          <li><strong>Dashboard:</strong> Web interface for account management</li>
+          <li><strong>Style Packs:</strong> Pre-built and custom brand rule configurations</li>
+        </ul>
+
+        <h3><span>2.1</span> Service Tiers</h3>
+        <div class="tier-grid">
+          <div class="tier-card">
+            <h4>Free Tier</h4>
+            <p>5,000 requests/month, basic rule-based rewrites, default style packs</p>
           </div>
-          <div class="info-item">
-            <div class="info-item-title">Rewrite API</div>
-            <div class="info-item-desc">Auto-fix off-brand content</div>
+          <div class="tier-card">
+            <h4>Pro Tier</h4>
+            <p>25,000 requests/month, AI-powered rewrites, custom style packs</p>
           </div>
-          <div class="info-item">
-            <div class="info-item-title">MCP Server</div>
-            <div class="info-item-desc">Direct AI agent integration</div>
+          <div class="tier-card">
+            <h4>Team Tier</h4>
+            <p>100,000 requests/month, team management, priority support</p>
           </div>
-          <div class="info-item">
-            <div class="info-item-title">Style Packs</div>
-            <div class="info-item-desc">Modular brand rule sets</div>
-          </div>
-          <div class="info-item">
-            <div class="info-item-title">CLI Tools</div>
-            <div class="info-item-desc">Command-line validation</div>
-          </div>
-          <div class="info-item">
-            <div class="info-item-title">GitHub Actions</div>
-            <div class="info-item-desc">CI/CD brand checking</div>
+          <div class="tier-card">
+            <h4>Enterprise</h4>
+            <p>Unlimited requests, self-hosting, custom integrations, SLA</p>
           </div>
         </div>
 
-        <p>We reserve the right to modify, suspend, or discontinue any aspect of the Service at any time.</p>
+        <h3><span>2.2</span> Service Availability</h3>
+        <p>We strive for 99.9% uptime but do not guarantee uninterrupted service. We may perform maintenance with reasonable notice when possible. Check our <a href="/status.html">status page</a> for real-time information.</p>
       </section>
 
       <section class="section" id="accounts">
         <div class="section-header">
           <div class="section-number">3</div>
-          <h2>Account Registration</h2>
+          <h2>Accounts</h2>
         </div>
-        
-        <div class="subsection">
-          <h3><span>3.1</span> Creating an Account</h3>
-          <p>To access certain features, you must create an account. You agree to:</p>
-          <ul>
-            <li>Provide accurate, current, and complete information</li>
-            <li>Keep your account information updated</li>
-            <li>Keep your password and API keys secure and confidential</li>
-            <li>Not share your credentials with others</li>
-            <li>Notify us immediately of any unauthorized access</li>
-          </ul>
-        </div>
-
-        <div class="subsection">
-          <h3><span>3.2</span> Account Responsibility</h3>
-          <p>You are responsible for all activities under your account, including API calls made with your keys. We are not liable for unauthorized use of your account.</p>
-        </div>
-
-        <div class="subsection">
-          <h3><span>3.3</span> Termination</h3>
-          <p>You may delete your account anytime from settings. We may suspend or terminate accounts that violate these Terms.</p>
-        </div>
+        <p>When you create an account with us, you must provide accurate, complete, and current information. Failure to do so constitutes a breach of these Terms.</p>
+        <ul>
+          <li><strong>Security:</strong> You are responsible for safeguarding your API keys and account credentials</li>
+          <li><strong>Notification:</strong> You must notify us immediately of any unauthorized access</li>
+          <li><strong>Responsibility:</strong> You are responsible for all activities under your account</li>
+          <li><strong>One Account:</strong> Each person or entity may maintain only one free account</li>
+        </ul>
       </section>
 
-      <section class="section" id="api">
+      <section class="section" id="usage">
         <div class="section-header">
           <div class="section-number">4</div>
-          <h2>API Usage</h2>
+          <h2>Acceptable Use</h2>
         </div>
-        
-        <div class="subsection">
-          <h3><span>4.1</span> Rate Limits</h3>
-          <p>API usage is subject to rate limits based on your plan. Exceeding limits may result in temporary throttling or suspension.</p>
-        </div>
-
-        <div class="subsection">
-          <h3><span>4.2</span> API Keys</h3>
-          <ul>
-            <li>API keys are confidential and should never be exposed in client-side code</li>
-            <li>You are responsible for all usage under your API keys</li>
-            <li>Rotate keys immediately if you suspect compromise</li>
-            <li>We may revoke keys that are abused or publicly exposed</li>
-          </ul>
-        </div>
-
-        <div class="subsection">
-          <h3><span>4.3</span> Fair Use</h3>
-          <p>Do not use the API in ways that could damage, disable, or impair the Service. Automated abuse, excessive requests, or circumventing rate limits may result in account suspension.</p>
+        <p>You agree not to use the Service to:</p>
+        <ul>
+          <li>Violate any applicable laws or regulations</li>
+          <li>Infringe on intellectual property rights of others</li>
+          <li>Transmit malware, viruses, or malicious code</li>
+          <li>Attempt to gain unauthorized access to our systems</li>
+          <li>Interfere with or disrupt the Service or servers</li>
+          <li>Circumvent rate limits or usage restrictions</li>
+          <li>Resell or redistribute the Service without authorization</li>
+          <li>Use the Service for spam, harassment, or illegal content</li>
+        </ul>
+        <div class="callout callout-warning">
+          <svg class="callout-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          <div class="callout-content">Violation of these terms may result in immediate account termination without refund.</div>
         </div>
       </section>
 
       <section class="section" id="payment">
         <div class="section-header">
           <div class="section-number">5</div>
-          <h2>Subscription and Payment</h2>
+          <h2>Payment Terms</h2>
         </div>
+        <h3><span>5.1</span> Billing</h3>
+        <p>Paid plans are billed monthly in advance. All fees are exclusive of taxes, which you are responsible for paying. Prices may change with 30 days notice.</p>
 
-        <div class="subsection">
-          <h3><span>5.1</span> Plans</h3>
-          <div class="plan-grid">
-            <div class="plan-card">
-              <h4>Free</h4>
-              <p>100 API calls/month</p>
-            </div>
-            <div class="plan-card highlight">
-              <h4>Pro</h4>
-              <p>$29/mo, 10K calls</p>
-            </div>
-            <div class="plan-card">
-              <h4>Team</h4>
-              <p>$99/mo, unlimited</p>
-            </div>
-          </div>
-        </div>
+        <h3><span>5.2</span> Refunds</h3>
+        <p>We offer a 14-day money-back guarantee for first-time subscribers. After that, payments are non-refundable. If you cancel, you retain access until the end of your billing period.</p>
 
-        <div class="subsection">
-          <h3><span>5.2</span> Billing</h3>
-          <ul>
-            <li><strong>Recurring Charges:</strong> Subscriptions are billed monthly</li>
-            <li><strong>Payment Authorization:</strong> You authorize us to charge your payment method</li>
-            <li><strong>Price Changes:</strong> 30 days' notice for price increases</li>
-            <li><strong>Taxes:</strong> Prices exclude applicable taxes</li>
-          </ul>
-        </div>
-
-        <div class="subsection">
-          <h3><span>5.3</span> Cancellation & Refunds</h3>
-          <p>Cancel anytime in account settings. Access continues until end of billing period. Fees are generally non-refundable, but you may request a refund within 7 days of subscription if you haven't substantially used the Service.</p>
-        </div>
-      </section>
-
-      <section class="section" id="content">
-        <div class="section-header">
-          <div class="section-number">6</div>
-          <h2>User Content</h2>
-        </div>
-
-        <div class="subsection">
-          <h3><span>6.1</span> Your Content</h3>
-          <p>"User Content" means text you submit for validation, style packs you create, and brand rules you define.</p>
-        </div>
-
-        <div class="subsection">
-          <h3><span>6.2</span> Ownership</h3>
-          <div class="callout callout-info">
-            <svg class="callout-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <div class="callout-content">
-              <strong>You retain all rights to your content.</strong> We only process it to provide the Service. Rewritten content suggestions belong to you. We do not use your content to train AI models.
-            </div>
-          </div>
-        </div>
-
-        <div class="subsection">
-          <h3><span>6.3</span> Content Processing</h3>
-          <p>Content submitted for validation is processed in real-time and immediately discarded. We do not store validated content unless you explicitly save it to your account.</p>
-        </div>
-      </section>
-
-      <section class="section" id="acceptable-use">
-        <div class="section-header">
-          <div class="section-number">7</div>
-          <h2>Acceptable Use</h2>
-        </div>
-        <p>You agree not to:</p>
-        
-        <div class="restriction-list">
-          <div class="restriction-item">
-            <span class="icon">✕</span>
-            <span>Use the Service for illegal purposes or to violate any laws</span>
-          </div>
-          <div class="restriction-item">
-            <span class="icon">✕</span>
-            <span>Attempt unauthorized access to the Service or other systems</span>
-          </div>
-          <div class="restriction-item">
-            <span class="icon">✕</span>
-            <span>Circumvent rate limits, security measures, or access controls</span>
-          </div>
-          <div class="restriction-item">
-            <span class="icon">✕</span>
-            <span>Reverse engineer, decompile, or disassemble the Service</span>
-          </div>
-          <div class="restriction-item">
-            <span class="icon">✕</span>
-            <span>Use automated tools to scrape or overload the Service</span>
-          </div>
-          <div class="restriction-item">
-            <span class="icon">✕</span>
-            <span>Resell or redistribute API access without authorization</span>
-          </div>
-          <div class="restriction-item">
-            <span class="icon">✕</span>
-            <span>Use the Service to generate harmful, illegal, or misleading content</span>
-          </div>
-          <div class="restriction-item">
-            <span class="icon">✕</span>
-            <span>Build a competing product using our APIs</span>
-          </div>
-        </div>
+        <h3><span>5.3</span> Overages</h3>
+        <p>If you exceed your plan limits, requests will be rejected with a 429 error until your quota resets. We do not charge overage fees; upgrade to a higher tier for more capacity.</p>
       </section>
 
       <section class="section" id="ip">
         <div class="section-header">
-          <div class="section-number">8</div>
+          <div class="section-number">6</div>
           <h2>Intellectual Property</h2>
         </div>
+        <h3><span>6.1</span> Your Content</h3>
+        <p>You retain all rights to content you submit for validation. We do not store validation content beyond the time required for processing. Your custom style packs remain your property.</p>
 
-        <div class="subsection">
-          <h3><span>8.1</span> Our IP</h3>
-          <p>The Service, including its design, APIs, and branding, is owned by StyleMCP and protected by intellectual property laws.</p>
-        </div>
+        <h3><span>6.2</span> Our Service</h3>
+        <p>The Service, its original content (excluding content provided by users), features, and functionality are owned by StyleMCP and protected by copyright, trademark, and other laws.</p>
 
-        <div class="subsection">
-          <h3><span>8.2</span> Open Source</h3>
-          <p>The core StyleMCP validation engine is open source under the MIT license. You can use, modify, and distribute it according to that license. The hosted service, SaaS features, and certain proprietary components remain our property.</p>
-        </div>
-
-        <div class="subsection">
-          <h3><span>8.3</span> Feedback</h3>
-          <p>If you provide feedback or suggestions, you grant us a perpetual, royalty-free license to use that feedback without compensation.</p>
-        </div>
-      </section>
-
-      <section class="section" id="disclaimers">
-        <div class="section-header">
-          <div class="section-number">9</div>
-          <h2>Disclaimers</h2>
-        </div>
-
-        <div class="legal-box">
-          <p><strong>THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE"</strong> without warranties of any kind, express or implied, including warranties of merchantability, fitness for a particular purpose, and non-infringement.</p>
-        </div>
-
-        <p>We do not warrant that:</p>
-        <ul>
-          <li>The Service will be uninterrupted, secure, or error-free</li>
-          <li>Validation results will be 100% accurate</li>
-          <li>The Service will meet your specific requirements</li>
-          <li>Any errors will be corrected</li>
-        </ul>
-
-        <div class="callout callout-warning">
-          <svg class="callout-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-          <div class="callout-content">
-            <strong>AI-Powered Features:</strong> Validation scores and rewrite suggestions are AI-generated and may not be perfect. Always review output before use. Do not rely on the Service for legal, medical, financial, or other professional decisions.
-          </div>
-        </div>
+        <h3><span>6.3</span> Open Source</h3>
+        <p>The core StyleMCP validation engine is open source under the MIT license. See <a href="https://github.com/3DUNLMTD/stylemcp">github.com/3DUNLMTD/stylemcp</a> for license terms. This does not grant rights to our trademarks or hosted service.</p>
       </section>
 
       <section class="section" id="liability">
         <div class="section-header">
-          <div class="section-number">10</div>
+          <div class="section-number">7</div>
           <h2>Limitation of Liability</h2>
         </div>
+        <p>To the maximum extent permitted by law, StyleMCP shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, or goodwill.</p>
+        <p>Our total liability for any claims under these Terms shall not exceed the amount you paid us in the 12 months preceding the claim.</p>
+        <p>The Service is provided "as is" without warranties of any kind, express or implied, including but not limited to merchantability, fitness for a particular purpose, and non-infringement.</p>
+      </section>
 
-        <div class="legal-box">
-          <p><strong>TO THE MAXIMUM EXTENT PERMITTED BY LAW:</strong></p>
-          <p>• StyleMCP shall <strong>not be liable for any indirect, incidental, special, consequential, or punitive damages</strong>, including loss of profits, data, or goodwill.</p>
-          <p>• Our <strong>total liability shall not exceed</strong> the greater of (a) the amount you paid us in the 12 months preceding the claim, or (b) $100.</p>
+      <section class="section" id="termination">
+        <div class="section-header">
+          <div class="section-number">8</div>
+          <h2>Termination</h2>
         </div>
+        <p>We may terminate or suspend your account immediately, without prior notice, for any breach of these Terms. Upon termination:</p>
+        <ul>
+          <li>Your right to use the Service will cease immediately</li>
+          <li>We may delete your account data within 30 days</li>
+          <li>Provisions that by nature should survive will survive (liability, indemnification, etc.)</li>
+        </ul>
+        <p>You may terminate your account at any time from account settings. We will delete your data upon request, subject to legal retention requirements.</p>
+      </section>
 
-        <p>Some jurisdictions do not allow limitation of certain damages. In such cases, our liability is limited to the maximum extent permitted by law.</p>
+      <section class="section">
+        <div class="section-header">
+          <div class="section-number">9</div>
+          <h2>Indemnification</h2>
+        </div>
+        <p>You agree to defend, indemnify, and hold harmless StyleMCP and its officers, directors, employees, and agents from any claims, damages, or expenses arising from your use of the Service or violation of these Terms.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div class="section-number">10</div>
+          <h2>Governing Law</h2>
+        </div>
+        <p>These Terms shall be governed by the laws of the State of Delaware, United States, without regard to conflict of law provisions. Any disputes shall be resolved in the courts of Delaware.</p>
       </section>
 
       <section class="section">
         <div class="section-header">
           <div class="section-number">11</div>
-          <h2>Indemnification</h2>
-        </div>
-        <p>You agree to indemnify and hold harmless StyleMCP from any claims, damages, or expenses arising from:</p>
-        <ul>
-          <li>Your use of the Service</li>
-          <li>Your User Content and style packs</li>
-          <li>Your violation of these Terms</li>
-          <li>Your violation of any rights of another party</li>
-        </ul>
-      </section>
-
-      <section class="section">
-        <div class="section-header">
-          <div class="section-number">12</div>
-          <h2>Dispute Resolution</h2>
-        </div>
-
-        <div class="subsection">
-          <h3><span>12.1</span> Informal Resolution</h3>
-          <p>Before filing a formal dispute, contact us at <a href="mailto:legal@stylemcp.com">legal@stylemcp.com</a> to attempt resolution. We'll try to resolve the matter within 30 days.</p>
-        </div>
-
-        <div class="subsection">
-          <h3><span>12.2</span> Arbitration</h3>
-          <p>If informal resolution fails, disputes shall be resolved by <strong>binding arbitration</strong> rather than in court, except for claims eligible for small claims court.</p>
-        </div>
-
-        <div class="subsection">
-          <h3><span>12.3</span> Governing Law</h3>
-          <p>These Terms are governed by the laws of the <strong>State of Delaware, United States</strong>.</p>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="section-header">
-          <div class="section-number">13</div>
           <h2>Changes to Terms</h2>
         </div>
-        <p>We may modify these Terms at any time. We'll notify you of material changes by posting updated Terms and updating the "Last updated" date. For significant changes, we'll send email notification. Continued use after changes indicates acceptance.</p>
-      </section>
-
-      <section class="section">
-        <div class="section-header">
-          <div class="section-number">14</div>
-          <h2>General Provisions</h2>
-        </div>
-
-        <div class="info-grid">
-          <div class="info-item">
-            <div class="info-item-title">Entire Agreement</div>
-            <div class="info-item-desc">Terms + Privacy Policy = complete agreement</div>
-          </div>
-          <div class="info-item">
-            <div class="info-item-title">Severability</div>
-            <div class="info-item-desc">Invalid provisions don't affect the rest</div>
-          </div>
-          <div class="info-item">
-            <div class="info-item-title">Waiver</div>
-            <div class="info-item-desc">Not enforcing a right doesn't waive it</div>
-          </div>
-          <div class="info-item">
-            <div class="info-item-title">Assignment</div>
-            <div class="info-item-desc">You can't transfer; we can</div>
-          </div>
-        </div>
+        <p>We reserve the right to modify these Terms at any time. We will provide notice of material changes by updating the "Last updated" date and, for significant changes, by email notification. Continued use after changes constitutes acceptance.</p>
       </section>
 
       <section class="section" id="contact">
         <div class="section-header">
-          <div class="section-number">15</div>
+          <div class="section-number">12</div>
           <h2>Contact Us</h2>
         </div>
-        <p>Questions about these Terms?</p>
-        
+        <p>Questions about these Terms of Service?</p>
         <a href="mailto:legal@stylemcp.com" class="contact-card">
-          <div class="contact-card-icon">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
-          </div>
-          <div class="contact-card-content">
-            <h4>Legal Inquiries</h4>
-            <p>legal@stylemcp.com</p>
-          </div>
+          <div class="contact-card-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div>
+          <div class="contact-card-content"><h4>Legal Inquiries</h4><p>legal@stylemcp.com</p></div>
         </a>
-        
         <a href="mailto:hello@stylemcp.com" class="contact-card">
-          <div class="contact-card-icon">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-          </div>
-          <div class="contact-card-content">
-            <h4>General Inquiries</h4>
-            <p>hello@stylemcp.com</p>
-          </div>
+          <div class="contact-card-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg></div>
+          <div class="contact-card-content"><h4>General Inquiries</h4><p>hello@stylemcp.com</p></div>
         </a>
       </section>
     </div>
   </main>
 
   <footer>
-    <div class="footer-content">
+    <div class="footer-inner">
       <div class="footer-links">
         <a href="https://github.com/3DUNLMTD/stylemcp">GitHub</a>
         <a href="/docs.html">Documentation</a>
@@ -561,14 +334,8 @@
         <a href="/privacy.html">Privacy</a>
         <a href="/terms.html">Terms</a>
       </div>
-      <div class="footer-copy">&copy; 2026 StyleMCP. Open source under MIT license.</div>
+      <div class="footer-copy">© 2026 StyleMCP. Open source under MIT license.</div>
     </div>
   </footer>
-
-  <script>
-    function toggleMobileMenu(){const m=document.getElementById('mobileMenu'),b=document.querySelector('.mobile-menu-btn');m.classList.toggle('active');b.classList.toggle('active');document.body.style.overflow=m.classList.contains('active')?'hidden':''}
-    function closeMobileMenu(){const m=document.getElementById('mobileMenu'),b=document.querySelector('.mobile-menu-btn');m.classList.remove('active');b.classList.remove('active');document.body.style.overflow=''}
-    window.addEventListener('resize',()=>{if(window.innerWidth>768){closeMobileMenu()}})
-  </script>
 </body>
 </html>

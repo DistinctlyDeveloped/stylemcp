@@ -3,394 +3,141 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blog - StyleMCP</title>
-  <meta name="description" content="Articles about brand consistency, AI content validation, and building better AI-powered workflows.">
+  <title>Blog – StyleMCP</title>
+  <meta name="description" content="Updates, tutorials, and insights about brand consistency and AI content validation.">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --bg: #0a0a0b;
-      --bg-elevated: #141416;
-      --bg-card: #1a1a1e;
-      --border: #2a2a2e;
-      --text: #fafafa;
-      --text-muted: #a1a1aa;
-      --accent: #6366f1;
-      --accent-hover: #818cf8;
-      --green: #22c55e;
+      --bg-cream: #FAF8F5;
+      --bg-paper: #FFFFFF;
+      --bg-warm: #F5F2ED;
+      --bg-dark: #1A1918;
+      --text-primary: #1A1918;
+      --text-secondary: #5C5856;
+      --text-tertiary: #8A8684;
+      --text-inverse: #FAF8F5;
+      --accent: #E85D04;
+      --accent-hover: #D45003;
+      --accent-soft: #FFF0E6;
+      --border: #E8E4DF;
+      --border-strong: #D4CFC8;
+      --shadow-sm: 0 1px 2px rgba(26, 25, 24, 0.04);
+      --shadow-md: 0 4px 12px rgba(26, 25, 24, 0.08);
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --font-serif: 'Instrument Serif', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'IBM Plex Mono', 'SF Mono', Consolas, monospace;
     }
 
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-    }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body { font-family: var(--font-sans); background: var(--bg-cream); color: var(--text-primary); line-height: 1.6; }
 
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); }
+    .container--narrow { max-width: 800px; }
 
     /* Navigation */
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: rgba(10, 10, 11, 0.8);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      z-index: 100;
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(250, 248, 245, 0.85); backdrop-filter: blur(20px) saturate(180%); border-bottom: 1px solid var(--border); }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
+    .logo-mark { width: 40px; height: 40px; background: var(--bg-dark); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: var(--font-serif); font-size: 24px; font-style: italic; color: var(--text-inverse); }
+    .logo-text { font-weight: 600; font-size: 18px; letter-spacing: -0.02em; }
+    .nav-links { display: flex; align-items: center; gap: 8px; }
+    .nav-link { padding: 10px 16px; font-size: 14px; font-weight: 500; color: var(--text-secondary); text-decoration: none; border-radius: var(--radius-sm); transition: all 0.2s; }
+    .nav-link:hover { color: var(--text-primary); background: var(--bg-warm); }
+    .nav-link.active { color: var(--text-primary); background: var(--bg-warm); }
+    .nav-cta { margin-left: 8px; padding: 10px 20px; background: var(--bg-dark); color: var(--text-inverse); font-size: 14px; font-weight: 600; text-decoration: none; border-radius: var(--radius-sm); transition: all 0.2s; }
+    .nav-cta:hover { background: var(--accent); }
+    .mobile-menu-btn { display: none; flex-direction: column; gap: 5px; padding: 10px; background: none; border: none; cursor: pointer; }
+    .mobile-menu-btn span { display: block; width: 22px; height: 2px; background: var(--text-primary); border-radius: 2px; }
+    .mobile-menu { display: none; position: fixed; top: 72px; left: 0; right: 0; bottom: 0; background: var(--bg-cream); padding: 24px; z-index: 999; flex-direction: column; gap: 4px; }
+    .mobile-menu.active { display: flex; }
+    .mobile-menu a { display: block; padding: 16px 20px; color: var(--text-primary); text-decoration: none; font-size: 17px; font-weight: 500; border-radius: var(--radius-md); }
+    .mobile-menu a:hover { background: var(--bg-warm); }
+
+    @media (max-width: 768px) { .nav-links { display: none; } .mobile-menu-btn { display: flex; } }
+
+    /* Hero */
+    .hero { padding: 160px 0 80px; text-align: center; background: linear-gradient(180deg, var(--bg-warm) 0%, var(--bg-cream) 100%); }
+    .hero h1 { font-family: var(--font-serif); font-size: clamp(40px, 6vw, 64px); font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .hero p { font-size: 18px; color: var(--text-secondary); max-width: 500px; margin: 0 auto; }
+
+    /* Blog grid */
+    .blog-section { padding: 80px 0 120px; }
+
+    .featured-post { margin-bottom: 64px; }
+    .featured-post a { display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; align-items: center; text-decoration: none; color: inherit; background: var(--bg-paper); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: all 0.3s; }
+    .featured-post a:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); }
+    .featured-img { aspect-ratio: 16/10; background: var(--bg-warm); display: flex; align-items: center; justify-content: center; }
+    .featured-img span { font-family: var(--font-serif); font-size: 48px; font-style: italic; color: var(--accent); }
+    .featured-content { padding: 40px 40px 40px 0; }
+    .post-tag { display: inline-block; padding: 4px 12px; background: var(--accent-soft); color: var(--accent); font-size: 12px; font-weight: 600; border-radius: 50px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .featured-content h2 { font-family: var(--font-serif); font-size: 32px; font-weight: 400; line-height: 1.2; margin-bottom: 16px; }
+    .featured-content p { color: var(--text-secondary); font-size: 16px; line-height: 1.7; margin-bottom: 20px; }
+    .post-meta { font-size: 14px; color: var(--text-tertiary); }
+
+    @media (max-width: 800px) {
+      .featured-post a { grid-template-columns: 1fr; }
+      .featured-content { padding: 32px; }
     }
 
-    nav .container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 64px;
-      max-width: 1200px;
-    }
+    .posts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+    @media (max-width: 900px) { .posts-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .posts-grid { grid-template-columns: 1fr; } }
 
-    .logo {
-      font-weight: 700;
-      font-size: 1.25rem;
-      color: var(--text);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .post-card { background: var(--bg-paper); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: all 0.3s; }
+    .post-card:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); }
+    .post-card a { text-decoration: none; color: inherit; }
+    .post-card-img { aspect-ratio: 16/10; background: var(--bg-warm); display: flex; align-items: center; justify-content: center; }
+    .post-card-img span { font-family: var(--font-serif); font-size: 32px; font-style: italic; color: var(--accent); }
+    .post-card-content { padding: 24px; }
+    .post-card-content h3 { font-size: 18px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
+    .post-card-content p { color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+    .post-card-content .post-meta { font-size: 13px; }
 
-    .logo-icon {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(135deg, var(--accent) 0%, #a855f7 100%);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-    }
+    /* Newsletter */
+    .newsletter { padding: 80px 0; background: var(--bg-paper); border-top: 1px solid var(--border); text-align: center; }
+    .newsletter h2 { font-family: var(--font-serif); font-size: 32px; font-weight: 400; margin-bottom: 12px; }
+    .newsletter p { color: var(--text-secondary); margin-bottom: 32px; }
+    .newsletter-form { display: flex; gap: 12px; max-width: 440px; margin: 0 auto; }
+    .newsletter-form input { flex: 1; padding: 14px 18px; font-size: 15px; border: 2px solid var(--border); border-radius: var(--radius-md); background: var(--bg-cream); }
+    .newsletter-form input:focus { outline: none; border-color: var(--accent); }
+    .newsletter-form button { padding: 14px 28px; background: var(--bg-dark); color: var(--text-inverse); font-weight: 600; border: none; border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s; }
+    .newsletter-form button:hover { background: var(--accent); }
 
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-    }
-
-    .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover {
-      color: var(--text);
-    }
-
-    /* Mobile menu button */
-    .mobile-menu-btn {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      padding: 8px;
-      background: none;
-      border: none;
-      cursor: pointer;
-    }
-
-    .mobile-menu-btn span {
-      display: block;
-      width: 24px;
-      height: 2px;
-      background: var(--text);
-      border-radius: 2px;
-      transition: all 0.3s;
-    }
-
-    .mobile-menu-btn.active span:nth-child(1) {
-      transform: rotate(45deg) translate(5px, 5px);
-    }
-
-    .mobile-menu-btn.active span:nth-child(2) {
-      opacity: 0;
-    }
-
-    .mobile-menu-btn.active span:nth-child(3) {
-      transform: rotate(-45deg) translate(5px, -5px);
-    }
-
-    /* Mobile menu overlay */
-    .mobile-menu {
-      display: none;
-      position: fixed;
-      top: 64px;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: var(--bg);
-      padding: 24px;
-      z-index: 99;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .mobile-menu.active {
-      display: flex;
-    }
-
-    .mobile-menu a {
-      display: block;
-      padding: 16px;
-      color: var(--text);
-      text-decoration: none;
-      font-size: 1.1rem;
-      font-weight: 500;
-      border-radius: 8px;
-      transition: background 0.2s;
-    }
-
-    .mobile-menu a:hover {
-      background: var(--bg-card);
-    }
-
-    .mobile-menu .btn {
-      margin-top: 16px;
-      text-align: center;
-      justify-content: center;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-weight: 500;
-      font-size: 0.9rem;
-      text-decoration: none;
-      transition: all 0.2s;
-      cursor: pointer;
-      border: none;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-hover);
-    }
-
-    /* Main content */
-    main {
-      padding: 120px 0 80px;
-    }
-
-    .page-header {
-      text-align: center;
-      margin-bottom: 60px;
-    }
-
-    h1 {
-      font-family: 'Instrument Serif', 'Instrument Serif Fallback', serif;
-      font-size: 3rem;
-      font-weight: 400;
-      margin-bottom: 16px;
-      letter-spacing: -0.02em;
-    }
-
-    h1 span {
-      background: linear-gradient(135deg, var(--accent) 0%, #a855f7 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .page-header p {
-      color: var(--text-muted);
-      font-size: 1.1rem;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .posts-grid {
-      display: grid;
-      gap: 24px;
-    }
-
-    .post-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 32px;
-      transition: border-color 0.2s;
-    }
-
-    .post-card:hover {
-      border-color: var(--text-muted);
-    }
-
-    .post-card a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    .post-meta {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 16px;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .post-tag {
-      padding: 4px 10px;
-      background: rgba(99, 102, 241, 0.1);
-      border-radius: 4px;
-      color: var(--accent);
-      font-size: 0.75rem;
-      font-weight: 500;
-    }
-
-    .post-card h2 {
-      font-family: 'Instrument Serif', 'Instrument Serif Fallback', serif;
-      font-size: 1.5rem;
-      font-weight: 400;
-      margin-bottom: 12px;
-      transition: color 0.2s;
-    }
-
-    .post-card:hover h2 {
-      color: var(--accent);
-    }
-
-    .post-card p {
-      color: var(--text-muted);
-    }
-
-    .read-more {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 16px;
-      color: var(--accent);
-      font-weight: 500;
-      font-size: 0.9rem;
-    }
-
-    .read-more svg {
-      width: 16px;
-      height: 16px;
-      transition: transform 0.2s;
-    }
-
-    .post-card:hover .read-more svg {
-      transform: translateX(4px);
-    }
+    @media (max-width: 500px) { .newsletter-form { flex-direction: column; } }
 
     /* Footer */
-    footer {
-      padding: 60px 0;
-      border-top: 1px solid var(--border);
-    }
-
-    .footer-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 24px;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 32px;
-    }
-
-    .footer-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: color 0.2s;
-    }
-
-    .footer-links a:hover {
-      color: var(--text);
-    }
-
-    .footer-copy {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-      }
-
-      .mobile-menu-btn {
-        display: flex;
-      }
-
-      h1 {
-        font-size: 2rem;
-      }
-
-      .post-card {
-        padding: 24px;
-      }
-
-      .footer-content {
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .footer-links {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 16px;
-      }
-    }
+    footer { padding: 48px 0; background: var(--bg-cream); border-top: 1px solid var(--border); }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; }
+    .footer-links { display: flex; gap: 32px; flex-wrap: wrap; }
+    .footer-links a { font-size: 14px; color: var(--text-secondary); text-decoration: none; }
+    .footer-links a:hover { color: var(--text-primary); }
+    .footer-copy { font-size: 14px; color: var(--text-tertiary); }
   </style>
 </head>
 <body>
   <nav>
-    <div class="container">
+    <div class="container nav-inner">
       <a href="/" class="logo">
-        <div class="logo-icon">S</div>
-        StyleMCP
+        <div class="logo-mark">S</div>
+        <span class="logo-text">StyleMCP</span>
       </a>
       <div class="nav-links">
-        <a href="/#features">Features</a>
-        <a href="/docs.html">Docs</a>
-        <a href="/pricing.html">Pricing</a>
-        <a href="/login.html">Login</a>
-        <a href="/signup.html" class="btn btn-primary">Get Started</a>
+        <a href="/#features" class="nav-link">Features</a>
+        <a href="/docs.html" class="nav-link">Docs</a>
+        <a href="/pricing.html" class="nav-link">Pricing</a>
+        <a href="/blog.html" class="nav-link active">Blog</a>
+        <a href="/login.html" class="nav-link">Login</a>
+        <a href="/signup.html" class="nav-cta">Get Started</a>
       </div>
-      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
     </div>
   </nav>
 
@@ -398,75 +145,87 @@
     <a href="/#features" onclick="closeMobileMenu()">Features</a>
     <a href="/docs.html">Docs</a>
     <a href="/pricing.html">Pricing</a>
+    <a href="/blog.html">Blog</a>
     <a href="/login.html">Login</a>
-    <a href="/signup.html" class="btn btn-primary">Get Started</a>
+    <a href="/signup.html" class="nav-cta">Get Started</a>
   </div>
 
-  <main>
+  <section class="hero">
     <div class="container">
-      <div class="page-header">
-        <h1>The StyleMCP <span>Blog</span></h1>
-        <p>Articles about brand consistency, AI content validation, and building better AI-powered workflows.</p>
+      <h1>Blog</h1>
+      <p>Updates, tutorials, and insights about brand consistency and AI content validation.</p>
+    </div>
+  </section>
+
+  <section class="blog-section">
+    <div class="container">
+      <!-- Featured Post -->
+      <div class="featured-post">
+        <a href="/blog/introducing-stylemcp.html">
+          <div class="featured-img"><span>S</span></div>
+          <div class="featured-content">
+            <span class="post-tag">Announcement</span>
+            <h2>Introducing StyleMCP: Brand Rules for Every AI Output</h2>
+            <p>Today we're launching StyleMCP, an open-source tool that validates and rewrites AI-generated content to match your brand voice. Whether you're using Claude, GPT, or any other model, StyleMCP ensures consistency.</p>
+            <div class="post-meta">January 25, 2026 · 4 min read</div>
+          </div>
+        </a>
       </div>
 
+      <!-- Posts Grid -->
       <div class="posts-grid">
         <article class="post-card">
-          <a href="/blog/why-ai-outputs-need-brand-rules.html">
-            <div class="post-meta">
-              <span class="post-tag">Guide</span>
-              <span>January 27, 2026</span>
-              <span>5 min read</span>
-            </div>
-            <h2>Why Your AI Outputs Need Brand Rules</h2>
-            <p>AI models are great at generating content, but they don't understand your brand. Here's why brand validation matters and how to implement it in your workflow.</p>
-            <span class="read-more">Read more <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></span>
-          </a>
-        </article>
-
-        <article class="post-card">
-          <a href="#">
-            <div class="post-meta">
+          <a href="/blog/mcp-integration-guide.html">
+            <div class="post-card-img"><span>MCP</span></div>
+            <div class="post-card-content">
               <span class="post-tag">Tutorial</span>
-              <span>January 25, 2026</span>
-              <span>8 min read</span>
+              <h3>How to Add StyleMCP to Claude Desktop</h3>
+              <p>A step-by-step guide to integrating StyleMCP with Claude using the Model Context Protocol.</p>
+              <div class="post-meta">January 26, 2026 · 3 min read</div>
             </div>
-            <h2>Building Custom Style Packs: A Complete Guide</h2>
-            <p>Learn how to create custom style packs that capture your brand's unique voice, from vocabulary rules to CTA patterns.</p>
-            <span class="read-more">Read more <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></span>
           </a>
         </article>
 
         <article class="post-card">
-          <a href="#">
-            <div class="post-meta">
-              <span class="post-tag">Integration</span>
-              <span>January 22, 2026</span>
-              <span>4 min read</span>
+          <a href="/blog/custom-style-packs.html">
+            <div class="post-card-img"><span>YAML</span></div>
+            <div class="post-card-content">
+              <span class="post-tag">Guide</span>
+              <h3>Creating Custom Style Packs</h3>
+              <p>Learn how to define your brand voice, vocabulary rules, and forbidden patterns in YAML.</p>
+              <div class="post-meta">January 26, 2026 · 5 min read</div>
             </div>
-            <h2>Integrating StyleMCP with Claude via MCP</h2>
-            <p>A step-by-step guide to connecting StyleMCP to Claude using the Model Context Protocol for real-time brand validation.</p>
-            <span class="read-more">Read more <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></span>
           </a>
         </article>
 
         <article class="post-card">
-          <a href="#">
-            <div class="post-meta">
-              <span class="post-tag">Best Practices</span>
-              <span>January 18, 2026</span>
-              <span>6 min read</span>
+          <a href="/blog/why-ai-needs-brand-rules.html">
+            <div class="post-card-img"><span>?</span></div>
+            <div class="post-card-content">
+              <span class="post-tag">Insights</span>
+              <h3>Why AI Needs Brand Guardrails</h3>
+              <p>The problem with AI-generated content: it sounds like everyone else. Here's how to fix it.</p>
+              <div class="post-meta">January 27, 2026 · 6 min read</div>
             </div>
-            <h2>10 Common Brand Voice Mistakes in AI Content</h2>
-            <p>From "Click here" to exclamation point overuse — the most common brand consistency issues we see and how to fix them.</p>
-            <span class="read-more">Read more <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></span>
           </a>
         </article>
       </div>
     </div>
-  </main>
+  </section>
+
+  <section class="newsletter">
+    <div class="container">
+      <h2>Stay in the loop</h2>
+      <p>Get updates on new features, tutorials, and brand voice best practices.</p>
+      <form class="newsletter-form" onsubmit="handleSubscribe(event)">
+        <input type="email" placeholder="you@company.com" required>
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+  </section>
 
   <footer>
-    <div class="footer-content">
+    <div class="container footer-inner">
       <div class="footer-links">
         <a href="https://github.com/3DUNLMTD/stylemcp">GitHub</a>
         <a href="/docs.html">Documentation</a>
@@ -476,32 +235,27 @@
         <a href="/privacy.html">Privacy</a>
         <a href="/terms.html">Terms</a>
       </div>
-      <div class="footer-copy">
-        &copy; 2026 StyleMCP. Open source under MIT license.
-      </div>
+      <div class="footer-copy">© 2026 StyleMCP. Open source under MIT license.</div>
     </div>
   </footer>
 
   <script>
     function toggleMobileMenu() {
-      const menu = document.getElementById('mobileMenu');
-      const btn = document.querySelector('.mobile-menu-btn');
-      menu.classList.toggle('active');
-      btn.classList.toggle('active');
-      document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : '';
+      const m = document.getElementById('mobileMenu'), b = document.querySelector('.mobile-menu-btn');
+      m.classList.toggle('active'); b.classList.toggle('active');
+      document.body.style.overflow = m.classList.contains('active') ? 'hidden' : '';
     }
-
     function closeMobileMenu() {
-      const menu = document.getElementById('mobileMenu');
-      const btn = document.querySelector('.mobile-menu-btn');
-      menu.classList.remove('active');
-      btn.classList.remove('active');
+      const m = document.getElementById('mobileMenu'), b = document.querySelector('.mobile-menu-btn');
+      m.classList.remove('active'); b.classList.remove('active');
       document.body.style.overflow = '';
     }
-
-    window.addEventListener('resize', () => {
-      if (window.innerWidth > 768) closeMobileMenu();
-    });
+    function handleSubscribe(e) {
+      e.preventDefault();
+      alert('Thanks for subscribing!');
+      e.target.reset();
+    }
+    window.addEventListener('resize', () => { if (window.innerWidth > 768) closeMobileMenu(); });
   </script>
 </body>
 </html>

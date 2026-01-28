@@ -3,617 +3,172 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In - StyleMCP</title>
-  <meta name="description" content="Sign in to your StyleMCP account to manage brand validation rules and API keys.">
+  <title>Login – StyleMCP</title>
+  <meta name="description" content="Sign in to your StyleMCP account to manage your API keys and style packs.">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --bg: #0a0a0b;
-      --bg-elevated: #141416;
-      --bg-card: #1a1a1e;
-      --border: #2a2a2e;
-      --text: #fafafa;
-      --text-muted: #a1a1aa;
-      --accent: #6366f1;
-      --accent-hover: #818cf8;
-      --green: #22c55e;
-      --red: #ef4444;
+      --bg-cream: #FAF8F5;
+      --bg-paper: #FFFFFF;
+      --bg-warm: #F5F2ED;
+      --bg-dark: #1A1918;
+      --text-primary: #1A1918;
+      --text-secondary: #5C5856;
+      --text-tertiary: #8A8684;
+      --text-inverse: #FAF8F5;
+      --accent: #E85D04;
+      --accent-hover: #D45003;
+      --accent-soft: #FFF0E6;
+      --error: #9D0208;
+      --error-soft: #FFE5E5;
+      --border: #E8E4DF;
+      --border-strong: #D4CFC8;
+      --shadow-sm: 0 1px 2px rgba(26, 25, 24, 0.04);
+      --shadow-md: 0 4px 12px rgba(26, 25, 24, 0.08);
+      --shadow-lg: 0 12px 40px rgba(26, 25, 24, 0.12);
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --font-serif: 'Instrument Serif', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'IBM Plex Mono', 'SF Mono', Consolas, monospace;
     }
 
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      min-height: 100vh;
-    }
+    html { -webkit-font-smoothing: antialiased; }
+    body { font-family: var(--font-sans); background: var(--bg-warm); color: var(--text-primary); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
+    /* Header */
+    .auth-header { padding: 24px 32px; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
+    .logo-mark { width: 40px; height: 40px; background: var(--bg-dark); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: var(--font-serif); font-size: 24px; font-style: italic; color: var(--text-inverse); }
+    .logo-text { font-weight: 600; font-size: 18px; letter-spacing: -0.02em; }
 
-    /* Navigation */
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: rgba(10, 10, 11, 0.8);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      z-index: 100;
-    }
+    /* Main */
+    .auth-main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px; }
 
-    nav .container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 64px;
-    }
+    .auth-card { width: 100%; max-width: 420px; background: var(--bg-paper); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 48px 40px; box-shadow: var(--shadow-lg); }
 
-    .logo {
-      font-weight: 700;
-      font-size: 1.25rem;
-      color: var(--text);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .auth-card h1 { font-family: var(--font-serif); font-size: 32px; font-weight: 400; text-align: center; margin-bottom: 8px; }
+    .auth-card .subtitle { text-align: center; color: var(--text-secondary); margin-bottom: 36px; }
 
-    .logo-icon {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(135deg, var(--accent) 0%, #a855f7 100%);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-    }
+    /* Social buttons */
+    .social-buttons { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+    .social-btn { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px 20px; background: var(--bg-paper); border: 1px solid var(--border-strong); border-radius: var(--radius-md); font-size: 15px; font-weight: 500; color: var(--text-primary); text-decoration: none; cursor: pointer; transition: all 0.2s; }
+    .social-btn:hover { background: var(--bg-warm); border-color: var(--text-tertiary); }
+    .social-btn svg { width: 20px; height: 20px; }
 
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-    }
+    .divider { display: flex; align-items: center; gap: 16px; margin: 28px 0; color: var(--text-tertiary); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-    .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: color 0.2s;
-    }
+    /* Form */
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
+    .form-input { width: 100%; padding: 14px 16px; font-family: var(--font-sans); font-size: 15px; color: var(--text-primary); background: var(--bg-cream); border: 2px solid var(--border); border-radius: var(--radius-md); transition: all 0.2s; }
+    .form-input:focus { outline: none; border-color: var(--accent); background: var(--bg-paper); }
+    .form-input::placeholder { color: var(--text-tertiary); }
 
-    .nav-links a:hover {
-      color: var(--text);
-    }
+    .form-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .form-row label { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-secondary); cursor: pointer; }
+    .form-row label input { width: 16px; height: 16px; accent-color: var(--accent); }
+    .form-row a { font-size: 14px; color: var(--accent); text-decoration: none; }
+    .form-row a:hover { text-decoration: underline; }
 
-    /* Mobile menu button */
-    .mobile-menu-btn {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      padding: 8px;
-      background: none;
-      border: none;
-      cursor: pointer;
-    }
+    .submit-btn { width: 100%; padding: 16px 24px; background: var(--bg-dark); color: var(--text-inverse); font-family: var(--font-sans); font-size: 15px; font-weight: 600; border: none; border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s; }
+    .submit-btn:hover { background: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-md); }
 
-    .mobile-menu-btn span {
-      display: block;
-      width: 24px;
-      height: 2px;
-      background: var(--text);
-      border-radius: 2px;
-      transition: all 0.3s;
-    }
+    .auth-footer { text-align: center; margin-top: 28px; padding-top: 28px; border-top: 1px solid var(--border); font-size: 14px; color: var(--text-secondary); }
+    .auth-footer a { color: var(--accent); text-decoration: none; font-weight: 500; }
+    .auth-footer a:hover { text-decoration: underline; }
 
-    .mobile-menu-btn.active span:nth-child(1) {
-      transform: rotate(45deg) translate(5px, 5px);
-    }
-
-    .mobile-menu-btn.active span:nth-child(2) {
-      opacity: 0;
-    }
-
-    .mobile-menu-btn.active span:nth-child(3) {
-      transform: rotate(-45deg) translate(5px, -5px);
-    }
-
-    /* Mobile menu overlay */
-    .mobile-menu {
-      display: none;
-      position: fixed;
-      top: 64px;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: var(--bg);
-      padding: 24px;
-      z-index: 99;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .mobile-menu.active {
-      display: flex;
-    }
-
-    .mobile-menu a {
-      display: block;
-      padding: 16px;
-      color: var(--text);
-      text-decoration: none;
-      font-size: 1.1rem;
-      font-weight: 500;
-      border-radius: 8px;
-      transition: background 0.2s;
-    }
-
-    .mobile-menu a:hover {
-      background: var(--bg-card);
-    }
-
-    .mobile-menu .btn {
-      margin-top: 16px;
-      text-align: center;
-      justify-content: center;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-weight: 500;
-      font-size: 0.9rem;
-      text-decoration: none;
-      transition: all 0.2s;
-      cursor: pointer;
-      border: none;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-hover);
-    }
-
-    .btn-secondary {
-      background: var(--bg-card);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .btn-secondary:hover {
-      background: var(--bg-elevated);
-      border-color: var(--text-muted);
-    }
-
-    /* Auth Layout */
-    .auth-wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 120px 24px 80px;
-    }
-
-    .auth-container {
-      width: 100%;
-      max-width: 400px;
-    }
-
-    .auth-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 32px;
-      transition: border-color 0.2s;
-    }
-
-    .auth-card:hover {
-      border-color: var(--text-muted);
-    }
-
-    .auth-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 8px;
-    }
-
-    .auth-subtitle {
-      color: var(--text-muted);
-      text-align: center;
-      margin-bottom: 32px;
-      font-size: 0.95rem;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      font-size: 0.9rem;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px 16px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      font-size: 1rem;
-      font-family: inherit;
-      transition: border-color 0.2s;
-    }
-
-    input:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-
-    input::placeholder {
-      color: var(--text-muted);
-    }
-
-    .btn-submit {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      border-radius: 8px;
-      font-weight: 500;
-      font-size: 1rem;
-      text-decoration: none;
-      transition: all 0.2s;
-      cursor: pointer;
-      border: none;
-      text-align: center;
-      background: var(--accent);
-      color: white;
-    }
-
-    .btn-submit:hover {
-      background: var(--accent-hover);
-    }
-
-    .btn-submit:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .divider {
-      display: flex;
-      align-items: center;
-      margin: 24px 0;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-
-    .divider::before,
-    .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
-    .divider span {
-      padding: 0 16px;
-    }
-
-    .btn-oauth {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      width: 100%;
-      padding: 12px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-bottom: 12px;
-      font-family: inherit;
-    }
-
-    .btn-oauth:hover {
-      background: var(--bg-elevated);
-      border-color: var(--text-muted);
-    }
-
-    .btn-oauth svg {
-      width: 20px;
-      height: 20px;
-    }
-
-    .auth-footer {
-      text-align: center;
-      margin-top: 24px;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-
-    .auth-footer a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    .auth-footer a:hover {
-      text-decoration: underline;
-    }
-
-    .alert {
-      padding: 12px 16px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      font-size: 0.9rem;
-    }
-
-    .alert-error {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid var(--red);
-      color: var(--red);
-    }
-
-    .alert-success {
-      background: rgba(34, 197, 94, 0.1);
-      border: 1px solid var(--green);
-      color: var(--green);
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    /* Footer */
-    footer {
-      padding: 60px 0;
-      border-top: 1px solid var(--border);
-    }
-
-    .footer-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 24px;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 32px;
-    }
-
-    .footer-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: color 0.2s;
-    }
-
-    .footer-links a:hover {
-      color: var(--text);
-    }
-
-    .footer-copy {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-      }
-
-      .mobile-menu-btn {
-        display: flex;
-      }
-
-      .auth-wrapper {
-        padding: 100px 24px 60px;
-      }
-
-      .footer-content {
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .footer-links {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 16px;
-      }
-    }
+    .error-message { padding: 12px 16px; background: var(--error-soft); border: 1px solid rgba(157, 2, 8, 0.2); border-radius: var(--radius-sm); color: var(--error); font-size: 14px; margin-bottom: 20px; display: none; }
+    .error-message.show { display: block; }
   </style>
 </head>
 <body>
-  <nav>
-    <div class="container">
-      <a href="/" class="logo">
-        <div class="logo-icon">S</div>
-        StyleMCP
-      </a>
-      <div class="nav-links">
-        <a href="/#features">Features</a>
-        <a href="/docs.html">Docs</a>
-        <a href="/pricing.html">Pricing</a>
-        <a href="/blog.html">Blog</a>
-        <a href="/signup.html" class="btn btn-primary">Get Started</a>
-      </div>
-      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
-  </nav>
+  <header class="auth-header">
+    <a href="/" class="logo">
+      <div class="logo-mark">S</div>
+      <span class="logo-text">StyleMCP</span>
+    </a>
+  </header>
 
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="/#features" onclick="closeMobileMenu()">Features</a>
-    <a href="/docs.html">Docs</a>
-    <a href="/pricing.html">Pricing</a>
-    <a href="/blog.html">Blog</a>
-    <a href="/signup.html" class="btn btn-primary">Get Started</a>
-  </div>
+  <main class="auth-main">
+    <div class="auth-card">
+      <h1>Welcome back</h1>
+      <p class="subtitle">Sign in to your StyleMCP account</p>
 
-  <div class="auth-wrapper">
-    <div class="auth-container">
-      <div class="auth-card">
-        <h1 class="auth-title">Welcome back</h1>
-        <p class="auth-subtitle">Sign in to your account</p>
-
-        <div id="alert" class="alert hidden"></div>
-
-        <form id="loginForm">
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="you@example.com" required>
-          </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="••••••••" required>
-          </div>
-          <button type="submit" class="btn-submit" id="submitBtn">Sign In</button>
-        </form>
-
-        <div class="divider"><span>or</span></div>
-
-        <button class="btn-oauth" id="googleBtn">
-          <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-          Continue with Google
-        </button>
-
-        <button class="btn-oauth" id="githubBtn">
+      <div class="social-buttons">
+        <a href="#" class="social-btn" onclick="signInWithGitHub()">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
           Continue with GitHub
-        </button>
+        </a>
+        <a href="#" class="social-btn" onclick="signInWithGoogle()">
+          <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Continue with Google
+        </a>
       </div>
 
-      <p class="auth-footer">Don't have an account? <a href="/signup.html">Sign up</a></p>
-    </div>
-  </div>
+      <div class="divider">or</div>
 
-  <footer>
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-links">
-          <a href="https://github.com/3DUNLMTD/stylemcp">GitHub</a>
-          <a href="/docs.html">Documentation</a>
-          <a href="/pricing.html">Pricing</a>
-          <a href="/blog.html">Blog</a>
-          <a href="/status.html">Status</a>
-          <a href="/privacy.html">Privacy</a>
-          <a href="/terms.html">Terms</a>
+      <form onsubmit="handleLogin(event)">
+        <div id="errorMsg" class="error-message"></div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email</label>
+          <input type="email" id="email" class="form-input" placeholder="you@company.com" required>
         </div>
-        <div class="footer-copy">
-          &copy; 2026 StyleMCP. Open source under MIT license.
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input type="password" id="password" class="form-input" placeholder="••••••••" required>
         </div>
+
+        <div class="form-row">
+          <label><input type="checkbox" name="remember"> Remember me</label>
+          <a href="/forgot-password.html">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="submit-btn">Sign In</button>
+      </form>
+
+      <div class="auth-footer">
+        Don't have an account? <a href="/signup.html">Sign up free</a>
       </div>
     </div>
-  </footer>
+  </main>
 
   <script>
-    function toggleMobileMenu() {
-      const menu = document.getElementById('mobileMenu');
-      const btn = document.querySelector('.mobile-menu-btn');
-      menu.classList.toggle('active');
-      btn.classList.toggle('active');
-      document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : '';
-    }
-
-    function closeMobileMenu() {
-      const menu = document.getElementById('mobileMenu');
-      const btn = document.querySelector('.mobile-menu-btn');
-      menu.classList.remove('active');
-      btn.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-
-    window.addEventListener('resize', () => {
-      if (window.innerWidth > 768) closeMobileMenu();
-    });
-
-    const SUPABASE_URL = 'https://orbliwjewqlnnutykozw.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yYmxpd2pld3Fsbm51dHlrb3p3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNzE5MTEsImV4cCI6MjA4NDg0NzkxMX0.z2xrGw-3UqOHTQ28g7b83vBsavt9rDDP61MKo9I_ZSQ';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    const form = document.getElementById('loginForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const alert = document.getElementById('alert');
-
-    function showAlert(message, type = 'error') {
-      alert.textContent = message;
-      alert.className = `alert alert-${type}`;
-      alert.classList.remove('hidden');
-    }
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) window.location.href = '/dashboard.html';
-    });
-
-    form.addEventListener('submit', async (e) => {
+    function handleLogin(e) {
       e.preventDefault();
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Signing in...';
-
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
 
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-      if (error) {
-        showAlert(error.message);
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Sign In';
-      } else {
-        window.location.href = '/dashboard.html';
+      // Demo validation
+      if (!email || !password) {
+        errorMsg.textContent = 'Please fill in all fields.';
+        errorMsg.classList.add('show');
+        return;
       }
-    });
 
-    document.getElementById('googleBtn').addEventListener('click', async () => {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: window.location.origin + '/dashboard.html' }
-      });
-      if (error) showAlert(error.message);
-    });
+      // In production, this would call your auth API
+      window.location.href = '/dashboard.html';
+    }
 
-    document.getElementById('githubBtn').addEventListener('click', async () => {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'github',
-        options: { redirectTo: window.location.origin + '/dashboard.html' }
-      });
-      if (error) showAlert(error.message);
-    });
+    function signInWithGitHub() {
+      // In production, redirect to GitHub OAuth
+      alert('GitHub OAuth coming soon!');
+    }
+
+    function signInWithGoogle() {
+      // In production, redirect to Google OAuth
+      alert('Google OAuth coming soon!');
+    }
   </script>
 </body>
 </html>
