@@ -11,18 +11,18 @@ const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || '';
 let supabase: SupabaseClient | null = null;
 let stripe: Stripe | null = null;
 
-export function getSupabase(): SupabaseClient {
+export function getSupabase(): SupabaseClient | null {
   if (!supabase && SUPABASE_URL && SUPABASE_SERVICE_KEY) {
     supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
   }
-  return supabase!;
+  return supabase;
 }
 
-export function getStripe(): Stripe {
+export function getStripe(): Stripe | null {
   if (!stripe && STRIPE_SECRET_KEY) {
     stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' });
   }
-  return stripe!;
+  return stripe;
 }
 
 // Tier configuration

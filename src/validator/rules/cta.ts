@@ -170,12 +170,15 @@ function checkContextualRules(
 ): Violation[] {
   const violations: Violation[] = [];
   const lowerText = text.toLowerCase();
+  const contextType = context.type?.toLowerCase();
+  const contextComponent = context.component?.toLowerCase();
 
   for (const rule of contextualRules) {
     // Simple context matching
+    const ruleContext = rule.context.toLowerCase();
     const contextMatches =
-      rule.context.toLowerCase().includes(context.type || '') ||
-      rule.context.toLowerCase().includes(context.component || '');
+      (!!contextType && ruleContext.includes(contextType)) ||
+      (!!contextComponent && ruleContext.includes(contextComponent));
 
     if (!contextMatches) continue;
 

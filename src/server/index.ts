@@ -221,6 +221,9 @@ function createServer(): Server {
     try {
       switch (name) {
         case 'validate_text': {
+          if (!args || typeof args.text !== 'string') {
+            throw new Error('Missing required "text" string');
+          }
           const pack = await ensurePack(args?.pack as string);
           const result = validate({
             pack,
@@ -238,6 +241,9 @@ function createServer(): Server {
         }
 
         case 'rewrite_to_style': {
+          if (!args || typeof args.text !== 'string') {
+            throw new Error('Missing required "text" string');
+          }
           const pack = await ensurePack(args?.pack as string);
           const mode = (args?.mode as string) || 'normal';
 
@@ -357,6 +363,9 @@ function createServer(): Server {
         }
 
         case 'suggest_ctas': {
+          if (!args || typeof args.context !== 'string') {
+            throw new Error('Missing required "context" string');
+          }
           const pack = await ensurePack(args?.pack as string);
           const context = (args?.context as string).toLowerCase();
 

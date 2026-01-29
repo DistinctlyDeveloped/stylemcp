@@ -12,7 +12,6 @@ import {
   createCheckoutSession,
   handleStripeWebhook,
   createPortalSession,
-  getSupabase,
   isBillingEnabled
 } from './billing.js';
 
@@ -62,7 +61,9 @@ app.post('/api/webhook/github', express.raw({ type: 'application/json' }), async
       const hmac = crypto.createHmac('sha256', GITHUB_WEBHOOK_SECRET);
       const digest = 'sha256=' + hmac.update(body).digest('hex');
 
-      if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest))) {
+      const signatureBuffer = Buffer.from(signature);
+      const digestBuffer = Buffer.from(digest);
+      if (signatureBuffer.length !== digestBuffer.length || !crypto.timingSafeEqual(signatureBuffer, digestBuffer)) {
         res.status(401).json({ error: 'Invalid signature' });
         return;
       }
@@ -249,6 +250,12 @@ app.post('/api/validate/batch', authMiddleware, async (req: Request, res: Respon
 
     if (!Array.isArray(items)) {
       res.status(400).json({ error: 'Missing or invalid "items" array' });
+      return;
+    }
+
+    const invalidIndex = items.findIndex((item: { text?: unknown }) => !item || typeof item.text !== 'string');
+    if (invalidIndex !== -1) {
+      res.status(400).json({ error: `Invalid item at index ${invalidIndex}: missing or invalid "text"` });
       return;
     }
 
@@ -610,6 +617,10 @@ app.post('/api/mcp/call', authMiddleware, async (req: Request, res: Response) =>
     // Route to appropriate handler
     switch (tool) {
       case 'validate_text': {
+        if (!args || typeof args.text !== 'string') {
+          res.status(400).json({ error: 'Missing or invalid "text" field' });
+          return;
+        }
         const pack = await getPack(args?.pack || 'saas');
         const result = validate({
           pack,
@@ -621,6 +632,10 @@ app.post('/api/mcp/call', authMiddleware, async (req: Request, res: Response) =>
       }
 
       case 'rewrite_to_style': {
+        if (!args || typeof args.text !== 'string') {
+          res.status(400).json({ error: 'Missing or invalid "text" field' });
+          return;
+        }
         const pack = await getPack(args?.pack || 'saas');
         const mode = args?.mode || 'normal';
         const options = {
