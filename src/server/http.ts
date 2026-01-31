@@ -88,16 +88,39 @@ app.post('/api/webhook/github', express.raw({ type: 'application/json' }), async
   }
 });
 
-// Now apply JSON middleware for remaining routes
-app.use(cors());
+// CORS configuration - restrict origins in production
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
+  : ['http://localhost:3000', 'http://localhost:5173', 'https://stylemcp.com', 'https://www.stylemcp.com'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    
+    if (ALLOWED_ORIGINS.includes(origin) || process.env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS policy: Origin not allowed'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'x-api-key', 'Authorization'],
+}));
 app.use(express.json({ limit: '1mb' }));
 
-// Pack cache
-const packCache = new Map<string, Pack>();
+// Pack cache with warnings tracking
+interface CachedPack {
+  pack: Pack;
+  warnings: string[];
+}
+
+const packCache = new Map<string, CachedPack>();
 
 async function getPack(packName: string): Promise<Pack> {
   if (packCache.has(packName)) {
-    return packCache.get(packName)!;
+    return packCache.get(packName)!.pack;
   }
 
   // Security: Validate pack name against whitelist to prevent path traversal
@@ -108,8 +131,23 @@ async function getPack(packName: string): Promise<Pack> {
 
   const packPath = join(getPacksDirectory(), packName);
   const result = await loadPack({ packPath });
-  packCache.set(packName, result.pack);
+  
+  // Log warnings for visibility
+  if (result.errors.length > 0) {
+    console.warn(`[StyleMCP] Pack '${packName}' loaded with warnings:`, result.errors);
+  }
+  
+  packCache.set(packName, { pack: result.pack, warnings: result.errors });
   return result.pack;
+}
+
+async function getPackWithWarnings(packName: string): Promise<CachedPack> {
+  if (packCache.has(packName)) {
+    return packCache.get(packName)!;
+  }
+  
+  await getPack(packName); // This will populate the cache
+  return packCache.get(packName)!;
 }
 
 // Optional API key authentication

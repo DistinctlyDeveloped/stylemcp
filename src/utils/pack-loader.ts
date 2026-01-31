@@ -20,7 +20,6 @@ import {
 
 export interface LoadPackOptions {
   packPath: string;
-  validate?: boolean;
 }
 
 export interface PackLoadResult {
@@ -41,7 +40,7 @@ async function loadJsonFile<T>(filePath: string, schema: { parse: (data: unknown
 }
 
 export async function loadPack(options: LoadPackOptions): Promise<PackLoadResult> {
-  const { packPath, validate = true } = options;
+  const { packPath } = options;
   const errors: string[] = [];
 
   // Load manifest
