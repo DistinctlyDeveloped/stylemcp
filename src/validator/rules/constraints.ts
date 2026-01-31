@@ -1,24 +1,5 @@
 import { Voice, Violation } from '../../schema/index.js';
-import { randomUUID } from 'crypto';
-
-function createViolation(
-  rule: string,
-  severity: 'error' | 'warning' | 'info',
-  message: string,
-  text?: string,
-  position?: { start: number; end: number },
-  suggestion?: string
-): Violation {
-  return {
-    id: `v-${randomUUID().slice(0, 8)}`,
-    rule,
-    severity,
-    message,
-    text,
-    position,
-    suggestion,
-  };
-}
+import { createViolation, escapeRegex } from '../utils.js';
 
 type Constraints = Voice['constraints'];
 
@@ -239,6 +220,4 @@ function checkOxfordComma(text: string, required: boolean): Violation[] {
   return violations;
 }
 
-function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
+// Utility functions (createViolation, escapeRegex) imported from ../utils.js

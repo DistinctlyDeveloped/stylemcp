@@ -1,24 +1,5 @@
 import { Voice, Violation } from '../../schema/index.js';
-import { randomUUID } from 'crypto';
-
-function createViolation(
-  rule: string,
-  severity: 'error' | 'warning' | 'info',
-  message: string,
-  text?: string,
-  position?: { start: number; end: number },
-  suggestion?: string
-): Violation {
-  return {
-    id: `v-${randomUUID().slice(0, 8)}`,
-    rule,
-    severity,
-    message,
-    text,
-    position,
-    suggestion,
-  };
-}
+import { createViolation, escapeRegex, slugify } from '../utils.js';
 
 /**
  * Check text against voice rules (vocabulary, doNot, forbidden phrases)
@@ -144,20 +125,4 @@ function checkDoNotPatterns(text: string, doNots: Voice['doNot']): Violation[] {
   return violations;
 }
 
-/**
- * Escape special regex characters
- */
-function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-/**
- * Convert string to slug for rule IDs
- */
-function slugify(str: string): string {
-  return str
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-    .slice(0, 30);
-}
+// Utility functions (createViolation, escapeRegex, slugify) imported from ../utils.js

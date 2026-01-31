@@ -150,7 +150,7 @@ async function getPackWithWarnings(packName: string): Promise<CachedPack> {
   return packCache.get(packName)!;
 }
 
-// Optional API key authentication
+// Optional API key authentication with timing-safe comparison
 function authMiddleware(req: Request, res: Response, next: NextFunction): void {
   if (!API_KEY) {
     // No API key configured, allow all requests
@@ -159,7 +159,18 @@ function authMiddleware(req: Request, res: Response, next: NextFunction): void {
   }
 
   const providedKey = req.headers['x-api-key'] || req.query.api_key;
-  if (providedKey !== API_KEY) {
+  if (!providedKey || typeof providedKey !== 'string') {
+    res.status(401).json({ error: 'Invalid or missing API key' });
+    return;
+  }
+  
+  // Use constant-time comparison to prevent timing attacks
+  const providedBuffer = Buffer.from(providedKey);
+  const expectedBuffer = Buffer.from(API_KEY);
+  
+  // Length mismatch handled separately to avoid timing oracle
+  if (providedBuffer.length !== expectedBuffer.length || 
+      !crypto.timingSafeEqual(providedBuffer, expectedBuffer)) {
     res.status(401).json({ error: 'Invalid or missing API key' });
     return;
   }

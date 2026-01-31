@@ -1,24 +1,5 @@
 import { CTARules, Violation } from '../../schema/index.js';
-import { randomUUID } from 'crypto';
-
-function createViolation(
-  rule: string,
-  severity: 'error' | 'warning' | 'info',
-  message: string,
-  text?: string,
-  position?: { start: number; end: number },
-  suggestion?: string
-): Violation {
-  return {
-    id: `v-${randomUUID().slice(0, 8)}`,
-    rule,
-    severity,
-    message,
-    text,
-    position,
-    suggestion,
-  };
-}
+import { createViolation, escapeRegex } from '../utils.js';
 
 export interface CtaContext {
   type?: 'ui-copy' | 'marketing' | 'docs' | 'support' | 'general';
@@ -202,6 +183,4 @@ function checkContextualRules(
   return violations;
 }
 
-function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
+// Utility functions (createViolation, escapeRegex) imported from ../utils.js
