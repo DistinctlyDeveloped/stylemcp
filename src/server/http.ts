@@ -99,6 +99,12 @@ async function getPack(packName: string): Promise<Pack> {
     return packCache.get(packName)!;
   }
 
+  // Security: Validate pack name against whitelist to prevent path traversal
+  const availablePacks = await listAvailablePacks();
+  if (!availablePacks.includes(packName)) {
+    throw new Error(`Pack not found: ${packName}`);
+  }
+
   const packPath = join(getPacksDirectory(), packName);
   const result = await loadPack({ packPath });
   packCache.set(packName, result.pack);
@@ -292,7 +298,7 @@ app.post('/api/validate/batch', authMiddleware, async (req: Request, res: Respon
 // Rewrite text
 app.post('/api/rewrite', authMiddleware, async (req: Request, res: Response) => {
   try {
-    const { text, pack: packName = 'saas', mode = 'normal', context } = req.body;
+    const { text, pack: packName = 'saas', mode = 'normal', context, useAI = false } = req.body;
 
     if (!text || typeof text !== 'string') {
       res.status(400).json({ error: 'Missing or invalid "text" field' });
@@ -311,10 +317,60 @@ app.post('/api/rewrite', authMiddleware, async (req: Request, res: Response) => 
       result = rewrite(options);
     }
 
-    res.json({
+    // Check if rule-based rewrite made no changes but there are violations
+    const hasUnfixedViolations = result.changes.length === 0 && result.score.before < 100;
+    
+    // If useAI is requested (Pro+ feature) and there are unfixed violations, use AI
+    if (useAI && hasUnfixedViolations && isAIRewriteAvailable()) {
+      const validation = validate({ pack, text, context });
+      
+      if (validation.violations.length > 0) {
+        const aiResult = await aiRewrite({
+          pack,
+          text,
+          violations: validation.violations,
+          context,
+        });
+        
+        // Re-validate the AI-rewritten text
+        const afterValidation = validate({ pack, text: aiResult.rewritten, context });
+        
+        res.json({
+          original: text,
+          rewritten: aiResult.rewritten,
+          changes: [{
+            type: 'ai-rewrite' as const,
+            original: text,
+            replacement: aiResult.rewritten,
+            reason: aiResult.explanation,
+            position: { start: 0, end: text.length },
+          }],
+          score: {
+            before: validation.score,
+            after: afterValidation.score,
+          },
+          summary: `AI rewrite: ${validation.score} → ${afterValidation.score}`,
+          aiUsed: true,
+          tokensUsed: aiResult.tokensUsed,
+          estimatedCost: estimateAIRewriteCost(aiResult.tokensUsed.input, aiResult.tokensUsed.output),
+        });
+        return;
+      }
+    }
+
+    // Return rule-based result (with hint if AI could help)
+    const response: Record<string, unknown> = {
       ...result,
       summary: formatChanges(result),
-    });
+      aiUsed: false,
+    };
+    
+    // Add hint if rule-based made no changes but violations exist
+    if (hasUnfixedViolations && !useAI) {
+      response.hint = 'Rule-based rewrite could not fix these violations. Use useAI:true for AI-powered fixes (Pro+ feature).';
+    }
+
+    res.json(response);
   } catch (error) {
     res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
   }

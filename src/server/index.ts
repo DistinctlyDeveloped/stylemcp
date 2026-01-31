@@ -10,7 +10,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import { loadPack, getPacksDirectory, listAvailablePacks } from '../utils/pack-loader.js';
 import { validate } from '../validator/index.js';
-import { rewrite, rewriteMinimal, rewriteAggressive, formatChanges } from '../rewriter/index.js';
+import { rewrite, rewriteMinimal, rewriteAggressive, formatChanges, aiRewrite, isAIRewriteAvailable, estimateAIRewriteCost } from '../rewriter/index.js';
 import { Pack } from '../schema/index.js';
 import { join } from 'path';
 
@@ -87,7 +87,7 @@ function createServer(): Server {
         },
         {
           name: 'rewrite_to_style',
-          description: 'Rewrite text to conform to brand/voice rules. Makes minimal changes to fix violations.',
+          description: 'Rewrite text to conform to brand/voice rules. Makes minimal changes to fix violations. Use useAI:true for AI-powered rewrites when rule-based fixes are insufficient.',
           inputSchema: {
             type: 'object',
             properties: {
@@ -108,6 +108,10 @@ function createServer(): Server {
                 type: 'string',
                 enum: ['ui-copy', 'marketing', 'docs', 'support', 'general'],
                 description: 'Type of content being rewritten',
+              },
+              useAI: {
+                type: 'boolean',
+                description: 'Use AI-powered rewriting when rule-based fixes cannot address violations (Pro+ feature)',
               },
             },
             required: ['text'],
@@ -246,11 +250,13 @@ function createServer(): Server {
           }
           const pack = await ensurePack(args?.pack as string);
           const mode = (args?.mode as string) || 'normal';
+          const useAI = args?.useAI === true;
+          const inputText = args.text as string;
 
           let result;
           const options = {
             pack,
-            text: args?.text as string,
+            text: inputText,
             context: args?.context_type ? { type: args.context_type as any } : undefined,
           };
 
@@ -262,14 +268,70 @@ function createServer(): Server {
             result = rewrite(options);
           }
 
+          // Check if rule-based rewrite made no changes but there are violations
+          const hasUnfixedViolations = result.changes.length === 0 && result.score.before < 100;
+          
+          // If useAI is requested and there are unfixed violations, use AI
+          if (useAI && hasUnfixedViolations && isAIRewriteAvailable()) {
+            const validation = validate({ pack, text: inputText, context: options.context });
+            
+            if (validation.violations.length > 0) {
+              const aiResult = await aiRewrite({
+                pack,
+                text: inputText,
+                violations: validation.violations,
+                context: options.context,
+              });
+              
+              // Re-validate the AI-rewritten text
+              const afterValidation = validate({ pack, text: aiResult.rewritten, context: options.context });
+              
+              return {
+                content: [
+                  {
+                    type: 'text',
+                    text: JSON.stringify({
+                      original: inputText,
+                      rewritten: aiResult.rewritten,
+                      changes: [{
+                        type: 'ai-rewrite',
+                        original: inputText,
+                        replacement: aiResult.rewritten,
+                        reason: aiResult.explanation,
+                        position: { start: 0, end: inputText.length },
+                      }],
+                      score: {
+                        before: validation.score,
+                        after: afterValidation.score,
+                      },
+                      summary: `AI rewrite: ${validation.score} → ${afterValidation.score}`,
+                      aiUsed: true,
+                      tokensUsed: aiResult.tokensUsed,
+                      estimatedCost: estimateAIRewriteCost(aiResult.tokensUsed.input, aiResult.tokensUsed.output),
+                    }, null, 2),
+                  },
+                ],
+              };
+            }
+          }
+
+          // Return rule-based result (with hint if AI could help)
+          const response: Record<string, unknown> = {
+            ...result,
+            summary: formatChanges(result),
+            aiUsed: false,
+          };
+          
+          // Add hint if rule-based made no changes but violations exist
+          if (hasUnfixedViolations && !useAI) {
+            response.hint = 'Rule-based rewrite could not fix these violations. Use useAI:true for AI-powered fixes (Pro+ feature).';
+          }
+
           return {
             content: [
               {
                 type: 'text',
-                text: JSON.stringify({
-                  ...result,
-                  summary: formatChanges(result),
-                }, null, 2),
+                text: JSON.stringify(response, null, 2),
               },
             ],
           };
