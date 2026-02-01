@@ -1,4 +1,4 @@
-import { readFile } from 'fs/promises';
+import { readFile, stat } from 'fs/promises';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import * as yaml from 'js-yaml';
@@ -20,11 +20,64 @@ import {
 
 export interface LoadPackOptions {
   packPath: string;
+  /** Skip cache and force reload from disk */
+  noCache?: boolean;
 }
 
 export interface PackLoadResult {
   pack: Pack;
   errors: string[];
+  /** Whether the result was served from cache */
+  cached?: boolean;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Pack Cache - reduces disk I/O for repeated validations
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface CacheEntry {
+  result: PackLoadResult;
+  manifestMtime: number;
+  cachedAt: number;
+}
+
+const CACHE_TTL_MS = 60_000; // 1 minute
+const CACHE_MAX_SIZE = 20;
+const packCache = new Map<string, CacheEntry>();
+
+async function getManifestMtime(packPath: string): Promise<number> {
+  try {
+    const manifestPath = join(packPath, 'manifest.yaml');
+    const stats = await stat(manifestPath);
+    return stats.mtimeMs;
+  } catch {
+    return 0;
+  }
+}
+
+function isCacheValid(entry: CacheEntry, currentMtime: number): boolean {
+  const now = Date.now();
+  const age = now - entry.cachedAt;
+  // Invalid if TTL expired or manifest was modified
+  return age < CACHE_TTL_MS && entry.manifestMtime === currentMtime;
+}
+
+function pruneCache(): void {
+  if (packCache.size <= CACHE_MAX_SIZE) return;
+  // Remove oldest entries (FIFO - Map maintains insertion order)
+  const excess = packCache.size - CACHE_MAX_SIZE;
+  const keys = Array.from(packCache.keys()).slice(0, excess);
+  keys.forEach(k => packCache.delete(k));
+}
+
+/** Clear the pack cache (useful for testing or after file changes) */
+export function clearPackCache(): void {
+  packCache.clear();
+}
+
+/** Get cache stats for monitoring */
+export function getPackCacheStats(): { size: number; maxSize: number; ttlMs: number } {
+  return { size: packCache.size, maxSize: CACHE_MAX_SIZE, ttlMs: CACHE_TTL_MS };
 }
 
 async function loadYamlFile<T>(filePath: string, schema: { parse: (data: unknown) => T }): Promise<T> {
@@ -40,8 +93,21 @@ async function loadJsonFile<T>(filePath: string, schema: { parse: (data: unknown
 }
 
 export async function loadPack(options: LoadPackOptions): Promise<PackLoadResult> {
-  const { packPath } = options;
+  const { packPath, noCache } = options;
   const errors: string[] = [];
+
+  // Check cache first (unless noCache is set)
+  if (!noCache) {
+    const cached = packCache.get(packPath);
+    if (cached) {
+      const currentMtime = await getManifestMtime(packPath);
+      if (isCacheValid(cached, currentMtime)) {
+        return { ...cached.result, cached: true };
+      }
+      // Cache invalid, remove stale entry
+      packCache.delete(packPath);
+    }
+  }
 
   // Load manifest
   const manifestPath = join(packPath, 'manifest.yaml');
@@ -96,7 +162,7 @@ export async function loadPack(options: LoadPackOptions): Promise<PackLoadResult
     tests = TestSuiteSchema.parse({ name: 'default', tests: [] });
   }
 
-  return {
+  const result: PackLoadResult = {
     pack: {
       manifest,
       voice,
@@ -106,7 +172,19 @@ export async function loadPack(options: LoadPackOptions): Promise<PackLoadResult
       tests,
     },
     errors,
+    cached: false,
   };
+
+  // Cache the result
+  const manifestMtime = await getManifestMtime(packPath);
+  packCache.set(packPath, {
+    result,
+    manifestMtime,
+    cachedAt: Date.now(),
+  });
+  pruneCache();
+
+  return result;
 }
 
 export function getPacksDirectory(): string {
