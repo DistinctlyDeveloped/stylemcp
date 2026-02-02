@@ -30,6 +30,7 @@ export const TIERS = {
   free: { limit: 5000, price: 0, aiRewrites: false },
   pro: { limit: 25000, price: 900, aiRewrites: true }, // $9.00 in cents
   team: { limit: 100000, price: 2900, aiRewrites: true }, // $29.00 in cents
+  business: { limit: 500000, price: 9900, aiRewrites: true }, // $99.00 in cents
   enterprise: { limit: Infinity, price: null, aiRewrites: true }, // Custom pricing
 } as const;
 
