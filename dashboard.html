@@ -777,7 +777,7 @@
             <div class="user-email" id="userEmail">...</div>
           </div>
         </div>
-        <button class="btn-logout" id="logoutBtn">
+        <button class="btn-logout" id="logoutBtn" onclick="handleLogout()">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
           Sign Out
         </button>
@@ -1003,7 +1003,9 @@ curl -X POST https://stylemcp.com/api/validate \
   <script>
     const SUPABASE_URL = 'https://orbliwjewqlnnutykozw.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yYmxpd2pld3Fsbm51dHlrb3p3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNzE5MTEsImV4cCI6MjA4NDg0NzkxMX0.z2xrGw-3UqOHTQ28g7b83vBsavt9rDDP61MKo9I_ZSQ';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Use shared client if available, otherwise create one
+    const sb = window.sbClient || window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    window.sbClient = sb;  // Ensure it's globally available
 
     let currentUser = null;
     let userProfile = null;
@@ -1036,20 +1038,56 @@ curl -X POST https://stylemcp.com/api/validate \
     async function init() {
       try {
         setLoadingText('Checking authentication...');
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        console.log('Dashboard init - URL:', window.location.href);
+        console.log('Hash:', window.location.hash ? '(has tokens)' : '(empty)');
+        
+        // Check for OAuth errors in URL
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const hashError = hashParams.get('error');
+        const hashErrorDesc = hashParams.get('error_description');
+        
+        if (hashError) {
+          console.error('OAuth error:', hashError, hashErrorDesc);
+          showToast('Login failed: ' + (hashErrorDesc || hashError), 'error');
+          setTimeout(() => window.location.href = '/login.html', 2000);
+          return;
+        }
+        
+        // Simple approach: just get session, Supabase handles OAuth tokens automatically
+        const { data: { session }, error: sessionError } = await sb.auth.getSession();
+        
+        console.log('Session check:', session?.user?.email || 'none', 'error:', sessionError);
         
         if (sessionError) {
           console.error('Session error:', sessionError);
           showToast('Authentication error. Please sign in again.', 'error');
-          setTimeout(() => window.location.href = '/login.html', 1500);
+          setTimeout(() => window.location.href = '/login.html', 2000);
           return;
         }
         
-        if (!session) {
-          window.location.href = '/login.html';
+        if (session) {
+          console.log('Session found, loading dashboard');
+          // Clear hash if present
+          if (window.location.hash) {
+            history.replaceState(null, '', window.location.pathname);
+          }
+          await loadDashboard(session);
           return;
         }
         
+        // No session - redirect to login
+        console.log('No session, redirecting to login');
+        window.location.href = '/login.html';
+        
+      } catch (err) {
+        console.error('Init error:', err);
+        showToast('Failed to load dashboard. Please refresh.', 'error');
+      }
+    }
+    
+    async function loadDashboard(session) {
+      try {
         currentUser = session.user;
         
         setLoadingText('Loading your profile...');
@@ -1070,74 +1108,66 @@ curl -X POST https://stylemcp.com/api/validate \
         if (localStorage.getItem('stylemcp_checklist_dismissed')) {
           document.getElementById('onboardingChecklist').style.display = 'none';
         }
-        
       } catch (err) {
-        console.error('Init error:', err);
+        console.error('Dashboard load error:', err);
         showToast('Failed to load dashboard. Please refresh.', 'error');
       }
     }
 
     async function loadProfile() {
-      // Try to load existing profile
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', currentUser.id)
-        .single();
+      console.log('loadProfile called for user:', currentUser.id);
+      const defaultApiKey = generateApiKey();
       
-      if (error) {
-        // Profile doesn't exist - create one
-        if (error.code === 'PGRST116') { // No rows returned
-          console.log('Creating new profile for user');
-          const newApiKey = generateApiKey();
-          const newProfile = {
-            id: currentUser.id,
-            email: currentUser.email,
-            tier: 'free',
-            monthly_request_limit: 5000,
-            api_key: newApiKey,
-            created_at: new Date().toISOString()
-          };
-          
-          const { data: created, error: createError } = await supabase
-            .from('profiles')
-            .insert(newProfile)
-            .select()
-            .single();
-          
-          if (createError) {
-            console.error('Error creating profile:', createError);
-            // Use defaults if we can't create profile (table might not exist)
-            userProfile = {
-              tier: 'free',
-              monthly_request_limit: 5000,
-              api_key: newApiKey
-            };
+      try {
+        // Try to load existing profile
+        const { data, error } = await sb
+          .from('profiles')
+          .select('*')
+          .eq('id', currentUser.id)
+          .single();
+        
+        console.log('Profile query result:', { data, error });
+        
+        if (error) {
+          console.log('Profile error code:', error.code);
+          // Profile doesn't exist - try to create one
+          if (error.code === 'PGRST116') {
+            console.log('No profile found, creating via RPC');
+            
+            // Use RPC function to create profile (bypasses RLS issues)
+            const { data: created, error: createError } = await sb.rpc('create_profile_for_user', {
+              p_user_id: currentUser.id,
+              p_email: currentUser.email || 'unknown'
+            });
+            
+            console.log('Profile creation result:', { created, createError });
+            userProfile = created || { tier: 'free', monthly_request_limit: 5000, api_key: defaultApiKey };
           } else {
-            userProfile = created;
+            console.error('Profile query error:', error);
+            userProfile = { tier: 'free', monthly_request_limit: 5000, api_key: defaultApiKey };
           }
         } else {
-          console.error('Error loading profile:', error);
-          // Use defaults
-          userProfile = {
-            tier: 'free',
-            monthly_request_limit: 5000,
-            api_key: generateApiKey()
-          };
+          userProfile = data;
         }
-      } else {
-        userProfile = data;
+      } catch (err) {
+        console.error('loadProfile exception:', err);
+        userProfile = { tier: 'free', monthly_request_limit: 5000, api_key: defaultApiKey };
+      }
+      
+      // Ensure userProfile exists
+      if (!userProfile) {
+        userProfile = { tier: 'free', monthly_request_limit: 5000, api_key: defaultApiKey };
       }
       
       // Update UI with profile data
-      const email = currentUser.email;
+      const email = currentUser.email || 'unknown@user';
       const name = currentUser.user_metadata?.full_name || 
                    currentUser.user_metadata?.first_name ||
                    email.split('@')[0];
       
       document.getElementById('userName').textContent = name.charAt(0).toUpperCase() + name.slice(1);
       document.getElementById('userEmail').textContent = email;
-      document.getElementById('userAvatar').textContent = email.charAt(0).toUpperCase();
+      document.getElementById('userAvatar').textContent = (email.charAt(0) || 'U').toUpperCase();
       
       const tierBadge = document.getElementById('tierBadge');
       const tier = userProfile.tier || 'free';
@@ -1145,12 +1175,13 @@ curl -X POST https://stylemcp.com/api/validate \
       tierBadge.className = `tier-badge ${tier}`;
       
       document.getElementById('limitCount').textContent = (userProfile.monthly_request_limit || 5000).toLocaleString();
+      console.log('loadProfile completed');
     }
 
     async function loadUsage() {
       // Try to get usage stats from RPC function
       try {
-        const { data, error } = await supabase.rpc('get_usage_stats', { p_user_id: currentUser.id });
+        const { data, error } = await sb.rpc('get_usage_stats', { p_user_id: currentUser.id });
         
         if (error) {
           console.warn('Usage stats not available:', error.message);
@@ -1216,10 +1247,32 @@ curl -X POST https://stylemcp.com/api/validate \
       }
     });
 
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-      await supabase.auth.signOut();
-      window.location.href = '/login.html';
-    });
+    // Logout button event listener
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', handleLogout);
+      console.log('Logout button listener attached');
+    } else {
+      console.error('Logout button not found!');
+    }
+
+    async function handleLogout() {
+      console.log('handleLogout called');
+      // Clear any local storage
+      localStorage.removeItem('sb-orbliwjewqlnnutykozw-auth-token');
+      try {
+        if (sb && sb.auth) {
+          await sb.auth.signOut();
+        }
+      } catch (err) {
+        console.error('Logout error:', err);
+      }
+      // Force redirect regardless
+      window.location.replace('/login.html');
+    }
+    
+    // Also attach to window for debugging
+    window.handleLogout = handleLogout;
 
     function dismissWelcome() {
       document.getElementById('welcomeModal').classList.add('hidden');

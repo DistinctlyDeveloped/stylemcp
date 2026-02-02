@@ -17,6 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/auth.js"></script>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -52,14 +53,31 @@
     html { -webkit-font-smoothing: antialiased; }
     body { font-family: var(--font-sans); background: var(--bg-warm); color: var(--text-primary); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* Header */
-    .auth-header { padding: 24px 32px; }
+    /* Navigation */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(250, 248, 245, 0.85);
+      backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
     .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
     .logo-mark { width: 40px; height: 40px; background: var(--bg-dark); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: var(--font-serif); font-size: 24px; font-style: italic; color: var(--text-inverse); }
     .logo-text { font-weight: 600; font-size: 18px; letter-spacing: -0.02em; }
+    .nav-links { display: flex; align-items: center; gap: 8px; }
+    .nav-link { padding: 10px 16px; font-size: 14px; font-weight: 500; color: var(--text-secondary); text-decoration: none; border-radius: var(--radius-sm); transition: all 0.2s ease; }
+    .nav-link:hover { color: var(--text-primary); background: var(--bg-warm); }
+    .nav-link.active { color: var(--text-primary); background: var(--bg-warm); }
+    .nav-cta { margin-left: 8px; padding: 10px 20px; background: var(--bg-dark); color: var(--text-inverse); font-size: 14px; font-weight: 600; text-decoration: none; border-radius: var(--radius-sm); transition: all 0.2s ease; }
+    .nav-cta:hover { background: var(--accent); transform: translateY(-1px); }
 
     /* Main */
-    .auth-main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px; }
+    .auth-main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px; padding-top: 96px; }
 
     .auth-card { width: 100%; max-width: 420px; background: var(--bg-paper); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 48px 40px; box-shadow: var(--shadow-lg); }
 
@@ -107,12 +125,21 @@
   </style>
 </head>
 <body>
-  <header class="auth-header">
-    <a href="/" class="logo">
-      <div class="logo-mark">S</div>
-      <span class="logo-text">StyleMCP</span>
-    </a>
-  </header>
+  <nav>
+    <div class="container nav-inner">
+      <a href="/" class="logo">
+        <div class="logo-mark">S</div>
+        <span class="logo-text">StyleMCP</span>
+      </a>
+      <div class="nav-links">
+        <a href="/#features" class="nav-link">Features</a>
+        <a href="/docs.html" class="nav-link">Docs</a>
+        <a href="/pricing.html" class="nav-link">Pricing</a>
+        <a href="/login.html" class="nav-link active">Login</a>
+        <a href="/signup.html" class="nav-cta">Get Started</a>
+      </div>
+    </div>
+  </nav>
 
   <main class="auth-main">
     <div class="auth-card">
@@ -163,11 +190,13 @@
   <script>
     const SUPABASE_URL = 'https://orbliwjewqlnnutykozw.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yYmxpd2pld3Fsbm51dHlrb3p3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNzE5MTEsImV4cCI6MjA4NDg0NzkxMX0.z2xrGw-3UqOHTQ28g7b83vBsavt9rDDP61MKo9I_ZSQ';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Use shared client if available, otherwise create one
+    const sb = window.sbClient || window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    window.sbClient = sb;
 
     // Check if already logged in
     async function checkSession() {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session } } = await sb.auth.getSession();
       if (session) {
         window.location.href = '/dashboard.html';
       }
@@ -214,7 +243,7 @@
       setLoading(true);
 
       try {
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await sb.auth.signInWithPassword({
           email,
           password
         });
@@ -241,30 +270,42 @@
     }
 
     async function signInWithGitHub() {
+      console.log('GitHub sign-in clicked');
       try {
-        const { error } = await supabase.auth.signInWithOAuth({
+        const { data, error } = await sb.auth.signInWithOAuth({
           provider: 'github',
           options: {
-            redirectTo: window.location.origin + '/dashboard.html'
+            redirectTo: 'https://stylemcp.com/dashboard.html'
           }
         });
-        if (error) showError(error.message);
+        console.log('GitHub OAuth response:', { data, error });
+        if (error) {
+          console.error('GitHub OAuth error:', error);
+          showError(error.message);
+        }
       } catch (err) {
-        showError('Failed to connect with GitHub. Please try again.');
+        console.error('GitHub OAuth exception:', err);
+        showError('Failed to connect with GitHub: ' + err.message);
       }
     }
 
     async function signInWithGoogle() {
+      console.log('Google sign-in clicked');
       try {
-        const { error } = await supabase.auth.signInWithOAuth({
+        const { data, error } = await sb.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: window.location.origin + '/dashboard.html'
+            redirectTo: 'https://stylemcp.com/dashboard.html'
           }
         });
-        if (error) showError(error.message);
+        console.log('Google OAuth response:', { data, error });
+        if (error) {
+          console.error('Google OAuth error:', error);
+          showError(error.message);
+        }
       } catch (err) {
-        showError('Failed to connect with Google. Please try again.');
+        console.error('Google OAuth exception:', err);
+        showError('Failed to connect with Google: ' + err.message);
       }
     }
 
