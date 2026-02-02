@@ -6,9 +6,7 @@
  */
 
 import { validate } from '../validator/index.js';
-import { loadPack, getPacksDirectory } from '../utils/pack-loader.js';
 import { VoiceContextManager } from '../utils/voice-context.js';
-import { join } from 'path';
 
 export interface AIOutputValidationRequest {
   /** The AI-generated content to validate */
@@ -171,9 +169,9 @@ export class AIOutputValidator {
     return concerns;
   }
 
-  private checkFactualRisks(content: string, context?: AIOutputValidationRequest['context']): AIOutputConcern[] {
+  private checkFactualRisks(content: string, _context?: AIOutputValidationRequest['context']): AIOutputConcern[] {
     const concerns: AIOutputConcern[] = [];
-    const lowerContent = content.toLowerCase();
+    const _lowerContent = content.toLowerCase();
 
     // Check for potentially problematic AI patterns
     const riskPatterns = [
@@ -203,7 +201,7 @@ export class AIOutputValidator {
 
     // Check if content matches pack's tone attributes
     const toneAttributes = pack.voice?.tone?.attributes || [];
-    const contentLower = content.toLowerCase();
+    const _contentLower = content.toLowerCase();
 
     // Check for overly formal language when casual tone is expected
     if (toneAttributes.includes('casual') || toneAttributes.includes('conversational')) {
@@ -287,7 +285,7 @@ export class AIOutputValidator {
     return concerns;
   }
 
-  private checkVoiceDrift(content: string, pack: any): AIOutputConcern[] {
+  private checkVoiceDrift(content: string, _pack: any): AIOutputConcern[] {
     const concerns: AIOutputConcern[] = [];
 
     // Check for generic AI assistant patterns that don't match brand voice
@@ -370,8 +368,8 @@ export class AIOutputValidator {
 
   private async generateRewrite(
     content: string,
-    pack: any,
-    concerns: AIOutputConcern[]
+    _pack: any,
+    _concerns: AIOutputConcern[]
   ): Promise<{ content: string; changes: string[] }> {
     // This is a simplified rewrite - in production, this would call the AI rewriter
     // For now, return the original content with basic fixes
