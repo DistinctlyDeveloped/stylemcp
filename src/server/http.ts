@@ -300,17 +300,56 @@ app.get('/api/packs/:pack', authMiddleware, async (req: Request, res: Response) 
 // Validate text
 app.post('/api/validate', authMiddleware, async (req: Request, res: Response) => {
   try {
-    const { text, pack: packName = 'saas', context } = req.body;
+    const { 
+      text, 
+      pack: packName = 'saas',
+      context,
+      channel,
+      subject,
+      audience,
+      contentType,
+      useMultiVoice = false
+    } = req.body;
 
     if (!text || typeof text !== 'string') {
       res.status(400).json({ error: 'Missing or invalid "text" field' });
       return;
     }
 
-    const pack = await getPack(packName);
-    const result = validate({ pack, text, context });
+    let selectedPack = packName;
+    let voiceContext = context;
+    let selectionInfo = null;
 
-    res.json(result);
+    // Use multi-voice context selection if enabled
+    if (useMultiVoice) {
+      const { VoiceContextManager } = await import('../utils/voice-context.js');
+      const voiceManager = new VoiceContextManager();
+      
+      const selection = await voiceManager.selectVoice(text, {
+        channel,
+        subject,
+        audience,
+        contentType,
+        preferredPack: packName !== 'saas' ? packName : undefined
+      });
+      
+      selectedPack = selection.packName;
+      voiceContext = selection.context;
+      selectionInfo = {
+        selectedPack: selection.packName,
+        detectedContext: selection.context,
+        confidence: selection.confidence,
+        reason: selection.reason,
+        contextualTips: voiceManager.getContextualTips(selection.context)
+      };
+    }
+
+    const pack = await getPack(selectedPack);
+    const result = validate({ pack, text, context: voiceContext });
+
+    // Include voice selection info in response
+    const response = selectionInfo ? { ...result, voiceSelection: selectionInfo } : result;
+    res.json(response);
   } catch (error) {
     res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
   }
@@ -766,6 +805,329 @@ app.post('/api/billing/portal', authMiddleware, async (req: Request, res: Respon
   } catch (error) {
     console.error('Portal error:', error);
     res.status(500).json({ error: 'Failed to create portal session' });
+  }
+});
+
+// Voice learning endpoint - analyze samples and generate pack
+app.post('/api/learn/analyze', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const { samples, packName, method = 'rule-based' } = req.body;
+    
+    if (!samples || !Array.isArray(samples) || samples.length === 0) {
+      res.status(400).json({ error: 'samples array is required with at least one item' });
+      return;
+    }
+    
+    if (!packName || typeof packName !== 'string') {
+      res.status(400).json({ error: 'packName is required' });
+      return;
+    }
+    
+    // Validate pack name (prevent path traversal)
+    if (!/^[a-z0-9-]+$/.test(packName)) {
+      res.status(400).json({ error: 'packName must contain only lowercase letters, numbers, and hyphens' });
+      return;
+    }
+    
+    if (method === 'ai') {
+      // Use AI-based analysis
+      const { learnVoice } = await import('../learn/index.js');
+      const result = await learnVoice({
+        samples: samples.map((s: any) => typeof s === 'string' ? s : s.text),
+        brandName: packName,
+        industry: req.body.industry,
+        context: req.body.context
+      });
+      
+      res.json({
+        method: 'ai',
+        packName: result.packName,
+        analysis: result.analysis,
+        voice: result.voice,
+        recommendations: [`Generated with ${result.analysis.confidence * 100}% confidence from ${result.analysis.samplesAnalyzed} samples`]
+      });
+    } else {
+      // Use rule-based analysis  
+      const { VoiceAnalyzer } = await import('../learn/voice-analyzer.js');
+      const analyzer = new VoiceAnalyzer();
+      
+      const voiceSamples = samples.map((s: any) => ({
+        text: typeof s === 'string' ? s : s.text,
+        source: typeof s === 'object' ? s.source : undefined,
+        context: typeof s === 'object' ? s.context : undefined
+      }));
+      
+      const result = await analyzer.analyze(voiceSamples);
+      
+      res.json({
+        method: 'rule-based',
+        packName,
+        analysis: {
+          confidence: result.confidence,
+          sampleCount: result.sampleCount
+        },
+        voice: result.profile,
+        recommendations: result.recommendations
+      });
+    }
+  } catch (error) {
+    console.error('Voice learning error:', error);
+    res.status(500).json({ 
+      error: error instanceof Error ? error.message : 'Voice learning failed' 
+    });
+  }
+});
+
+// Generate pack files from analysis
+app.post('/api/learn/generate', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const { packName, analysis, method = 'rule-based' } = req.body;
+    
+    if (!packName || !analysis) {
+      res.status(400).json({ error: 'packName and analysis are required' });
+      return;
+    }
+    
+    // Validate pack name
+    if (!/^[a-z0-9-]+$/.test(packName)) {
+      res.status(400).json({ error: 'packName must contain only lowercase letters, numbers, and hyphens' });
+      return;
+    }
+    
+    if (method === 'ai') {
+      // Generate using AI analysis format
+      const { generatePackFiles } = await import('../learn/index.js');
+      const files = generatePackFiles({
+        packName,
+        displayName: packName,
+        manifest: {
+          name: packName,
+          version: '1.0.0',
+          description: `Custom style pack for ${packName}`,
+          industry: 'general'
+        },
+        voice: analysis.voice,
+        analysis: analysis.analysis || { samplesAnalyzed: 0, totalWords: 0, tokensUsed: { input: 0, output: 0 }, confidence: 0.7 }
+      });
+      
+      res.json({
+        packName,
+        files: {
+          'manifest.yaml': files.manifest,
+          'voice.yaml': files.voice
+        },
+        generated: true
+      });
+    } else {
+      // Generate using rule-based format
+      const { VoiceAnalyzer } = await import('../learn/voice-analyzer.js');
+      const analyzer = new VoiceAnalyzer();
+      
+      // Create mock samples for pack generation
+      const mockSamples = [{ text: 'Sample text', source: 'generated' }];
+      
+      await analyzer.generatePack({
+        samples: mockSamples,
+        packName,
+        outputPath: undefined // Will use default path
+      });
+      
+      res.json({
+        packName,
+        generated: true,
+        message: `Pack '${packName}' generated successfully`
+      });
+    }
+  } catch (error) {
+    console.error('Pack generation error:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Pack generation failed'
+    });
+  }
+});
+
+// Streaming validation for real-time feedback
+app.post('/api/validate/stream', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const { 
+      text, 
+      pack: packName = 'saas',
+      context,
+      useMultiVoice = false
+    } = req.body;
+
+    if (!text || typeof text !== 'string') {
+      res.status(400).json({ error: 'text is required' });
+      return;
+    }
+
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    // Send initial event
+    res.write(`data: ${JSON.stringify({ type: 'start', message: 'Starting validation...' })}\n\n`);
+
+    let selectedPack = packName;
+    let voiceContext = context;
+
+    // Multi-voice selection with progress
+    if (useMultiVoice) {
+      res.write(`data: ${JSON.stringify({ type: 'progress', message: 'Analyzing context...' })}\n\n`);
+      
+      const { VoiceContextManager } = await import('../utils/voice-context.js');
+      const voiceManager = new VoiceContextManager();
+      
+      const selection = await voiceManager.selectVoice(text, {});
+      selectedPack = selection.packName;
+      voiceContext = selection.context;
+
+      res.write(`data: ${JSON.stringify({ 
+        type: 'voice-selected', 
+        selectedPack: selection.packName,
+        context: selection.context,
+        confidence: selection.confidence,
+        reason: selection.reason
+      })}\n\n`);
+    }
+
+    // Load pack with progress
+    res.write(`data: ${JSON.stringify({ type: 'progress', message: 'Loading style pack...' })}\n\n`);
+    
+    const pack = await getPack(selectedPack);
+
+    // Validate with progress
+    res.write(`data: ${JSON.stringify({ type: 'progress', message: 'Validating content...' })}\n\n`);
+    
+    const result = validate({ pack, text, context: voiceContext });
+
+    // Send final result
+    res.write(`data: ${JSON.stringify({ 
+      type: 'complete', 
+      result: result,
+      pack: selectedPack,
+      context: voiceContext
+    })}\n\n`);
+
+    res.end();
+  } catch (error) {
+    res.write(`data: ${JSON.stringify({ 
+      type: 'error', 
+      error: error instanceof Error ? error.message : 'Validation failed' 
+    })}\n\n`);
+    res.end();
+  }
+});
+
+// Multi-voice context management endpoints
+app.get('/api/voices/contexts', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const { VoiceContextManager } = await import('../utils/voice-context.js');
+    const voiceManager = new VoiceContextManager();
+    
+    const mappings = voiceManager.listContextMappings();
+    const availablePacks = await listAvailablePacks();
+    
+    res.json({
+      contextMappings: mappings,
+      availablePacks,
+      config: voiceManager.getConfig()
+    });
+  } catch (error) {
+    console.error('Voice context listing error:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Failed to list voice contexts'
+    });
+  }
+});
+
+app.post('/api/voices/contexts', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const { context, packName, description } = req.body;
+    
+    if (!context || !packName) {
+      res.status(400).json({ error: 'context and packName are required' });
+      return;
+    }
+    
+    // Validate pack exists
+    const availablePacks = await listAvailablePacks();
+    if (!availablePacks.includes(packName)) {
+      res.status(400).json({ error: `Pack '${packName}' not found` });
+      return;
+    }
+    
+    const { VoiceContextManager } = await import('../utils/voice-context.js');
+    const voiceManager = new VoiceContextManager();
+    
+    voiceManager.addContextVoice({ context, packName, description });
+    
+    res.json({
+      success: true,
+      message: `Context '${context}' mapped to pack '${packName}'`,
+      mapping: { context, packName, description }
+    });
+  } catch (error) {
+    console.error('Voice context add error:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Failed to add voice context'
+    });
+  }
+});
+
+app.delete('/api/voices/contexts/:context', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const context = req.params.context;
+    
+    const { VoiceContextManager } = await import('../utils/voice-context.js');
+    const voiceManager = new VoiceContextManager();
+    
+    voiceManager.removeContextVoice(context as any);
+    
+    res.json({
+      success: true,
+      message: `Context '${context}' removed`
+    });
+  } catch (error) {
+    console.error('Voice context removal error:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Failed to remove voice context'
+    });
+  }
+});
+
+// Detect context from text (useful for testing)
+app.post('/api/voices/detect', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const { text, channel, subject, audience, contentType } = req.body;
+    
+    if (!text || typeof text !== 'string') {
+      res.status(400).json({ error: 'text is required' });
+      return;
+    }
+    
+    const { VoiceContextManager } = await import('../utils/voice-context.js');
+    const voiceManager = new VoiceContextManager();
+    
+    const selection = await voiceManager.selectVoice(text, {
+      channel,
+      subject,
+      audience,
+      contentType
+    });
+    
+    res.json({
+      detectedContext: selection.context,
+      selectedPack: selection.packName,
+      confidence: selection.confidence,
+      reason: selection.reason,
+      contextualTips: voiceManager.getContextualTips(selection.context)
+    });
+  } catch (error) {
+    console.error('Context detection error:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Context detection failed'
+    });
   }
 });
 
