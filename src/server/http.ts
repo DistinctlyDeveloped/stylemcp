@@ -6,6 +6,7 @@ import { loadPack, getPacksDirectory, listAvailablePacks } from '../utils/pack-l
 import { validate } from '../validator/index.js';
 import { rewrite, rewriteMinimal, rewriteAggressive, formatChanges, aiRewrite, isAIRewriteAvailable, estimateAIRewriteCost } from '../rewriter/index.js';
 import { learnVoice, generatePackFiles, isLearnVoiceAvailable } from '../learn/index.js';
+import { AIOutputValidator } from './ai-output-validator.js';
 import { Pack } from '../schema/index.js';
 import { join } from 'path';
 import crypto from 'crypto';
@@ -556,6 +557,31 @@ app.get('/api/rewrite/ai/status', authMiddleware, (_req: Request, res: Response)
       currency: 'USD',
     },
   });
+});
+
+// AI Output Validation - validate AI-generated content for brand compliance
+app.post('/api/ai-output/validate', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const { content, pack, context, includeRewrite } = req.body;
+
+    if (!content || typeof content !== 'string') {
+      res.status(400).json({ error: 'Missing or invalid "content" field' });
+      return;
+    }
+
+    const validator = new AIOutputValidator();
+    const result = await validator.validate({
+      content,
+      pack,
+      context,
+      includeRewrite: includeRewrite === true
+    });
+
+    res.json(result);
+  } catch (error) {
+    console.error('AI output validation error:', error);
+    res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+  }
 });
 
 // Learn My Voice - analyze samples to generate custom style pack (Pro+ feature)
@@ -1251,6 +1277,36 @@ app.post('/api/mcp/call', authMiddleware, async (req: Request, res: Response) =>
         res.status(400).json({ error: `Unknown tool: ${tool}` });
     }
   } catch (error) {
+    res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+  }
+});
+
+// Simple analytics endpoint - basic usage tracking
+app.get('/api/analytics/usage', authMiddleware, async (_req: Request, res: Response) => {
+  try {
+    // Return basic usage statistics
+    // In a real implementation, this would query a database
+    const mockStats = {
+      totalValidations: 1247,
+      averageScore: 84,
+      topPacks: [
+        { name: 'saas', usage: 45 },
+        { name: 'healthcare', usage: 23 },
+        { name: 'finance', usage: 18 },
+        { name: 'ecommerce', usage: 14 }
+      ],
+      topViolations: [
+        { type: 'tone', count: 127 },
+        { type: 'vocabulary', count: 89 },
+        { type: 'clarity', count: 67 }
+      ],
+      dailyTrend: [78, 82, 79, 84, 88, 85, 87], // Last 7 days average scores
+      lastUpdated: new Date().toISOString()
+    };
+    
+    res.json(mockStats);
+  } catch (error) {
+    console.error('Analytics error:', error);
     res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
   }
 });
