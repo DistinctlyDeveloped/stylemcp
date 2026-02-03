@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { timingSafeEqual } from 'crypto';
 import { validateApiKey, checkQuota, recordUsage, isBillingEnabled, UserProfile, UsageStats } from '../billing.js';
 
 // Extend Express Request to include user info
@@ -70,7 +71,16 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
   if (!isBillingEnabled()) {
     if (LEGACY_API_KEY) {
       const providedKey = req.headers['x-api-key'];
-      if (providedKey !== LEGACY_API_KEY) {
+      if (!providedKey || typeof providedKey !== 'string') {
+        res.status(401).json({ error: 'Invalid or missing API key' });
+        return;
+      }
+
+      const providedBuffer = Buffer.from(providedKey);
+      const expectedBuffer = Buffer.from(LEGACY_API_KEY);
+
+      // Length mismatch handled separately to avoid timing oracle
+      if (providedBuffer.length !== expectedBuffer.length || !timingSafeEqual(providedBuffer, expectedBuffer)) {
         res.status(401).json({ error: 'Invalid or missing API key' });
         return;
       }

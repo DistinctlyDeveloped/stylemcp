@@ -13,7 +13,6 @@ import type { VoiceSample } from '../learn/voice-analyzer.js';
 import { AIOutputValidator } from './ai-output-validator.js';
 import { Pack } from '../schema/index.js';
 import { join } from 'path';
-import crypto from 'crypto';
 import { verifyGitHubWebhookSignature } from './webhooks/verify-github.js';
 import {
   createCheckoutSession,
@@ -315,7 +314,6 @@ async function getPack(packName: string): Promise<Pack> {
   return result.pack;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function getPackWithWarnings(packName: string): Promise<CachedPack> {
   if (packCache.has(packName)) {
     return packCache.get(packName)!;
@@ -332,31 +330,7 @@ function getBaseUrl(req: Request): string {
   const host = req.headers['x-forwarded-host'] || req.get('host');
   return `${protocol}://${host}`;
 }
-function legacyAuthMiddleware(req: Request, res: Response, next: NextFunction): void {
-  if (!API_KEY) {
-    // No API key configured, allow all requests
-    next();
-    return;
-  }
-
-  const providedKey = req.headers['x-api-key'];
-  if (!providedKey || typeof providedKey !== 'string') {
-    res.status(401).json({ error: 'Invalid or missing API key' });
-    return;
-  }
-  
-  // Use constant-time comparison to prevent timing attacks
-  const providedBuffer = Buffer.from(providedKey);
-  const expectedBuffer = Buffer.from(API_KEY);
-  
-  // Length mismatch handled separately to avoid timing oracle
-  if (providedBuffer.length !== expectedBuffer.length || 
-      !crypto.timingSafeEqual(providedBuffer, expectedBuffer)) {
-    res.status(401).json({ error: 'Invalid or missing API key' });
-    return;
-  }
-  next();
-}
+// legacyAuthMiddleware removed (replaced by billing-aware auth middleware)
 
 // Health check (no auth required)
 app.get('/health', (_req: Request, res: Response) => {
@@ -402,9 +376,8 @@ function checkDemoRateLimit(ip: string): { allowed: boolean; remaining: number; 
 }
 
 // Input limits (defense in depth)
-const MAX_TEXT_CHARS = Number(process.env.MAX_TEXT_CHARS || 20000);
-const MAX_BATCH_ITEMS = Number(process.env.MAX_BATCH_ITEMS || 50);
-const MAX_LEARN_SAMPLES = Number(process.env.MAX_LEARN_SAMPLES || 20);
+// MAX_TEXT_LENGTH is the canonical limit; MAX_TEXT_CHARS is a backwards-compatible alias.
+const MAX_TEXT_CHARS = Number(process.env.MAX_TEXT_CHARS || MAX_TEXT_LENGTH);
 
 function enforceMaxLen(args: {
   value: string;
