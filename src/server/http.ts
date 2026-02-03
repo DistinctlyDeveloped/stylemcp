@@ -2,6 +2,8 @@
 
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import { loadPack, getPacksDirectory, listAvailablePacks } from '../utils/pack-loader.js';
 import { validate } from '../validator/index.js';
 import { rewrite, rewriteMinimal, rewriteAggressive, formatChanges, aiRewrite, isAIRewriteAvailable, estimateAIRewriteCost } from '../rewriter/index.js';
@@ -10,6 +12,7 @@ import { AIOutputValidator } from './ai-output-validator.js';
 import { Pack } from '../schema/index.js';
 import { join } from 'path';
 import crypto from 'crypto';
+import { verifyGitHubWebhookSignature } from './webhooks/verify-github.js';
 import {
   createCheckoutSession,
   handleStripeWebhook,
@@ -18,11 +21,67 @@ import {
 } from './billing.js';
 
 const app = express();
+
+// Behind nginx in production: respect X-Forwarded-* headers
+app.set('trust proxy', 1);
+app.disable('x-powered-by');
+
+// Security headers (API is proxied; disable CSP to avoid breaking downstream assets)
+app.use(helmet({
+  contentSecurityPolicy: false,
+}));
+
+function requireHttps(req: Request, res: Response, next: NextFunction): void {
+  if (process.env.NODE_ENV !== 'production') {
+    next();
+    return;
+  }
+
+  // With trust proxy enabled, req.secure is based on X-Forwarded-Proto
+  if (req.secure) {
+    next();
+    return;
+  }
+
+  const host = req.get('host');
+  const url = req.originalUrl || '/';
+
+  // Redirect safe methods; reject others (webhooks, etc.)
+  if (req.method === 'GET' || req.method === 'HEAD') {
+    res.redirect(308, `https://${host}${url}`);
+    return;
+  }
+
+  res.status(400).json({ error: 'HTTPS required' });
+}
+
+app.use(requireHttps);
+
 const PORT = process.env.PORT || 3000;
 const API_KEY = process.env.STYLEMCP_API_KEY || '';
 const GITHUB_WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET || '';
 
 // IMPORTANT: Webhook routes with raw body parsing must be registered BEFORE express.json()
+
+// Global rate limiting (defense in depth).
+// Note: production nginx can/should also enforce rate limits at the edge.
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: Number(process.env.API_RATE_LIMIT || 300), // 300 requests / 15 min / IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Rate limit exceeded' },
+  skip: (req) => {
+    // Don’t double-limit demo (it has its own limiter), and don’t block webhooks/SSE
+    return (
+      req.path.startsWith('/demo/') ||
+      req.path.startsWith('/webhook/') ||
+      req.path === '/mcp/sse'
+    );
+  },
+});
+
+app.use('/api', apiLimiter);
 // Otherwise the JSON middleware will consume the raw body needed for signature verification
 
 // Stripe webhook endpoint (needs raw body for signature verification)
@@ -53,19 +112,16 @@ app.post('/api/webhook/github', express.raw({ type: 'application/json' }), async
   try {
     // Verify webhook signature if secret is configured
     if (GITHUB_WEBHOOK_SECRET) {
-      const signature = req.headers['x-hub-signature-256'] as string;
-      if (!signature) {
-        res.status(401).json({ error: 'Missing signature' });
-        return;
-      }
+      const signatureHeader = req.headers['x-hub-signature-256'] as string | undefined;
+      const body = req.body as Buffer;
 
-      const body = req.body;
-      const hmac = crypto.createHmac('sha256', GITHUB_WEBHOOK_SECRET);
-      const digest = 'sha256=' + hmac.update(body).digest('hex');
+      const ok = verifyGitHubWebhookSignature({
+        secret: GITHUB_WEBHOOK_SECRET,
+        body,
+        signatureHeader,
+      });
 
-      const signatureBuffer = Buffer.from(signature);
-      const digestBuffer = Buffer.from(digest);
-      if (signatureBuffer.length !== digestBuffer.length || !crypto.timingSafeEqual(signatureBuffer, digestBuffer)) {
+      if (!ok) {
         res.status(401).json({ error: 'Invalid signature' });
         return;
       }
@@ -90,9 +146,12 @@ app.post('/api/webhook/github', express.raw({ type: 'application/json' }), async
 });
 
 // CORS configuration - restrict origins in production
+const PROD_ORIGINS = ['https://stylemcp.com', 'https://www.stylemcp.com'];
+const DEV_ORIGINS = ['http://localhost:3000', 'http://localhost:5173'];
+
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
-  : ['http://localhost:3000', 'http://localhost:5173', 'https://stylemcp.com', 'https://www.stylemcp.com'];
+  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()).filter(Boolean)
+  : (process.env.NODE_ENV === 'production' ? PROD_ORIGINS : [...DEV_ORIGINS, ...PROD_ORIGINS]);
 
 app.use(cors({
   origin: (origin, callback) => {
