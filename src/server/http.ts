@@ -291,44 +291,29 @@ app.use(cors({
 app.use(express.json({ limit: '1mb' }));
 app.use(usageLogger);
 
-// Pack cache with warnings tracking
-interface CachedPack {
-  pack: Pack;
-  warnings: string[];
-}
-
-const packCache = new Map<string, CachedPack>();
-
-async function getPack(packName: string): Promise<Pack> {
-  if (packCache.has(packName)) {
-    return packCache.get(packName)!.pack;
-  }
-
-  // Security: Validate pack name against whitelist to prevent path traversal
+// Pack loading
+// NOTE: Do NOT cache packs indefinitely at the server layer.
+// `loadPack()` already provides a TTL+invalidation cache, and we want pack edits
+// (especially writes via Learn/Generate) to show up without restarting the API.
+async function getPackWithWarnings(
+  packName: string,
+  opts?: { noCache?: boolean }
+): Promise<{ pack: Pack; warnings: string[] }> {
+  // Security: validate pack name against whitelist to prevent path traversal
   const availablePacks = await listAvailablePacks();
   if (!availablePacks.includes(packName)) {
     throw new Error(`Pack not found: ${packName}`);
   }
 
   const packPath = join(getPacksDirectory(), packName);
-  const result = await loadPack({ packPath });
-  
+  const result = await loadPack({ packPath, noCache: opts?.noCache === true });
+
   // Log warnings for visibility
   if (result.errors.length > 0) {
     console.warn(`[StyleMCP] Pack '${packName}' loaded with warnings:`, result.errors);
   }
-  
-  packCache.set(packName, { pack: result.pack, warnings: result.errors });
-  return result.pack;
-}
 
-async function getPackWithWarnings(packName: string): Promise<CachedPack> {
-  if (packCache.has(packName)) {
-    return packCache.get(packName)!;
-  }
-  
-  await getPack(packName); // This will populate the cache
-  return packCache.get(packName)!;
+  return { pack: result.pack, warnings: result.errors };
 }
 
 // Optional API key authentication with timing-safe comparison
@@ -434,15 +419,22 @@ app.post('/api/demo/validate', async (req: Request, res: Response) => {
       return;
     }
 
-    const pack = await getPack(packName);
+    const { pack, warnings } = await getPackWithWarnings(packName, {
+      noCache: req.query.noCache === '1',
+    });
     const result = validate({ pack, text });
 
-    res.json({
+    const response: Record<string, unknown> = {
       ...result,
       demo: true,
       requestsRemaining: rateLimit.remaining,
       upgradeMessage: 'Sign up free for 5,000 requests/month → stylemcp.com/signup',
-    });
+    };
+    if (warnings.length > 0) {
+      response.packWarnings = warnings;
+    }
+
+    res.json(response);
   } catch (error) {
     logError('Demo validation failed', error, req);
     res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
