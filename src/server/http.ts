@@ -195,6 +195,7 @@ const apiLimiter = rateLimit({
     // Don’t double-limit demo (it has its own limiter), and don’t block webhooks/SSE
     return (
       req.path.startsWith('/demo/') ||
+      req.path.startsWith('/api/demo/') ||
       req.path.startsWith('/webhook/') ||
       req.path === '/mcp/sse'
     );
@@ -437,6 +438,48 @@ app.post('/api/demo/validate', async (req: Request, res: Response) => {
     res.json(response);
   } catch (error) {
     logError('Demo validation failed', error, req);
+    res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+  }
+});
+
+// Public demo rewrite endpoint (rate limited, text capped at 500 chars)
+app.post('/api/demo/rewrite', async (req: Request, res: Response) => {
+  try {
+    const clientIp = req.headers['x-forwarded-for']?.toString().split(',')[0] || req.socket.remoteAddress || 'unknown';
+    const rateLimit = checkDemoRateLimit(clientIp);
+
+    res.setHeader('X-RateLimit-Limit', DEMO_LIMIT);
+    res.setHeader('X-RateLimit-Remaining', rateLimit.remaining);
+    res.setHeader('X-RateLimit-Reset', Math.ceil(rateLimit.resetAt / 1000));
+
+    if (!rateLimit.allowed) {
+      res.status(429).json({
+        error: 'Demo rate limit exceeded',
+        message: 'Sign up for free to get 5,000 requests/month',
+        resetAt: new Date(rateLimit.resetAt).toISOString(),
+      });
+      return;
+    }
+
+    const text = sanitizeString(req.body?.text, 500);
+    const packName = sanitizePackName(req.body?.pack, 'saas');
+
+    if (!text) {
+      res.status(400).json({ error: 'Missing or invalid "text" field' });
+      return;
+    }
+
+    if (!packName) {
+      res.status(400).json({ error: 'Missing or invalid "pack" field' });
+      return;
+    }
+
+    const { pack } = await getPackWithWarnings(packName);
+    const result = rewrite({ pack, text });
+
+    res.json({ ...result, demo: true });
+  } catch (error) {
+    logError('Demo rewrite failed', error, req);
     res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
   }
 });

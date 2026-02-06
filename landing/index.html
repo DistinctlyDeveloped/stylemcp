@@ -2569,12 +2569,12 @@
 
       try {
         const [validateRes, rewriteRes] = await Promise.all([
-          fetch('/api/validate', {
+          fetch('/api/demo/validate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text, pack: selectedPack })
           }),
-          fetch('/api/rewrite', {
+          fetch('/api/demo/rewrite', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text, pack: selectedPack, mode: 'normal' })
