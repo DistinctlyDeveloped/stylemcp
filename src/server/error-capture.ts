@@ -6,6 +6,9 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
+import { promises as fs } from 'fs';
+import path from 'path';
+import { randomUUID } from 'crypto';
 import { getSupabase } from './billing.js';
 import { clearPackCache } from '../utils/pack-loader.js';
 
@@ -49,6 +52,8 @@ const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 const TELEGRAM_ALERT_CHAT = process.env.TELEGRAM_ALERT_CHAT || process.env.STYLEMCP_TELEGRAM_CHAT || '';
 const ALERT_COOLDOWN_MS = 5 * 60 * 1000; // 5 min cooldown per error_code
 const MAX_RETRY_ATTEMPTS = 2;
+
+const DD_ERRORS_PATH = process.env.DD_ERRORS_PATH || path.resolve(process.env.HOME || '', 'Projects/distinctlydeveloped.com/data/errors.json');
 
 // In-memory dedup for Telegram alerts
 const alertCooldowns = new Map<string, number>();
@@ -250,6 +255,84 @@ async function persistError(event: ErrorEvent): Promise<void> {
 }
 
 // ---------------------------------------------------------------------------
+// DistinctlyDeveloped Error Reporting (errors.json)
+// ---------------------------------------------------------------------------
+
+type DDSeverity = 'critical' | 'error' | 'warning' | 'info';
+
+function mapSeverity(severity: ErrorSeverity): DDSeverity {
+  switch (severity) {
+    case 'critical':
+      return 'critical';
+    case 'high':
+      return 'error';
+    case 'medium':
+      return 'warning';
+    case 'low':
+    default:
+      return 'info';
+  }
+}
+
+async function reportErrorToDD(event: ErrorEvent): Promise<void> {
+  try {
+    let payload: {
+      lastUpdated?: string;
+      errors?: unknown[];
+      stats?: {
+        total_errors?: number;
+        unresolved_count?: number;
+        critical_count?: number;
+        auto_healed_count?: number;
+      };
+    } = {};
+
+    try {
+      const payloadRaw = await fs.readFile(DD_ERRORS_PATH, 'utf8');
+      payload = JSON.parse(payloadRaw || '{}');
+    } catch {
+      payload = { errors: [] };
+    }
+
+    const errors = Array.isArray(payload.errors) ? payload.errors.slice() : [];
+
+    const entry = {
+      id: randomUUID(),
+      project: 'StyleMCP',
+      severity: mapSeverity(event.severity),
+      message: String(event.message).slice(0, 300),
+      component: typeof event.context.endpoint === 'string' ? event.context.endpoint : event.error_type,
+      stack_trace: event.stack_trace,
+      timestamp: new Date().toISOString(),
+      resolved: false,
+      auto_healed: Boolean(event.auto_healed),
+    };
+
+    errors.push(entry);
+
+    // Trim oldest to max 500
+    const trimmed = errors.slice(-500);
+
+    const stats = {
+      total_errors: trimmed.length,
+      unresolved_count: trimmed.filter(e => (e as { resolved?: boolean }).resolved === false).length,
+      critical_count: trimmed.filter(e => (e as { severity?: string; resolved?: boolean }).severity === 'critical' && (e as { resolved?: boolean }).resolved === false).length,
+      auto_healed_count: trimmed.filter(e => (e as { auto_healed?: boolean }).auto_healed === true).length,
+    };
+
+    const nextPayload = {
+      lastUpdated: new Date().toISOString(),
+      errors: trimmed,
+      stats,
+    };
+
+    await fs.writeFile(DD_ERRORS_PATH, JSON.stringify(nextPayload, null, 2));
+  } catch (e) {
+    console.error('[ErrorCapture] DD errors.json write failed:', e instanceof Error ? e.message : e);
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Telegram Alerting
 // ---------------------------------------------------------------------------
 
@@ -340,6 +423,7 @@ export async function captureError(
 
   // Persist (non-blocking)
   persistError(event).catch(() => {});
+  reportErrorToDD(event).catch(() => {});
 
   // Alert for high/critical or unknown unhealed errors
   const shouldAlert =
