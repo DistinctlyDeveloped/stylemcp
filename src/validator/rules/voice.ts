@@ -7,7 +7,7 @@ import { createViolation, escapeRegex, slugify } from '../utils.js';
 interface CompiledVoiceRules {
   forbidden: Array<{ word: string; regex: RegExp }>;
   vocabulary: Array<{ rule: Voice['vocabulary']['rules'][0]; avoid: string; regex: RegExp }>;
-  doNots: Array<{ doNot: Voice['doNot'][0]; regex: RegExp; ruleId: string }>;
+  doNots: Array<{ doNot: Voice['doNot'][0]; regex: RegExp; ruleId: string; exceptions: Set<string> }>;
 }
 
 const compiledRulesCache = new WeakMap<Voice, CompiledVoiceRules>();
@@ -54,17 +54,22 @@ function getCompiledRules(voice: Voice): CompiledVoiceRules {
       const doNot = voice.doNot[i];
       try {
         let regex: RegExp;
+        const flags = doNot.regexFlags ?? 'gi';
         if (doNot.isRegex) {
-          regex = new RegExp(doNot.pattern, 'gi');
+          regex = new RegExp(doNot.pattern, flags);
         } else {
-          regex = new RegExp(`${escapeRegex(doNot.pattern)}`, 'gi');
+          regex = new RegExp(`${escapeRegex(doNot.pattern)}`, flags);
         }
 
         const ruleId = doNot.isRegex
           ? `doNot.pattern-${i}`
           : `doNot.${slugify(doNot.pattern)}`;
 
-        compiled.doNots.push({ doNot, regex, ruleId });
+        const exceptions = new Set<string>(
+          (doNot.exceptions ?? []).map((e: string) => e.toUpperCase())
+        );
+
+        compiled.doNots.push({ doNot, regex, ruleId, exceptions });
       } catch {
         // Skip invalid regex patterns
         continue;
@@ -162,12 +167,17 @@ function checkVocabularyRules(
 function checkDoNotPatterns(text: string, compiled: CompiledVoiceRules['doNots']): Violation[] {
   const violations: Violation[] = [];
 
-  for (const { doNot, regex, ruleId } of compiled) {
+  for (const { doNot, regex, ruleId, exceptions } of compiled) {
     let match;
     // Reset regex state
     regex.lastIndex = 0;
 
     while ((match = regex.exec(text)) !== null) {
+      // Skip matches that are in the exceptions whitelist
+      if (exceptions.size > 0 && exceptions.has(match[0].toUpperCase())) {
+        continue;
+      }
+
       violations.push(
         createViolation(
           ruleId,
