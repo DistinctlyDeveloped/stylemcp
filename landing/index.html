@@ -2518,6 +2518,188 @@
     // Selected industry pack
     let selectedPack = 'saas';
 
+    // Client-side pack rules for demo (embedded to work without backend)
+    const packRules = {
+      saas: {
+        vocabulary: {
+          "utilize": { preferred: "use", message: "Use 'use' instead of 'utilize'" },
+          "leverage": { preferred: "use", message: "Use 'use' instead of 'leverage'" },
+          "employ": { preferred: "use", message: "Use 'use' instead of 'employ'" },
+          "assist": { preferred: "help", message: "Use 'help' instead of 'assist'" },
+          "assists": { preferred: "helps", message: "Use 'helps' instead of 'assists'" },
+          "facilitate": { preferred: "help", message: "Use 'help' instead of 'facilitate'" },
+          "facilitates": { preferred: "helps", message: "Use 'helps' instead of 'facilitates'" },
+          "facilitated": { preferred: "helped", message: "Use 'helped' instead of 'facilitated'" },
+          "facilitating": { preferred: "helping", message: "Use 'helping' instead of 'facilitating'" },
+          "commence": { preferred: "start", message: "Use 'start' instead of 'commence'" },
+          "initiate": { preferred: "start", message: "Use 'start' instead of 'initiate'" },
+          "terminate": { preferred: "end", message: "Use 'end' instead of 'terminate'" },
+          "obtain": { preferred: "get", message: "Use 'get' instead of 'obtain'" },
+          "acquire": { preferred: "get", message: "Use 'get' instead of 'acquire'" },
+          "retrieve": { preferred: "get", message: "Use 'get' instead of 'retrieve'" },
+          "display": { preferred: "show", message: "Use 'show' instead of 'display'" },
+          "require": { preferred: "need", message: "Use 'need' instead of 'require'" },
+          "necessitate": { preferred: "need", message: "Use 'need' instead of 'necessitate'" },
+          "purchase": { preferred: "buy", message: "Use 'buy' instead of 'purchase'" },
+          "attempt": { preferred: "try", message: "Use 'try' instead of 'attempt'" },
+          "endeavor": { preferred: "try", message: "Use 'try' instead of 'endeavor'" },
+          "modify": { preferred: "change", message: "Use 'change' instead of 'modify'" },
+          "alter": { preferred: "change", message: "Use 'change' instead of 'alter'" },
+          "adjust": { preferred: "change", message: "Use 'change' instead of 'adjust'" },
+          "transform": { preferred: "change", message: "Use 'change' instead of 'transform'" },
+          "establish": { preferred: "set up", message: "Use 'set up' instead of 'establish'" },
+          "rectify": { preferred: "fix", message: "Use 'fix' instead of 'rectify'" },
+          "resolve": { preferred: "fix", message: "Use 'fix' instead of 'resolve'" },
+          "remediate": { preferred: "fix", message: "Use 'fix' instead of 'remediate'" },
+          "revolutionize": { preferred: "improve", message: "Use 'improve' instead of 'revolutionize'" },
+          "revolutionizes": { preferred: "improves", message: "Use 'improves' instead of 'revolutionizes'" },
+          "amazing": { preferred: "great", message: "Use 'great' instead of 'amazing'" },
+          "incredible": { preferred: "great", message: "Use 'great' instead of 'incredible'" },
+          "unbelievable": { preferred: "great", message: "Use 'great' instead of 'unbelievable'" },
+          "crucial": { preferred: "important", message: "Use 'important' instead of 'crucial'" },
+          "critical": { preferred: "important", message: "Use 'important' instead of 'critical'" },
+          "vital": { preferred: "important", message: "Use 'important' instead of 'vital'" },
+          "essential": { preferred: "important", message: "Use 'important' instead of 'essential'" },
+          "paramount": { preferred: "important", message: "Use 'important' instead of 'paramount'" },
+          "synergy": { preferred: null, message: "Avoid corporate buzzwords like 'synergy'" },
+          "synergize": { preferred: null, message: "Avoid corporate buzzwords like 'synergize'" }
+        },
+        ctaPatterns: [
+          { pattern: /click here/i, message: "Avoid 'click here' — describe the destination", suggestion: "Learn more about [topic]" },
+          { pattern: /learn more/i, message: "Weak CTA — be specific about what they'll learn", severity: "warning" }
+        ]
+      },
+      ecommerce: {
+        vocabulary: {
+          "utilize": { preferred: "use", message: "Use 'use' instead of 'utilize'" },
+          "leverage": { preferred: "use", message: "Use 'use' instead of 'leverage'" }
+        },
+        ctaPatterns: [
+          { pattern: /click here/i, message: "Avoid 'click here' — use descriptive CTAs", suggestion: "Shop the collection" }
+        ]
+      },
+      healthcare: {
+        vocabulary: {
+          "utilize": { preferred: "use", message: "Use plain language — 'use' not 'utilize'" }
+        },
+        ctaPatterns: [
+          { pattern: /click here/i, message: "Use descriptive CTAs for accessibility", suggestion: "View patient resources" }
+        ]
+      },
+      finance: {
+        vocabulary: {
+          "utilize": { preferred: "use", message: "Use 'use' instead of 'utilize'" }
+        },
+        ctaPatterns: [
+          { pattern: /click here/i, message: "Avoid 'click here' — be specific", suggestion: "View account details" }
+        ]
+      },
+      legal: {
+        vocabulary: {
+          "utilize": { preferred: "use", message: "Use plain language — 'use' not 'utilize'" }
+        },
+        ctaPatterns: [
+          { pattern: /click here/i, message: "Use descriptive CTAs", suggestion: "View legal documents" }
+        ]
+      },
+      realestate: {
+        vocabulary: {
+          "utilize": { preferred: "use", message: "Use 'use' instead of 'utilize'" }
+        },
+        ctaPatterns: [
+          { pattern: /click here/i, message: "Avoid 'click here'", suggestion: "View property details" }
+        ]
+      },
+      education: {
+        vocabulary: {
+          "utilize": { preferred: "use", message: "Use plain language — 'use' not 'utilize'" }
+        },
+        ctaPatterns: [
+          { pattern: /click here/i, message: "Use descriptive CTAs for accessibility", suggestion: "Access course materials" }
+        ]
+      },
+      government: {
+        vocabulary: {
+          "utilize": { preferred: "use", message: "Use plain language — 'use' not 'utilize'" }
+        },
+        ctaPatterns: [
+          { pattern: /click here/i, message: "Use descriptive CTAs for accessibility", suggestion: "Access government services" }
+        ]
+      }
+    };
+
+    // Client-side validation
+    function validateClient(text, packName) {
+      const pack = packRules[packName] || packRules.saas;
+      const violations = [];
+      const words = text.toLowerCase().match(/\b[\w']+\b/g) || [];
+      
+      // Check vocabulary rules
+      words.forEach(word => {
+        if (pack.vocabulary[word]) {
+          violations.push({
+            severity: "error",
+            text: word,
+            message: pack.vocabulary[word].message,
+            suggestion: pack.vocabulary[word].preferred
+          });
+        }
+      });
+      
+      // Check CTA patterns
+      if (pack.ctaPatterns) {
+        pack.ctaPatterns.forEach(rule => {
+          if (rule.pattern.test(text)) {
+            violations.push({
+              severity: rule.severity || "error",
+              text: text.match(rule.pattern)[0],
+              message: rule.message,
+              suggestion: rule.suggestion
+            });
+          }
+        });
+      }
+      
+      // Calculate score
+      const score = Math.max(0, 100 - (violations.length * 15));
+      
+      return {
+        valid: violations.length === 0,
+        score: score,
+        violations: violations
+      };
+    }
+
+    // Client-side rewrite
+    function rewriteClient(text, packName) {
+      const pack = packRules[packName] || packRules.saas;
+      let rewritten = text;
+      const changes = [];
+      
+      // Apply vocabulary replacements
+      Object.entries(pack.vocabulary).forEach(([avoid, rule]) => {
+        if (rule.preferred) {
+          const regex = new RegExp(`\\b${avoid}\\b`, 'gi');
+          if (regex.test(rewritten)) {
+            rewritten = rewritten.replace(regex, rule.preferred);
+            changes.push({
+              original: avoid,
+              replacement: rule.preferred
+            });
+          }
+        }
+      });
+      
+      // Calculate new score
+      const result = validateClient(rewritten, packName);
+      
+      return {
+        rewritten: rewritten,
+        score: { before: validateClient(text, packName).score, after: result.score },
+        changes: changes
+      };
+    }
+
     function selectPack(pack) {
       selectedPack = pack;
       // Update pill states
@@ -2629,9 +2811,14 @@
         const validateData = await validateRes.json();
         const rewriteData = rewriteRes.ok ? await rewriteRes.json() : null;
 
+        // Check for API error (e.g., rate limit)
+        if (validateData.error) {
+          throw new Error(validateData.message || validateData.error);
+        }
+
         displayResults(validateData, rewriteData, text);
       } catch (error) {
-        errorDiv.textContent = 'Something went wrong. Please try again.';
+        errorDiv.innerHTML = escapeHtml(error.message || 'Something went wrong. Please try again.');
         errorDiv.classList.add('active');
       } finally {
         loadingDiv.classList.remove('active');
