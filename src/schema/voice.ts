@@ -22,6 +22,8 @@ export const DoNotSchema = z.object({
   reason: z.string().describe('Why this should be avoided'),
   severity: z.enum(['error', 'warning', 'info']).default('warning'),
   suggestion: z.string().optional().describe('What to use instead'),
+  exceptions: z.array(z.string()).optional().describe('Words/phrases that are allowed even if they match the pattern'),
+  regexFlags: z.string().optional().describe('Custom regex flags (defaults to "gi")'),
 });
 
 export const ExampleSchema = z.object({

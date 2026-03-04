@@ -153,11 +153,30 @@ doNot:
     suggestion: "Use 'equally' or 'proportionally'"
 
   # All caps for emphasis
-  - pattern: "[A-Z]{5,}"
+  - pattern: "\\b[A-Z]{5,}\\b"
     isRegex: true
+    regexFlags: "g"
     reason: "ALL CAPS reduces readability"
     severity: warning
     suggestion: "Use bold or defined terms instead of ALL CAPS"
+    exceptions:
+      - HIPAA
+      - CCPA
+      - EDGAR
+      - RESPA
+      - ERISA
+      - FERPA
+      - COBRA
+      - FINRA
+      - GAAP
+      - CFPB
+      - GDPR
+      - DISCLAIMER
+      - NOTICE
+      - AGREEMENT
+      - ARBITRATION
+      - WARRANTY
+      - INDEMNIFICATION
 
 examples:
   - bad: "The Party of the First Part shall, pursuant to the terms and conditions set forth herein, deliver said goods to the Party of the Second Part."
