@@ -1041,50 +1041,97 @@ curl -X POST https://stylemcp.com/api/validate \
     }
 
     async function init() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { window.location.href = '/login.html'; return; }
-      currentUser = session.user;
-      await loadProfile();
-      await loadUsage();
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'block';
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) { window.location.href = '/login.html'; return; }
+        currentUser = session.user;
+        await loadProfile();
+        await loadUsage();
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+      } catch (err) {
+        console.error('Init error:', err);
+        document.querySelector('.loading-text').textContent = 'Error loading dashboard. Please refresh.';
+      }
     }
 
     async function loadProfile() {
-      const { data, error } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
-      if (error) { console.error('Error loading profile:', error); return; }
-      userProfile = data;
-      const email = currentUser.email;
-      const name = email.split('@')[0];
-      document.getElementById('userName').textContent = name.charAt(0).toUpperCase() + name.slice(1);
-      document.getElementById('userEmail').textContent = email;
-      document.getElementById('userAvatar').textContent = email.charAt(0).toUpperCase();
-      const tierBadge = document.getElementById('tierBadge');
-      tierBadge.textContent = data.tier.charAt(0).toUpperCase() + data.tier.slice(1);
-      tierBadge.className = `tier-badge ${data.tier}`;
-      document.getElementById('limitCount').textContent = data.monthly_request_limit.toLocaleString();
+      try {
+        let { data, error } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+        
+        // If no profile exists, create one
+        if (error && error.code === 'PGRST116') {
+          const { data: newProfile, error: createError } = await supabase.from('profiles').insert([{
+            id: currentUser.id,
+            email: currentUser.email,
+            tier: 'free',
+            monthly_request_limit: 5000
+          }]).select().single();
+          
+          if (createError) {
+            console.error('Error creating profile:', createError);
+            data = { tier: 'free', monthly_request_limit: 5000, api_key: null };
+          } else {
+            data = newProfile;
+          }
+        } else if (error) {
+          console.error('Error loading profile:', error);
+          data = { tier: 'free', monthly_request_limit: 5000, api_key: null };
+        }
+        
+        userProfile = data;
+        const email = currentUser.email;
+        const name = email.split('@')[0];
+        document.getElementById('userName').textContent = name.charAt(0).toUpperCase() + name.slice(1);
+        document.getElementById('userEmail').textContent = email;
+        document.getElementById('userAvatar').textContent = email.charAt(0).toUpperCase();
+        const tierBadge = document.getElementById('tierBadge');
+        const tier = data?.tier || 'free';
+        tierBadge.textContent = tier.charAt(0).toUpperCase() + tier.slice(1);
+        tierBadge.className = 'tier-badge ' + tier;
+        document.getElementById('limitCount').textContent = (data?.monthly_request_limit || 5000).toLocaleString();
+      } catch (err) {
+        console.error('Profile load error:', err);
+        const email = currentUser?.email || 'User';
+        document.getElementById('userName').textContent = email.split('@')[0];
+        document.getElementById('userEmail').textContent = email;
+        document.getElementById('userAvatar').textContent = email.charAt(0).toUpperCase();
+        document.getElementById('tierBadge').textContent = 'Free';
+        document.getElementById('tierBadge').className = 'tier-badge free';
+        document.getElementById('limitCount').textContent = '5,000';
+      }
     }
 
     async function loadUsage() {
-      const { data, error } = await supabase.rpc('get_usage_stats', { p_user_id: currentUser.id });
-      if (error) { console.error('Error loading usage:', error); return; }
-      const used = data.used || 0;
-      const limit = data.limit || 1000;
-      const remaining = data.remaining || limit;
-      const percent = Math.round((used / limit) * 100);
-      document.getElementById('usedCount').textContent = used.toLocaleString();
-      document.getElementById('remainingCount').textContent = remaining.toLocaleString();
-      document.getElementById('usagePercent').textContent = `${percent}%`;
-      const progressBar = document.getElementById('progressBar');
-      progressBar.style.width = `${percent}%`;
-      if (percent >= 90) progressBar.classList.add('danger');
-      else if (percent >= 75) progressBar.classList.add('warning');
-      const resetDate = new Date(data.reset_date);
-      document.getElementById('resetDate').textContent = resetDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      const remainingEl = document.getElementById('remainingCount');
-      if (remaining === 0) remainingEl.style.color = 'var(--error)';
-      else if (remaining < limit * 0.1) remainingEl.style.color = 'var(--warning)';
-      else remainingEl.style.color = 'var(--success)';
+      try {
+        const { data, error } = await supabase.rpc('get_usage_stats', { p_user_id: currentUser.id });
+        if (error) {
+          console.error('Error loading usage:', error);
+          document.getElementById('usedCount').textContent = '0';
+          document.getElementById('remainingCount').textContent = '5,000';
+          document.getElementById('usagePercent').textContent = '0%';
+          document.getElementById('progressBar').style.width = '0%';
+          return;
+        }
+        const used = data?.used || 0;
+        const limit = data?.limit || 5000;
+        const remaining = data?.remaining || limit;
+        const percent = Math.round((used / limit) * 100);
+        document.getElementById('usedCount').textContent = used.toLocaleString();
+        document.getElementById('remainingCount').textContent = remaining.toLocaleString();
+        document.getElementById('usagePercent').textContent = percent + '%';
+        const progressBar = document.getElementById('progressBar');
+        progressBar.style.width = percent + '%';
+        progressBar.classList.remove('danger', 'warning');
+        if (percent >= 90) progressBar.classList.add('danger');
+        else if (percent >= 75) progressBar.classList.add('warning');
+        const resetDate = new Date(data?.reset_date || new Date());
+        document.getElementById('resetDate').textContent = resetDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      } catch (err) {
+        console.error('Usage load error:', err);
+        document.getElementById('usedCount').textContent = '0';
+        document.getElementById('remainingCount').textContent = '5,000';
+      }
     }
 
     document.getElementById('toggleKeyBtn').addEventListener('click', () => {
