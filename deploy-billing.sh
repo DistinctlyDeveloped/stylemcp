@@ -12,7 +12,7 @@ if [ -z "$SUPABASE_URL" ] || [ -z "$STRIPE_SECRET_KEY" ]; then
   echo "ERROR: Missing environment variables!"
   echo ""
   echo "Please set the following in /opt/stylemcp/.env:"
-  echo "  SUPABASE_URL=https://xxxxx.supabase.co"
+  echo "  SUPABASE_URL=https://db-stylemcp.distinctlydeveloped.com"
   echo "  SUPABASE_SERVICE_KEY=eyJhbGc..."
   echo "  STRIPE_SECRET_KEY=sk_..."
   echo "  STRIPE_WEBHOOK_SECRET=whsec_..."

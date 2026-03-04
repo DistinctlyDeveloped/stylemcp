@@ -11,7 +11,7 @@ This guide walks you through setting up the full billing system with Supabase (a
 
 1. Go to [supabase.com](https://supabase.com) and create a new project
 2. Note your project credentials:
-   - **Project URL**: `https://xxxxx.supabase.co`
+   - **Project URL**: `https://db-stylemcp.distinctlydeveloped.com`
    - **Anon Key**: `eyJhbGc...` (public, safe for frontend)
    - **Service Role Key**: `eyJhbGc...` (private, backend only)
 
@@ -26,7 +26,7 @@ This guide walks you through setting up the full billing system with Supabase (a
 1. Go to Authentication → Providers
 2. Enable Google OAuth:
    - Create OAuth credentials at [console.cloud.google.com](https://console.cloud.google.com)
-   - Add `https://xxxxx.supabase.co/auth/v1/callback` as redirect URI
+   - Add `https://db-stylemcp.distinctlydeveloped.com/auth/v1/callback` as redirect URI
 3. Enable GitHub OAuth:
    - Create OAuth app at [github.com/settings/developers](https://github.com/settings/developers)
    - Add same callback URL
@@ -54,7 +54,7 @@ Add these to your `.env` file on the VPS:
 
 ```bash
 # Supabase
-SUPABASE_URL=https://xxxxx.supabase.co
+SUPABASE_URL=https://db-stylemcp.distinctlydeveloped.com
 SUPABASE_SERVICE_KEY=eyJhbGc...
 
 # Stripe
@@ -80,7 +80,7 @@ const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
 
 With your actual values:
 ```javascript
-const SUPABASE_URL = 'https://xxxxx.supabase.co';
+const SUPABASE_URL = 'https://db-stylemcp.distinctlydeveloped.com';
 const SUPABASE_ANON_KEY = 'eyJhbGc...';
 ```
 
